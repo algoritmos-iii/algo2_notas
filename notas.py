@@ -6,11 +6,11 @@ import gspread
 import notas_oauth
 
 # Constantes
-COL_EMAIL = "Email"
+COL_EMAIL = "E-Mail"
 COL_PADRON = "Padrón"
 
-SHEET_NOTAS = "Notas"
-SHEET_ALUMNOS = "DatosAlumnos"
+SHEET_NOTAS = "Notas APP"
+SHEET_ALUMNOS = "Listado"
 
 # Configuración externa.
 SPREADSHEET_KEY = os.environ["NOTAS_SPREADSHEET_KEY"]
@@ -18,10 +18,9 @@ SPREADSHEET_KEY = os.environ["NOTAS_SPREADSHEET_KEY"]
 
 def get_sheet(worksheet_name):
     """Devuelve un objeto gspread.Worksheet.
-
     Utiliza la constante global SPREADSHEET_KEY.
     """
-    client = gspread.authorize(notas_oauth.get_credenciales())
+    client = gspread.authorize(notas_oauth.get_credenciales_spreadsheet())
     spreadsheet = client.open_by_key(SPREADSHEET_KEY)
     return spreadsheet.worksheet(worksheet_name)
 
@@ -30,7 +29,7 @@ def verificar(padron_web, email_web):
     """Verifica que hay un alumno con el padrón y e-mail indicados.
     """
     alumnos = get_sheet(SHEET_ALUMNOS)
-
+    
     for alumno in alumnos.get_all_records():
         email = alumno.get(COL_EMAIL, "").strip()
         padron = str(alumno.get(COL_PADRON, ""))
@@ -43,7 +42,6 @@ def verificar(padron_web, email_web):
             return True
 
     return False
-
 
 def notas(padron):
     notas = get_sheet(SHEET_NOTAS)

@@ -4,21 +4,20 @@
 
 {% block content %}
 
+{% with key, val = items.__next__() %}
+  <h1>{{ val }}</h1>
+{% endwith %}
 <table class="table table-hover">
-<thead>
-  <tr>
-  {% with key, val = items.__next__() %}
-    <th>{{ key }}</th>
-    <th>{{ val }}</th>
-  </tr>
-  {% endwith %}
-</thead>
-{% for key, val in items %}
-  <tr>
-    <th>{{ key }}</th>
-    <td>{{ val }}</td>
-  </tr>
-{% endfor %}
+  {% for key, val in items %}
+    <tr>
+    {% if key == "Condición final" %}
+        {% break %}
+    {% else %}
+      <th>{{ key }}</th>
+      <td>{{ val }}</td>
+    </tr>
+    {% endif %}
+  {% endfor %}
 </table>
 
 {% endblock %}

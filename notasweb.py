@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import os
 
@@ -53,11 +54,11 @@ def index():
                 "La dirección de mail no está asociada a ese padrón", "danger")
         else:
             try:
-                sendmail.sendmail(app.config.title, email, genlink(padron))
-            except sendmail.SendmailException as e:
+                notas_alumno = notas.notas(padron)
+            except IndexError as e:
                 return flask.render_template("error.html", message=str(e))
             else:
-                return flask.render_template("email_sent.html", email=email)
+                return flask.render_template("result.html", items=notas_alumno)
 
     return flask.render_template("index.html", form=form)
 

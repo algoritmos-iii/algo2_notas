@@ -32,7 +32,7 @@ def sendmail(fromname, toaddr, link):
 	msg["From"] = "{} <{}>".format(fromname, ACCOUNT)
 	msg["To"] = toaddr
 
-	creds = notas_oauth.get_credenciales()
+	creds = notas_oauth.get_credenciales_email()
 	xoauth2_tok = "user={}\1" "auth=Bearer {}\1\1".format(
 	    ACCOUNT, creds.access_token).encode("utf-8")
 	server = smtplib.SMTP('smtp.gmail.com', 587)
