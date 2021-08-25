@@ -5,18 +5,23 @@ import gspread
 
 import notas_oauth
 
-# Constantes
-COL_EMAIL = "E-Mail"
-COL_PADRON = "Padrón"
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Tuple
+    from gspread.models import Worksheet
 
-SHEET_NOTAS = "Notas APP"
-SHEET_ALUMNOS = "Listado"
+# Constantes
+COL_EMAIL: str = "E-Mail"
+COL_PADRON: str = "Padrón"
+
+SHEET_NOTAS: str = "Notas APP"
+SHEET_ALUMNOS: str = "Listado"
 
 # Configuración externa.
-SPREADSHEET_KEY = os.environ["NOTAS_SPREADSHEET_KEY"]
+SPREADSHEET_KEY: str = os.environ["NOTAS_SPREADSHEET_KEY"]
 
 
-def get_sheet(worksheet_name):
+def _get_sheet(worksheet_name: str) -> Worksheet:
     """Devuelve un objeto gspread.Worksheet.
     Utiliza la constante global SPREADSHEET_KEY.
     """
@@ -25,11 +30,11 @@ def get_sheet(worksheet_name):
     return spreadsheet.worksheet(worksheet_name)
 
 
-def verificar(padron_web, email_web):
+def verificar(padron_web: str, email_web: str) -> bool:
     """Verifica que hay un alumno con el padrón y e-mail indicados.
     """
-    alumnos = get_sheet(SHEET_ALUMNOS)
-    
+    alumnos = _get_sheet(SHEET_ALUMNOS)
+
     for alumno in alumnos.get_all_records():
         email = alumno.get(COL_EMAIL, "").strip()
         padron = str(alumno.get(COL_PADRON, ""))
@@ -38,13 +43,14 @@ def verificar(padron_web, email_web):
             continue
 
         if (padron.lower() == padron_web.lower() and
-            email.lower() == email_web.lower()):
+                email.lower() == email_web.lower()):
             return True
 
     return False
 
-def notas(padron):
-    notas = get_sheet(SHEET_NOTAS)
+
+def notas(padron: str) -> zip[Tuple]:
+    notas = _get_sheet(SHEET_NOTAS)
     filas = notas.get_all_values()
     headers = filas.pop(0)
     idx_padron = headers.index(COL_PADRON)
@@ -53,7 +59,7 @@ def notas(padron):
         if padron.lower() == alumno[idx_padron].lower():
             return zip(headers, alumno)
 
-    raise IndexError("Padrón {} no encontrado".format(padron))
+    raise IndexError(f"Padrón {padron} no encontrado")
 
 
 if __name__ == "__main__":
