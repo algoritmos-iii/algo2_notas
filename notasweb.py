@@ -29,11 +29,11 @@ class Formulario(flask_wtf.FlaskForm):
     """Pide el padrón y la dirección de correo.
     """
     padron = fields.StringField(
-        "Padrón", validators=[
+        "Ingresa tu padrón", validators=[
             validators.Regexp(r"\w+", message="Ingrese un padrón válido")])
 
     email = html5.EmailField(
-        "E-mail", validators=[
+        "Ingresa tu e-mail", validators=[
             validators.Email(message="Ingrese una dirección de e-mail válida")])
 
     submit = fields.SubmitField("Obtener enlace")
@@ -67,7 +67,7 @@ def index():
 def bad_request(err):
     """Se invoca cuando falla la validación de la clave.
     """
-    return flask.render_template( "error.html", message="Clave no válida")
+    return flask.render_template("error.html", message="Clave no válida")
 
 
 def validate(value):

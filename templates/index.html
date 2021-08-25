@@ -12,11 +12,16 @@
     {% endfor %}
 
     {{ form.hidden_tag() }}
-
+    <div class="mb-3">
+    <label class="form-label">Padrón</label>
     {{ form_field(form.padron) }}
+    </div>
+
+    <div class="mb-3">
+    <label class="form-label">Email</label>
     {{ form_field(form.email) }}
-    
     <div class="form-text">La dirección debe coincidir con la que te anotaste para la lista de correo.</div>
+    </div>
 
     {{ form_field(form.submit, class="btn btn-dark btn-md") }}
   </form>
