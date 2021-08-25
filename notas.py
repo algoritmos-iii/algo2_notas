@@ -51,7 +51,7 @@ def notas(padron):
 
     for alumno in filas:
         if padron.lower() == alumno[idx_padron].lower():
-            return zip(headers, alumno)
+            return list(zip(headers, alumno))
 
     raise IndexError("Padrón {} no encontrado".format(padron))
 

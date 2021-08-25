@@ -14,11 +14,11 @@
     {{ form.hidden_tag() }}
 
     {{ form_field(form.padron) }}
-    {{ form_field(form.email,
-                  help_msg=("La dirección debe coincidir con la que "
-                            "te anotaste para la lista de correo")) }}
+    {{ form_field(form.email) }}
+    
+    <div class="form-text">La dirección debe coincidir con la que te anotaste para la lista de correo.</div>
 
-    {{ form_field(form.submit, class="btn btn-primary btn-lg") }}
+    {{ form_field(form.submit, class="btn btn-dark btn-md") }}
   </form>
 {% endblock %}
 
