@@ -22,16 +22,16 @@ class NotasRepository:
     COL_PADRON: str = "Padrón"
 
     def __init__(self, spreadsheet_key: str, credentials: GoogleCredentials) -> None:
-        self.spreadsheet_key = spreadsheet_key
-        self.google_credentials = credentials
+        self._spreadsheet_key = spreadsheet_key
+        self._google_credentials = credentials
 
     def _get_sheet(self, worksheet_name: str) -> Worksheet:
         """Devuelve un objeto gspread.Worksheet.
         Utiliza la constante global SPREADSHEET_KEY.
         """
         client = gspread.authorize(
-            self.google_credentials.get_credenciales_spreadsheet())
-        spreadsheet = client.open_by_key(self.spreadsheet_key)
+            self._google_credentials.get_credenciales_spreadsheet())
+        spreadsheet = client.open_by_key(self._spreadsheet_key)
         return spreadsheet.worksheet(worksheet_name)
 
     def verificar(self, padron_web: str, email_web: str) -> bool:

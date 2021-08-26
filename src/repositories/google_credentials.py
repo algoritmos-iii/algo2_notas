@@ -30,10 +30,10 @@ class GoogleCredentials:
 
     def __init__(self, service_account_file_path: str, client_id: str, client_secret: str, oauth_refresh_token: str) -> None:
 
-        self.credentials_spreadhseet = google.oauth2.service_account.Credentials.from_service_account_file(
+        self._credentials_spreadhseet = google.oauth2.service_account.Credentials.from_service_account_file(
             service_account_file_path, scopes=self.SCOPES)
 
-        self.credentials_email = oauth2client.client.OAuth2Credentials(
+        self._credentials_email = oauth2client.client.OAuth2Credentials(
             self.ACCESS_TOKEN, client_id, client_secret,
             oauth_refresh_token, self.TOKEN_EXPIRY,
             self.TOKEN_URI, self.USER_AGENT)

@@ -10,7 +10,10 @@ from webargs import fields
 from webargs.flaskparser import use_args
 
 from forms.authentication_form import AuthenticationForm
-from repositories.notas_repository import GoogleCredentials, NotasRepository, PadronNotFound
+
+from repositories.google_credentials import GoogleCredentials
+from repositories.notas_repository import NotasRepository, PadronNotFound
+from repositories.sendmail import EmailSender
 
 # App configuration
 APP_TITLE = f'{os.environ["NOTAS_COURSE_NAME"]} - Consulta de Notas'
@@ -27,6 +30,10 @@ CLIENT_SECRET = os.environ["NOTAS_OAUTH_SECRET"]
 OAUTH_REFRESH = os.environ["NOTAS_REFRESH_TOKEN"]
 SERVICE_ACCOUNT_JSON = os.environ["NOTAS_SERVICE_ACCOUNT_JSON"]
 
+# Email
+COURSE = os.environ['NOTAS_COURSE_NAME']
+ACCOUNT = os.environ['NOTAS_ACCOUNT']
+
 signer = itsdangerous.URLSafeSerializer(SECRET_KEY)
 
 app = flask.Flask(__name__)
@@ -36,6 +43,7 @@ app.template_folder = TEMPLATES_DIR
 
 google_credentials = GoogleCredentials(SERVICE_ACCOUNT_JSON, CLIENT_ID, CLIENT_SECRET, OAUTH_REFRESH)
 notas = NotasRepository(SPREADSHEET_KEY, google_credentials)
+emails = EmailSender(COURSE, ACCOUNT, google_credentials)
 
 @app.route("/", methods=('GET', 'POST'))
 def index():
@@ -86,11 +94,11 @@ def consultar(args):
     else:
         return flask.render_template("result.html", items=notas_alumno)
 
-# def genlink(padron: str) -> str:
-#     """Devuelve el enlace de consulta para un padrón.
-#     """
-#     signed_padron = signer.dumps(padron)
-#     return flask.url_for("consultar", clave=signed_padron, _external=True)
+def genlink(padron: str) -> str:
+    """Devuelve el enlace de consulta para un padrón.
+    """
+    signed_padron = signer.dumps(padron)
+    return flask.url_for("consultar", clave=signed_padron, _external=True)
 
 
 if __name__ == "__main__":
