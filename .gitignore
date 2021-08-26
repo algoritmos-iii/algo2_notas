@@ -1,4 +1,6 @@
 *.swp
 *.pyc
+__pycache__
+.mypy_cache
 env
 client_secrets.json
