@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 
 import base64
 import smtplib
 from email.mime.text import MIMEText
 
-from google_credentials import GoogleCredentials
+from .google_credentials import GoogleCredentials
 
 class EmailSender:
 	template = """
@@ -25,7 +26,7 @@ notas de {curso}. Si no es así, te pedimos disculpas y por favor ingorá este m
 		self._account = account
 		self._google_credentials = google_credentials
 
-	def sendmail(self, fromname, toaddr, link):
+	def sendmail(self, fromname: str, toaddr: str, link: str) -> None:
 		msg = MIMEText(self.template.format(enlace=link, curso=self._course),
 					_charset="utf-8")
 		msg["Subject"] = "Enlace para consultar las notas"

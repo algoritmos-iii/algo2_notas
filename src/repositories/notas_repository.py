@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import gspread
-from google_credentials import GoogleCredentials
+from .google_credentials import GoogleCredentials
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
