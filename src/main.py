@@ -9,25 +9,25 @@ import itsdangerous
 from webargs import fields
 from webargs.flaskparser import use_args
 
-from forms.padron_y_mail_form import PadronYMailFormulario
+from forms.authentication_form import AuthenticationForm
 import notas
 
-_FLASK_TITLE = os.environ["NOTAS_COURSE_NAME"] + " - Consulta de Notas"
-_SECRET_KEY = os.environ["NOTAS_SECRET"]
-assert _SECRET_KEY
+APP_TITLE = os.environ["NOTAS_COURSE_NAME"] + " - Consulta de Notas"
+SECRET_KEY = os.environ["NOTAS_SECRET"]
+assert SECRET_KEY
 
-signer = itsdangerous.URLSafeSerializer(_SECRET_KEY)
+signer = itsdangerous.URLSafeSerializer(SECRET_KEY)
 
 app = flask.Flask(__name__)
-app.secret_key = _SECRET_KEY
-app.config.title = _FLASK_TITLE
+app.secret_key = SECRET_KEY
+app.config.title = APP_TITLE
 
 
 @app.route("/", methods=('GET', 'POST'))
 def index():
     """Sirve la página de solicitud del enlace.
     """
-    form = PadronYMailFormulario()
+    form = AuthenticationForm()
 
     if form.validate_on_submit():
         padron = form.padron_normalizado()
@@ -54,10 +54,10 @@ def bad_request(err):
     return flask.render_template("error.html", message="Clave no válida")
 
 
-def _clave_validate(value) -> bool:
+def _clave_validate(clave) -> bool:
     # Needed because URLSafeSerializer does not have a validate().
     try:
-        return bool(signer.loads(value))
+        return bool(signer.loads(clave))
     except itsdangerous.BadSignature:
         return False
 

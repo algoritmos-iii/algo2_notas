@@ -4,7 +4,7 @@ from wtforms import fields
 from wtforms import validators
 
 
-class PadronYMailFormulario(flask_wtf.FlaskForm):
+class AuthenticationForm(flask_wtf.FlaskForm):
     """Pide el padrón y la dirección de correo.
     """
     padron = fields.StringField(

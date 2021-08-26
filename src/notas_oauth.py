@@ -16,21 +16,21 @@ if TYPE_CHECKING:
     from google.oauth2.service_account import Credentials
 
 
-_CLIENT_ID = os.environ["NOTAS_OAUTH_CLIENT"]
-_CLIENT_SECRET = os.environ["NOTAS_OAUTH_SECRET"]
-_OAUTH_REFRESH = os.environ["NOTAS_REFRESH_TOKEN"]
-_SERVICE_ACCOUNT_JSON = os.environ["NOTAS_SERVICE_ACCOUNT_JSON"]
+CLIENT_ID = os.environ["NOTAS_OAUTH_CLIENT"]
+CLIENT_SECRET = os.environ["NOTAS_OAUTH_SECRET"]
+OAUTH_REFRESH = os.environ["NOTAS_REFRESH_TOKEN"]
+SERVICE_ACCOUNT_JSON = os.environ["NOTAS_SERVICE_ACCOUNT_JSON"]
 
-_SCOPES = ["https://www.googleapis.com/auth/spreadsheets",
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets",
            "https://www.googleapis.com/auth/gmail.send"]
 
 # TODO: Unificar autenticacion para planilla y cuenta de mail.
 # Por ahora no encontramos la forma de enviar mails usando la service account.
 # Mantenemos por un lado el service account para acceder a la planilla y el client id/secret para enviar mails.
 _creds_spreadhseet = google.oauth2.service_account.Credentials.from_service_account_file(
-    _SERVICE_ACCOUNT_JSON, scopes=_SCOPES)
+    SERVICE_ACCOUNT_JSON, scopes=SCOPES)
 _creds_email = oauth2client.client.OAuth2Credentials(
-    "", _CLIENT_ID, _CLIENT_SECRET, _OAUTH_REFRESH,
+    "", CLIENT_ID, CLIENT_SECRET, OAUTH_REFRESH,
     datetime.datetime(2015, 1, 1),
     "https://accounts.google.com/o/oauth2/token", "notasweb/1.0")
 
