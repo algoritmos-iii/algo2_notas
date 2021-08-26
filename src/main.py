@@ -12,7 +12,7 @@ from webargs.flaskparser import use_args
 from forms.authentication_form import AuthenticationForm
 
 from repositories.google_credentials import GoogleCredentials
-from repositories.notas_repository import NotasRepository, PadronNotFound
+from repositories.notas_repository import NotasRepository
 from repositories.sendmail import EmailSender
 
 # App configuration
@@ -89,7 +89,7 @@ def _clave_validate(clave) -> bool:
 def consultar(args):
     try:
         notas_alumno = notas.notas(signer.loads(args["clave"]))
-    except PadronNotFound as e:
+    except IndexError as e:
         return flask.render_template("error.html", message=str(e))
     else:
         return flask.render_template("result.html", items=notas_alumno)

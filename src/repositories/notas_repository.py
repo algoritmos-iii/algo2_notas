@@ -8,13 +8,6 @@ if TYPE_CHECKING:
     from typing import Tuple, List
     from gspread.models import Worksheet
 
-
-class PadronNotFound(Exception):
-    def __init__(self, padron: str) -> None:
-        super().__init__(f"Padrón {padron} no encontrado")
-        self.padron = padron
-
-
 class NotasRepository:
     # Constantes
     SHEET_NOTAS: str = "Notas APP"
@@ -64,4 +57,4 @@ class NotasRepository:
             if padron.lower() == alumno[idx_padron].lower():
                 return list(zip(headers, alumno))
 
-        raise PadronNotFound(padron)
+        raise IndexError(f"Padrón {padron} no encontrado")
