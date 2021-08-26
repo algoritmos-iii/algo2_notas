@@ -2,6 +2,7 @@ import flask_wtf
 
 from wtforms import fields
 from wtforms import validators
+from wtforms.fields import html5
 
 
 class AuthenticationForm(flask_wtf.FlaskForm):
@@ -11,7 +12,7 @@ class AuthenticationForm(flask_wtf.FlaskForm):
         "Padrón", validators=[
             validators.Regexp(r"\w+", message="Ingrese un padrón válido")])
 
-    email = fields.html5.EmailField(
+    email = html5.EmailField(
         "E-mail", validators=[
             validators.Email(message="Ingrese una dirección de e-mail válida")])
 
