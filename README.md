@@ -7,6 +7,12 @@ Los datos se obtienen de un google spreadsheet. El alumno especifica su padrón 
 Configuración y ejecución
 -------------------------
 
+Crear el ambiente virtual e instalar los requerimientos:
+
+```bash
+  $ pipenv install --ignore-pipfile
+```
+
 Crear un archivo llamado `env`:
 
 ```bash
@@ -19,11 +25,19 @@ export NOTAS_SPREADSHEET_KEY='*****'
 export NOTAS_SECRET='*****'
 ```
 
-Ejecutar el servidor web:
+Es suficiente con correr Flask desde el entorno creado por pipenv:
 
 ```bash
 $ . ./env
-$ python notasweb.py
+$ pipenv shell
+$ FLASK_ENV=development FLASK_APP=notasweb.py flask run
+```
+
+O se puede usar pipenv run si no se desea modificar el shell:
+
+```bash
+  $ . ./env
+  $ FLASK_ENV=development FLASK_APP=notasweb.py pipenv run flask run
 ```
 
 Alternativamente, mediante contenedores de [Docker][], completar las credenciales en el archivo `docker.auth`, y ejecutar:
