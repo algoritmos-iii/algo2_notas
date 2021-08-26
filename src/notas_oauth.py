@@ -2,6 +2,8 @@
 
 """Módulo para autenticación con OAuth2."""
 
+from __future__ import annotations
+
 import datetime
 import httplib2
 import os
@@ -22,7 +24,7 @@ OAUTH_REFRESH = os.environ["NOTAS_REFRESH_TOKEN"]
 SERVICE_ACCOUNT_JSON = os.environ["NOTAS_SERVICE_ACCOUNT_JSON"]
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets",
-           "https://www.googleapis.com/auth/gmail.send"]
+          "https://www.googleapis.com/auth/gmail.send"]
 
 # TODO: Unificar autenticacion para planilla y cuenta de mail.
 # Por ahora no encontramos la forma de enviar mails usando la service account.
