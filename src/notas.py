@@ -7,7 +7,7 @@ import notas_oauth
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Tuple
+    from typing import Tuple, List
     from gspread.models import Worksheet
 
 # Constantes
@@ -49,7 +49,7 @@ def verificar(padron_web: str, email_web: str) -> bool:
     return False
 
 
-def notas(padron: str) -> zip[Tuple]:
+def notas(padron: str) -> List[Tuple[str, str]]:
     notas = _get_sheet(SHEET_NOTAS)
     filas = notas.get_all_values()
     headers = filas.pop(0)
@@ -57,7 +57,7 @@ def notas(padron: str) -> zip[Tuple]:
 
     for alumno in filas:
         if padron.lower() == alumno[idx_padron].lower():
-            return zip(headers, alumno)
+            return list(zip(headers, alumno))
 
     raise IndexError(f"Padrón {padron} no encontrado")
 
