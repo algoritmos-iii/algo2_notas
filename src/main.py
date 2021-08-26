@@ -52,8 +52,8 @@ def index():
     form = AuthenticationForm()
 
     if form.validate_on_submit():
-        padron = form.padron_normalizado()
-        email = form.email_normalizado()
+        padron = form.normalized_padron()
+        email = form.normalized_email()
 
         if not notas.verificar(padron, email):
             flask.flash(

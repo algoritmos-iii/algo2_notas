@@ -23,8 +23,8 @@ class AuthenticationForm(flask_wtf.FlaskForm):
         """
         return field.data.strip().lower()
 
-    def padron_normalizado(self) -> str:
+    def normalized_padron(self) -> str:
         return self._normalize_field(self.padron)
 
-    def email_normalizado(self) -> str:
+    def normalized_email(self) -> str:
         return self._normalize_field(self.email)
