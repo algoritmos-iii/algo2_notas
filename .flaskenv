@@ -1,2 +1,2 @@
-FLASK_APP=notasweb.py
+FLASK_APP=./src/main.py
 FLASK_ENV=development
