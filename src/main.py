@@ -15,13 +15,14 @@ import notas
 APP_TITLE = os.environ["NOTAS_COURSE_NAME"] + " - Consulta de Notas"
 SECRET_KEY = os.environ["NOTAS_SECRET"]
 assert SECRET_KEY
+TEMPLATES_DIR = "../templates"
 
 signer = itsdangerous.URLSafeSerializer(SECRET_KEY)
 
 app = flask.Flask(__name__)
 app.secret_key = SECRET_KEY
 app.config.title = APP_TITLE
-
+app.template_folder = TEMPLATES_DIR
 
 @app.route("/", methods=('GET', 'POST'))
 def index():
