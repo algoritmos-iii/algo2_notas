@@ -51,7 +51,7 @@ class GoogleCredentials:
         Esta función llama a _refresh() si el token expira en menos de 5 minutos.
         """
         return self._get_credenciales(
-            self._creds_spreadhseet,
+            self._credentials_spreadhseet,
             lambda creds: creds.valid,
             lambda creds: creds.refresh(
                 google.auth.transport.requests.Request())
@@ -62,7 +62,7 @@ class GoogleCredentials:
         Esta función llama a _refresh() si el token expira en menos de 5 minutos.
         """
         return self._get_credenciales(
-            self._creds_email,
+            self._credentials_email,
             lambda creds: creds.token_expiry -
             datetime.timedelta(minutes=5) > datetime.datetime.utcnow(),
             lambda creds: creds.refresh(httplib2.Http())
