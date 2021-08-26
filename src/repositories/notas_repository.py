@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import gspread
-from .google_credentials import GoogleCredentials
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Tuple, List
     from gspread.models import Worksheet
+    from .google_credentials import GoogleCredentials
 
 class NotasRepository:
     # Constantes
