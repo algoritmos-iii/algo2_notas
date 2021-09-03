@@ -14,6 +14,7 @@ flask = "~=1.1"
 flask-wtf = "==0.14.*"
 wtforms = "~=2.3"
 email-validator = "~=1.1"
+python-dotenv = "*"
 
 [dev-packages]
 python-dotenv = "*"

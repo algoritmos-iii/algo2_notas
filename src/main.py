@@ -4,50 +4,56 @@
 import os
 
 import flask
-import flask_wtf
 import itsdangerous
 
-from webargs import fields as wfields
+from webargs import fields
 from webargs.flaskparser import use_args
 
-from wtforms import fields
-from wtforms import validators
-from wtforms.fields import html5
+from forms.authentication_form import AuthenticationForm
 
-import notas
-import sendmail
+from api.google_credentials import GoogleCredentials
+from repositories.notas_repository import NotasRepository
+from services.sendmail import EmailSender
+
+# App configuration
+APP_TITLE = f'{os.environ["NOTAS_COURSE_NAME"]} - Consulta de Notas'
+SECRET_KEY = os.environ["NOTAS_SECRET"]
+assert SECRET_KEY
+TEMPLATES_DIR = "../templates"
+
+# Notas
+SPREADSHEET_KEY = os.environ["NOTAS_SPREADSHEET_KEY"]
+
+# Google credentials
+CLIENT_ID = os.environ["NOTAS_OAUTH_CLIENT"]
+CLIENT_SECRET = os.environ["NOTAS_OAUTH_SECRET"]
+OAUTH_REFRESH = os.environ["NOTAS_REFRESH_TOKEN"]
+SERVICE_ACCOUNT_JSON = os.environ["NOTAS_SERVICE_ACCOUNT_JSON"]
+
+# Email
+COURSE = os.environ['NOTAS_COURSE_NAME']
+ACCOUNT = os.environ['NOTAS_ACCOUNT']
+
+signer = itsdangerous.URLSafeSerializer(SECRET_KEY)
 
 app = flask.Flask(__name__)
-app.secret_key = os.environ["NOTAS_SECRET"]
-app.config.title = os.environ["NOTAS_COURSE_NAME"] + " - Consulta de Notas"
+app.secret_key = SECRET_KEY
+app.config.title = APP_TITLE
+app.template_folder = TEMPLATES_DIR
 
-assert app.secret_key
-signer = itsdangerous.URLSafeSerializer(app.secret_key)
-
-
-class Formulario(flask_wtf.FlaskForm):
-    """Pide el padrón y la dirección de correo.
-    """
-    padron = fields.StringField(
-        "Ingresa tu padrón", validators=[
-            validators.Regexp(r"\w+", message="Ingrese un padrón válido")])
-
-    email = html5.EmailField(
-        "Ingresa tu e-mail", validators=[
-            validators.Email(message="Ingrese una dirección de e-mail válida")])
-
-    submit = fields.SubmitField("Obtener enlace")
-
+google_credentials = GoogleCredentials(SERVICE_ACCOUNT_JSON, CLIENT_ID, CLIENT_SECRET, OAUTH_REFRESH)
+notas = NotasRepository(SPREADSHEET_KEY, google_credentials)
+emails = EmailSender(COURSE, ACCOUNT, google_credentials)
 
 @app.route("/", methods=('GET', 'POST'))
 def index():
     """Sirve la página de solicitud del enlace.
     """
-    form = Formulario()
+    form = AuthenticationForm()
 
     if form.validate_on_submit():
-        padron = norm_field(form.padron)
-        email = norm_field(form.email).strip()
+        padron = form.normalized_padron()
+        email = form.normalized_email()
 
         if not notas.verificar(padron, email):
             flask.flash(
@@ -70,16 +76,16 @@ def bad_request(err):
     return flask.render_template("error.html", message="Clave no válida")
 
 
-def validate(value):
+def _clave_validate(clave) -> bool:
     # Needed because URLSafeSerializer does not have a validate().
     try:
-        return bool(signer.loads(value))
+        return bool(signer.loads(clave))
     except itsdangerous.BadSignature:
         return False
 
 
 @app.route("/consultar")
-@use_args({"clave": wfields.Str(required=True, validate=validate)})
+@use_args({"clave": fields.Str(required=True, validate=_clave_validate)})
 def consultar(args):
     try:
         notas_alumno = notas.notas(signer.loads(args["clave"]))
@@ -88,14 +94,7 @@ def consultar(args):
     else:
         return flask.render_template("result.html", items=notas_alumno)
 
-
-def norm_field(f):
-    """Devuelve los datos del campo en minúsculas y sin espacio alreadedor.
-    """
-    return f.data.strip().lower()
-
-
-def genlink(padron):
+def genlink(padron: str) -> str:
     """Devuelve el enlace de consulta para un padrón.
     """
     signed_padron = signer.dumps(padron)
