@@ -11,9 +11,9 @@ from webargs.flaskparser import use_args
 
 from forms.authentication_form import AuthenticationForm
 
-from repositories.google_credentials import GoogleCredentials
+from api.google_credentials import GoogleCredentials
 from repositories.notas_repository import NotasRepository
-from repositories.sendmail import EmailSender
+from services.sendmail import EmailSender
 
 # App configuration
 APP_TITLE = f'{os.environ["NOTAS_COURSE_NAME"]} - Consulta de Notas'
