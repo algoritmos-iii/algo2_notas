@@ -60,7 +60,7 @@ def index():
                 "La dirección de mail no está asociada a ese padrón", "danger")
         else:
             try:
-                EmailSender.sendmail(emails, app.config.title, email, "http://127.0.0.1:5000/consultar?clave=IjEwNDcyOCI.PzwQTyrraldPKZU-EN6-D1G1O2k")
+                EmailSender.sendmail(emails, app.config.title, email, genlink(padron))
             except EmailSender.SendmailException as e:
                 return flask.render_template("error.html", message=str(e))
             else:
