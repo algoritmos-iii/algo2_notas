@@ -49,6 +49,8 @@ def main():
 
     # TODO(dato): también imprimir NOTAS_OAUTH_{CLIENT,SECRET}.
     print('NOTAS_REFRESH_TOKEN="%s"' % credentials.refresh_token)
+    print('NOTAS_OAUTH_CLIENT="%s"' % credentials.client_id)
+    print('NOTAS_OAUTH_SECRET="%s"' % credentials.client_secret)
 
 
 if __name__ == "__main__":
