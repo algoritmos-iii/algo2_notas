@@ -1,3 +1,8 @@
 *.swp
 *.pyc
-/service_account.json
+__pycache__
+.mypy_cache
+env
+.env
+service_account.json
+clients_secrets.json

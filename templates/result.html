@@ -4,21 +4,48 @@
 
 {% block content %}
 
-<table class="table table-hover">
-<thead>
-  <tr>
-  {% with key, val = items.__next__() %}
-    <th>{{ key }}</th>
-    <th>{{ val }}</th>
-  </tr>
-  {% endwith %}
-</thead>
-{% for key, val in items %}
-  <tr>
-    <th>{{ key }}</th>
-    <td>{{ val }}</td>
-  </tr>
+{% for key, val in items if key == "Nombre"%}
+  <h1>{{ val }}</h1>
 {% endfor %}
-</table>
 
+{% for key, val in items if key == "Email"%}
+  <b style="color: grey;">{{ val }}</b>
+{% endfor %}
+<br>
+{% for key, val in items if key == "Padrón"%}
+  <b style="color: grey;">{{ val }}</b>
+{% endfor %}
+<br><br>
+
+<div class="card-group">
+  <div class="card border-0">
+    <table class="table table-sm table-striped table-hover">
+      <tbody>
+        {% for key, val in items if not key == "Nombre" if not key == "Email" if not key == "Padrón" if not key == "Condición final" if not val == "" %}
+          <tr>
+            <td>{{ key }}</td>
+            <td>{{ val }}</td>
+          </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+  </div>
+  <div class="card border-0">
+    <div class="card-body">
+      {% for key, val in items if key == "Condición final" %}
+        <h3 class="card-title">{{ key }}</h3>
+        {% if val == "Promociona" %}
+          <p class="card-text" style="color: green;"><b>{{ val }}</b></p>
+        {% elif val == "Final" %}
+          <p class="card-text" style="color: green;"><b>{{ val }}</b></p>
+        {% elif val == "Recursa" %}
+          <p class="card-text" style="color: red;"><b>{{ val }}</b></p>
+        {% else %}
+          <p class="card-text" style="color: grey;"><b>Aún no tenemos la condición final de cursada</b></p>
+        {% endif %}
+      {% endfor %}
+    </div> 
+  </div>
+</div>
 {% endblock %}
+
