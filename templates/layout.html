@@ -14,17 +14,31 @@
         padding-top: 50px;
         font: 14px/1.5 "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
       }
+      footer {
+        font: 14px/1.5 "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
       .content {
         padding: 40px 15px;
       }
       .table {
         max-width: 30em;
       }
+      .border-footer {
+        border-top: 0.1px solid rgb(189, 189, 189);
+      }
+      .footer-link :hover {
+        text-decoration: none;
+        color: black;
+      }
+      .footer-link{
+        text-decoration: none;
+        color: black;
+      }
     </style>
   {% endblock %}
 </head>
 
-<body>
+<body class = "d-flex min-vh-100 flex-column">
 
   <div class="navbar fixed-top navbar-dark bg-dark" role="navigation">
     <div class="container">
@@ -44,7 +58,18 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
 </body>
 
-</html>
+<footer class="pt-5 mt-auto mb-4 border-footer">
+  <div class="container d-flex flex-row justify-content-between">
+    <div>
+      <a class="footer-link" href="{{ url_for('index') }}">
+        <h6 class="fw-bold pt-1"> Algoritmos III</h6>
+      </a>
+      <p class = "text-muted fw-bold ps-1">Algoritmos III</p>
+    </div>
+    <div>
+      <p class="text-muted">Sitio web de notas del curso Leveroni de </br> Algoritmos y Programación 3 (7507/9502)</p>
+    </div>
+  </div>
+</footer>
 
-<!-- vim: set sw=2 et : -->
-Agregar footer de la pagina
+</html>
