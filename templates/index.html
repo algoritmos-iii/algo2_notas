@@ -6,18 +6,18 @@
     consultar tus notas.
   </p>
 
-  <form class="form-horizontal" role="form" method="post">
+  <form class="form" role="form" method="post">
     {% for cat, msg in get_flashed_messages(with_categories=True) %}
       <div class="alert alert-{{ cat }}">{{ msg }}</div>
     {% endfor %}
 
     {{ form.hidden_tag() }}
-    <div class="mb-3">
+    <div class="mb-3 w-25">
     <label class="form-label">Padrón</label>
     {{ form_field(form.padron) }}
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3 w-25">
     <label class="form-label">Email</label>
     {{ form_field(form.email) }}
     <div class="form-text">La dirección debe coincidir con la que te anotaste para la lista de correo.</div>
