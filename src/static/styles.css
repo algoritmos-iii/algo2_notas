@@ -4,12 +4,24 @@
 }
 
 .footer-heading {
-	font-size: 1.125rem !important;
-	margin-bottom: 15px !important;
-	margin-top: 20px;
+	font-size: 1.125rem;
+	margin-bottom: 15px;
+	margin-top: 30px;;
 	font-weight: inherit;
 }
-
+.sub {
+	font-size: 15px;
+    color: #828282;
+	margin-top: 20px;
+}
 .desc {
-	margin-top: 60px;
+	margin-top: 70px;
+}
+
+.info {
+	max-width: calc(800px - (30px * 2));
+}
+
+.site-container {
+	max-width: calc(800px - (30px * 2));
 }
