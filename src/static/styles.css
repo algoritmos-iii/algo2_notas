@@ -25,3 +25,13 @@
 .site-container {
 	max-width: calc(800px - (30px * 2));
 }
+
+.footer-link {
+	text-decoration: none;
+	color: black;
+}
+
+.footer-link:hover {
+	text-decoration: none;
+	color: black;
+}
