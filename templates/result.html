@@ -32,7 +32,7 @@
   </div>
   <div class="card border-0">
     <div class="card-body">
-      {% for key, val in items if key == "Condición final" %}
+      {% for key, val in items if key == "Condición final" if not val == "" %}
         <h3 class="card-title">{{ key }}</h3>
         {% if val == "Promociona" %}
           <p class="card-text" style="color: green;"><b>{{ val }}</b></p>
@@ -47,5 +47,15 @@
     </div> 
   </div>
 </div>
-{% endblock %}
+  {% set ns = namespace(noData=false) %}     
+  
+  {% for key, val in items if val == "" %}
+    {% set ns.noData = True %}
+  {% endfor %}
+  
+  {% if ns.noData %}
+    <b>Próximamente vas a poder ver tus notas</b>
+    <img src="{{ url_for('static', filename = 'images/nothing_see_here.png') }}" width="350" height="375" class="center" style="display: block; margin: 0 auto;">
+  {% endif %}
 
+{% endblock %}

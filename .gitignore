@@ -6,3 +6,6 @@ env
 .env
 service_account.json
 clients_secrets.json
+
+#.DS_STORE
+.DS_STORE
