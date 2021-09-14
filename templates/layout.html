@@ -4,8 +4,7 @@
 <head>
   {% block head %}
     <title>{% block title %}{{ config.title }}{% endblock %}</title>
-
-    <link rel="shortcut icon" href="https://github.com/algoritmos-iii/algoritmos-iii.github.io/blob/master/assets/favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'images/favicon.ico') }}" type="image/x-icon"/>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
 
