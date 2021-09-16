@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Tuple, List
     from gspread.models import Worksheet
-    from api.google_credentials import GoogleCredentials
+    from ..api.google_credentials import GoogleCredentials
 
 class NotasRepository:
     # Constantes

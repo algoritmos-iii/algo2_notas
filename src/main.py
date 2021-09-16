@@ -5,15 +5,18 @@ import os
 
 import flask
 import itsdangerous
+import dotenv
 
 from webargs import fields
 from webargs.flaskparser import use_args
 
-from forms.authentication_form import AuthenticationForm
+from .forms.authentication_form import AuthenticationForm
 
-from api.google_credentials import GoogleCredentials
-from repositories.notas_repository import NotasRepository
-from services.sendmail import EmailSender
+from .api.google_credentials import GoogleCredentials
+from .repositories.notas_repository import NotasRepository
+from .services.sendmail import EmailSender
+
+dotenv.load_dotenv()
 
 # App configuration
 APP_TITLE = f'{os.environ["NOTAS_COURSE_NAME"]} - Consulta de Notas'
