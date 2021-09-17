@@ -49,8 +49,8 @@
 </div>
   {% set ns = namespace(noData=false) %}     
   
-  {% for key, val in items if val == "" %}
-    {% set ns.noData = True %}
+  {% for key, val in items if val == " " %}
+    {% set ns.noData = true %}
   {% endfor %}
   
   {% if ns.noData %}

@@ -5,7 +5,7 @@ import base64
 import smtplib
 from email.mime.text import MIMEText
 
-from api.google_credentials import GoogleCredentials
+from ..api.google_credentials import GoogleCredentials
 
 class EmailSender:
 	template = """
