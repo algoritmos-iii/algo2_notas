@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import json
 
 import flask
 import itsdangerous
@@ -31,7 +32,7 @@ SPREADSHEET_KEY = os.environ["NOTAS_SPREADSHEET_KEY"]
 CLIENT_ID = os.environ["NOTAS_OAUTH_CLIENT"]
 CLIENT_SECRET = os.environ["NOTAS_OAUTH_SECRET"]
 OAUTH_REFRESH = os.environ["NOTAS_REFRESH_TOKEN"]
-SERVICE_ACCOUNT_JSON = os.environ["NOTAS_SERVICE_ACCOUNT_JSON"]
+SERVICE_ACCOUNT_CREDENTIALS = os.environ["NOTAS_SERVICE_ACCOUNT_CREDENTIALS"]
 
 # Email
 COURSE = os.environ['NOTAS_COURSE_NAME']
@@ -44,7 +45,8 @@ app.secret_key = SECRET_KEY
 app.config.title = APP_TITLE
 app.template_folder = TEMPLATES_DIR
 
-google_credentials = GoogleCredentials(SERVICE_ACCOUNT_JSON, CLIENT_ID, CLIENT_SECRET, OAUTH_REFRESH)
+service_account_credentials_info = json.loads(SERVICE_ACCOUNT_CREDENTIALS)
+google_credentials = GoogleCredentials(service_account_credentials_info, CLIENT_ID, CLIENT_SECRET, OAUTH_REFRESH)
 notas = NotasRepository(SPREADSHEET_KEY, google_credentials)
 emails = EmailSender(COURSE, ACCOUNT, google_credentials)
 

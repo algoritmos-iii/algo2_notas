@@ -11,8 +11,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from google.oauth2.credentials import Credentials
-    from typing import Callable
-
+    from typing import Callable, Any
 
 class GoogleCredentials:
     # TODO: Unificar autenticacion para planilla y cuenta de mail.
@@ -28,10 +27,10 @@ class GoogleCredentials:
     TOKEN_URI = "https://accounts.google.com/o/oauth2/token"
     USER_AGENT = "notasweb/1.0"
 
-    def __init__(self, service_account_file_path: str, client_id: str, client_secret: str, oauth_refresh_token: str) -> None:
+    def __init__(self, service_account_data: Any, client_id: str, client_secret: str, oauth_refresh_token: str) -> None:
 
-        self._credentials_spreadhseet = google.oauth2.service_account.Credentials.from_service_account_file(
-            service_account_file_path, scopes=self.SCOPES)
+        self._credentials_spreadhseet = google.oauth2.service_account.Credentials.from_service_account_info(
+            service_account_data, scopes=self.SCOPES)
 
         self._credentials_email = oauth2client.client.OAuth2Credentials(
             self.ACCESS_TOKEN, client_id, client_secret,
