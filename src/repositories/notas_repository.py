@@ -10,11 +10,12 @@ if TYPE_CHECKING:
 
 class NotasRepository:
     # Constantes
-    SHEET_NOTAS: str = "Notas APP"
     SHEET_ALUMNOS: str = "Listado"
-
     COL_EMAIL: str = "E-Mail"
     COL_PADRON: str = "Padrón"
+
+    SHEET_NOTAS: str = "Alumnos - Notas"
+    RANGO_NOTAS: str = "1:26"
 
     def __init__(self, spreadsheet_key: str, credentials: GoogleCredentials) -> None:
         self._spreadsheet_key = spreadsheet_key
@@ -49,7 +50,7 @@ class NotasRepository:
 
     def notas(self, padron: str) -> List[Tuple[str, str]]:
         notas = self._get_sheet(self.SHEET_NOTAS)
-        filas = notas.get_all_values()
+        filas = notas.get_values(RANGO_NOTAS, major_dimension="COLUMNS")
         headers = filas.pop(0)
         idx_padron = headers.index(self.COL_PADRON)
 
