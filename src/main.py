@@ -16,6 +16,7 @@ from .forms.authentication_form import AuthenticationForm
 from .api.google_credentials import GoogleCredentials
 from .repositories.notas_repository import NotasRepository, NotasRepositoryConfig
 from .services.sendmail import EmailSender, SendmailException
+from .security import WebAdminAuthentication
 
 dotenv.load_dotenv()
 
@@ -36,6 +37,10 @@ SERVICE_ACCOUNT_CREDENTIALS = os.environ["NOTAS_SERVICE_ACCOUNT_CREDENTIALS"]
 # Email
 COURSE = os.environ['NOTAS_COURSE_NAME']
 ACCOUNT = os.environ['NOTAS_ACCOUNT']
+
+# Admin things
+ADMIN_USERNAME = os.environ['ADMIN_USERNAME']
+ADMIN_PASSWORD = os.environ['ADMIN_PASSWORD']
 
 # Notas repository config
 SHEET_ALUMNOS: str = "Listado"
@@ -58,6 +63,11 @@ app.secret_key = SECRET_KEY
 app.config.title = APP_TITLE
 app.template_folder = TEMPLATES_DIR
 jinja2_env: flask.templating.Environment = app.jinja_env
+
+admin_auth = WebAdminAuthentication(
+    admin_username=ADMIN_USERNAME,
+    admin_password=ADMIN_PASSWORD
+)
 
 service_account_credentials_info = json.loads(SERVICE_ACCOUNT_CREDENTIALS)
 google_credentials = GoogleCredentials(
@@ -146,6 +156,7 @@ def consultar(args):
 
 
 @app.route("/send-grades", methods=['POST'])
+@admin_auth.auth_required
 def send_grades_endpoint():
     ejercicio = flask.request.args.get("ejercicio")
     if ejercicio == None:
@@ -188,6 +199,11 @@ def send_grades_endpoint():
                 yield json.dumps(result) + "\n"
 
     return app.response_class(generator(), mimetype="text/plain")
+
+@app.route("/logout")
+@admin_auth.logout_endpoint
+def admin_logout():
+    return flask.jsonify("Admin logged out")
 
 
 def genlink(padron: str) -> str:
