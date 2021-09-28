@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from markdown.extensions.codehilite import CodeHilite
+import requests
+import markdown
 import os
 import flask
 import json
@@ -91,6 +94,72 @@ email_sender = EmailSender(
 
 
 # Endpoints
+
+
+def enunciado_ejercicio_a_html(ejercicio: str) -> str:
+    # Dark
+    # letra #c9d1d9 fondo #0d1117
+
+    # Light
+    # letra #111111 fondo fdfdfd
+
+    background_color = "#0d1117"
+    font_color = "#c9d1d9"
+
+    url = f"https://raw.githubusercontent.com/algoritmos-iii/ejercicios-2021-2c/main/{ejercicio}/Consigna.md"
+    req = requests.get(url)
+    md = markdown.markdown(
+        text=req.text,
+        extensions=['codehilite', 'fenced_code'],
+        extension_configs={'codehilite': {
+            'pygments_style': 'paraiso-dark',
+            'noclasses': True,
+            'nobackground': True,
+            'wrapcode': True,
+            'prestyles': 'overflow: auto'
+        }}
+    )
+    # html = jinja2_env.get_template('email_enunciado.html').render({
+    #     "bg_color": background_color,
+    #     "font_color": font_color,
+    #     "markdown": md
+    # })
+
+    html = f"""<table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#0d1117" style="color: {font_color}; background-color: {background_color}; padding: 20px;">
+    <tr>
+        <td>
+            {md}
+        </td>
+    </tr></table>"""
+    return html
+
+
+@app.route("/test-mail/enunciado")
+@use_args({
+    "ejercicio": fields.Str(required=True),
+})
+def test_email_enunciado_route(args):
+    ejercicio: str = args["enunciado"]
+    html = enunciado_ejercicio_a_html(ejercicio)
+    return flask.Response(html)
+
+
+@app.route("/send-mail/enunciado")
+@use_args({
+    "ejercicio": fields.Str(required=True),
+    "mail": fields.Str(required=True),
+    "asunto": fields.Str(required=True),
+})
+def send_mail_enunciado_route(args: dict):
+    ejercicio, email, asunto = args
+    asunto = f"Test email enunciado {ejercicio}"
+
+    html = enunciado_ejercicio_a_html(ejercicio)
+
+    email_sender.send_html_mail(
+        asunto, email, 'Si ves esto, algo salio mal', html)
+    return flask.Response('Message sent')
+
 
 @app.route("/", methods=('GET', 'POST'))
 def index():
