@@ -16,6 +16,8 @@ wtforms = "~=2.3"
 email-validator = "~=1.1"
 python-dotenv = "*"
 gunicorn = "*"
+markdown = "*"
+pygments = "*"
 
 [dev-packages]
 python-dotenv = "*"
