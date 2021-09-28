@@ -11,7 +11,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from google.oauth2.credentials import Credentials
-    from typing import Callable, Any
+    from typing import Callable, Dict
+
 
 class GoogleCredentials:
     # TODO: Unificar autenticacion para planilla y cuenta de mail.
@@ -20,22 +21,27 @@ class GoogleCredentials:
     SCOPES = ["https://www.googleapis.com/auth/spreadsheets",
               "https://www.googleapis.com/auth/gmail.send"]
 
-    #TODO: ACCESS_TOKEN deberia ser una variable o una constante?
+    # TODO: ACCESS_TOKEN deberia ser una variable o una constante?
     ACCESS_TOKEN = ""
     # TODO: TOKEN_EXPIRY deberia ser una variable o una constante?
     TOKEN_EXPIRY = datetime.datetime(2015, 1, 1)
     TOKEN_URI = "https://accounts.google.com/o/oauth2/token"
     USER_AGENT = "notasweb/1.0"
 
-    def __init__(self, service_account_data: Any, client_id: str, client_secret: str, oauth_refresh_token: str) -> None:
-
+    def __init__(self, service_account_data: Dict[str, str], client_id: str, client_secret: str, oauth_refresh_token: str) -> None:
         self._credentials_spreadhseet = google.oauth2.service_account.Credentials.from_service_account_info(
-            service_account_data, scopes=self.SCOPES)
+            service_account_data,
+            scopes=self.SCOPES
+        )
 
         self._credentials_email = oauth2client.client.OAuth2Credentials(
-            self.ACCESS_TOKEN, client_id, client_secret,
-            oauth_refresh_token, self.TOKEN_EXPIRY,
-            self.TOKEN_URI, self.USER_AGENT)
+            self.ACCESS_TOKEN,
+            client_id, client_secret,
+            oauth_refresh_token,
+            self.TOKEN_EXPIRY,
+            self.TOKEN_URI,
+            self.USER_AGENT
+        )
 
     def _get_credenciales(self,
                           creds: Credentials,

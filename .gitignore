@@ -9,3 +9,6 @@ clients_secrets.json
 
 #.DS_STORE
 .DS_STORE
+
+#.idea
+.idea

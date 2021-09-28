@@ -1,1 +1,1 @@
-web: gunicorn src.main:app
+web: gunicorn src.main:app --time=180

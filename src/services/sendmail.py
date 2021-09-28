@@ -4,43 +4,60 @@ from __future__ import annotations
 import base64
 import smtplib
 from email.mime.text import MIMEText
+from email.utils import formatdate
+from jinja2 import Environment
+from contextlib import contextmanager
+from typing import Sequence, Union
 
 from ..api.google_credentials import GoogleCredentials
 
+SendmailException = smtplib.SMTPException
+
 class EmailSender:
-	template = """
-Este es el link para consultar tus notas:
-{enlace}
+    def __init__(self, jinja2_env: Environment, google_credentials: GoogleCredentials, from_name: str, from_email: str) -> None:
+        self._account = from_email
+        self._google_credentials = google_credentials
+        self._encoded_from_email = "{} <{}>".format(from_name, from_email)
+        self._jinja2_env = jinja2_env
 
-Nota: El enlace generado es único para tu padrón. No lo compartas con nadie (a menos
-que quieras que otros puedan ver tus notas).
+    def _encoded_credentials(self) -> bytes:
+        creds = self._google_credentials.get_credenciales_email()
+        xoauth2_tok = f"user={self._account}\1auth=Bearer {creds.access_token}\1\1".encode(
+            "utf-8")
 
--- 
-Recibiste este mensaje porque te inscribiste en el sistema de consulta de
-notas de {curso}. Si no es así, te pedimos disculpas y por favor ingorá este mail.
-"""
-	SendmailException = smtplib.SMTPException
+        return xoauth2_tok
 
-	def __init__(self, course: str, account: str, google_credentials: GoogleCredentials) -> None:
-		self._course = course
-		self._account = account
-		self._google_credentials = google_credentials
+    @contextmanager
+    def _connection(self):
+        # Connect to SMTP server
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.ehlo()
+        server.starttls()
+        server.ehlo()
+        server.docmd("AUTH", "XOAUTH2 " +
+                     base64.b64encode(self._encoded_credentials()).decode("utf-8"))
 
-	def sendmail(self, fromname: str, toaddr: str, link: str) -> None:
-		msg = MIMEText(self.template.format(enlace=link, curso=self._course),
-					_charset="utf-8")
-		msg["Subject"] = "Enlace para consultar las notas"
-		msg["From"] = "{} <{}>".format(fromname, self._account)
-		msg["To"] = toaddr
+        try:
+            yield server
+        finally:
+            server.close()
 
-		creds = self._google_credentials.get_credenciales_email()
-		xoauth2_tok = "user={}\1" "auth=Bearer {}\1\1".format(
-			self._account, creds.access_token).encode("utf-8")
-		server = smtplib.SMTP('smtp.gmail.com', 587)
-		server.ehlo()
-		server.starttls()
-		server.ehlo()
-		server.docmd("AUTH", "XOAUTH2 " +
-					base64.b64encode(xoauth2_tok).decode("utf-8"))
-		server.sendmail(self._account, toaddr, msg.as_string())
-		server.close()
+    def _create_mail(self, template_path: str, subject: str, to_addr: Sequence[str], **kwargs) -> MIMEText:
+        template = self._jinja2_env.get_template(template_path)
+
+        msg = MIMEText(template.render(**kwargs), _charset="utf-8")
+        msg["Subject"] = subject
+        msg["From"] = self._encoded_from_email
+        msg["To"] = ", ".join(to_addr)
+        msg["Date"] = formatdate(localtime=True)
+
+        return msg
+
+    def send_mail(self, template_path: str, subject: str, to_addr: Union[str, Sequence[str]], **kwargs) -> None:
+
+        if isinstance(to_addr, str):
+            to_addr = [to_addr]
+
+        with self._connection() as server:
+            msg = self._create_mail(template_path, subject, to_addr, **kwargs)
+            server.sendmail(self._account, to_addr, msg.as_string())
