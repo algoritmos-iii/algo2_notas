@@ -125,7 +125,7 @@ def index():
                 return flask.render_template("error.html", message=str(exception))
             else:
                 return flask.render_template("email_sent.html", email=email)
-
+    #TODO channge wip.html for index.html when is ready for PROD
     return flask.render_template("wip.html", form=form)
 
 
