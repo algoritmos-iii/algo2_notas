@@ -54,7 +54,6 @@ SHEET_DEVOLUCIONES: str = "Devoluciones"
 PREFIJO_RANGO_DEVOLUCIONES: str = "emails"
 RANGO_EMAILS: str = "emailsGrupos"
 
-
 # Inicialización de objetos
 signer = itsdangerous.URLSafeSerializer(SECRET_KEY)
 
@@ -125,8 +124,8 @@ def index():
                 return flask.render_template("error.html", message=str(exception))
             else:
                 return flask.render_template("email_sent.html", email=email)
-
-    return flask.render_template("index.html", form=form)
+    # TODO change wip.html for index.html when is ready for PROD
+    return flask.render_template("wip.html", form=form)
 
 
 @app.errorhandler(422)
@@ -145,7 +144,7 @@ def _clave_validate(clave) -> bool:
 
 
 @app.route("/consultar")
-@use_args({"clave": fields.Str(required=True, validate=_clave_validate)})
+@use_args({ "clave": fields.Str(required=True, validate=_clave_validate) })
 def consultar(args):
     try:
         notas_alumno = notas.notas(signer.loads(args["clave"]))
@@ -199,6 +198,7 @@ def send_grades_endpoint():
                 yield json.dumps(result) + "\n"
 
     return app.response_class(generator(), mimetype="text/plain")
+
 
 @app.route("/logout")
 @admin_auth.logout_endpoint
