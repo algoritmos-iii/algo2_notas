@@ -64,3 +64,9 @@ Autenticación
 -------------
 
 El valor de `NOTAS_OAUTH_CLIENT`, `NOTAS_OAUTH_SECRET` y `NOTAS_REFRESH_TOKEN` se obtiene mediante OAuth2. Véase la documentación de `scripts/oob_auth.py`. Para utilizar el script, será necesario poseer un archivo llamado `clients_secrets.json` con la información adecuada.
+
+## Features nuevos
+
+Los nuevos PRs deben estar creados bajo el branch `develop`.
+
+Para mas información, se puede mirar el siguiente [link](http://nvie.com/posts/a-successful-git-branching-model/).
