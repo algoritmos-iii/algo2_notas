@@ -154,6 +154,7 @@ def test_email_enunciado_route(args):
 
 
 @app.route("/send-mail/enunciado")
+@admin_auth.auth_required
 @use_args({
     "ejercicio": fields.Str(required=True),
     "mail": fields.Str(required=True),
@@ -223,7 +224,7 @@ def consultar(args):
         return flask.render_template("result.html", items=notas_alumno)
 
 
-@app.route("/send-grades", methods=['POST'])
+@app.route("/send-mail/group-exercise-feedback", methods=['POST'])
 @admin_auth.auth_required
 def send_grades_endpoint():
     ejercicio = flask.request.args.get("ejercicio")
