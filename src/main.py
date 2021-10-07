@@ -106,12 +106,6 @@ email_sender = EmailSender(
 
 
 def enunciado_ejercicio_a_html(ejercicio: str) -> str:
-    # Dark
-    # letra #c9d1d9 fondo #0d1117
-
-    # Light
-    # letra #111111 fondo fdfdfd
-
     background_color = "#0d1117"
     font_color = "#c9d1d9"
 
@@ -128,12 +122,7 @@ def enunciado_ejercicio_a_html(ejercicio: str) -> str:
             'prestyles': 'overflow: auto'
         }}
     )
-    # html = jinja2_env.get_template('email_enunciado.html').render({
-    #     "bg_color": background_color,
-    #     "font_color": font_color,
-    #     "markdown": md
-    # })
-
+    
     html = f"""<table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#0d1117" style="color: {font_color}; background-color: {background_color}; padding: 20px;">
     <tr>
         <td>
