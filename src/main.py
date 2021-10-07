@@ -122,7 +122,7 @@ def enunciado_ejercicio_a_html(ejercicio: str) -> str:
             'prestyles': 'overflow: auto'
         }}
     )
-    
+
     html = f"""<table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#0d1117" style="color: {font_color}; background-color: {background_color}; padding: 20px;">
     <tr>
         <td>
@@ -140,24 +140,6 @@ def test_email_enunciado_route(args):
     ejercicio: str = args["enunciado"]
     html = enunciado_ejercicio_a_html(ejercicio)
     return flask.Response(html)
-
-
-@app.route("/send-mail/enunciado")
-@admin_auth.auth_required
-@use_args({
-    "ejercicio": fields.Str(required=True),
-    "mail": fields.Str(required=True),
-    "asunto": fields.Str(required=True),
-})
-def send_mail_enunciado_route(args: dict):
-    ejercicio, email, asunto = args
-    asunto = f"Test email enunciado {ejercicio}"
-
-    html = enunciado_ejercicio_a_html(ejercicio)
-
-    email_sender.send_html_mail(
-        asunto, email, 'Si ves esto, algo salio mal', html)
-    return flask.Response('Message sent')
 
 
 @app.route("/", methods=('GET', 'POST'))
@@ -202,7 +184,7 @@ def _clave_validate(clave) -> bool:
         return False
 
 
-@app.route("/consultar")
+@app.route("/grades")
 @use_args({ "clave": fields.Str(required=True, validate=_clave_validate) })
 def consultar(args):
     try:
@@ -213,7 +195,25 @@ def consultar(args):
         return flask.render_template("result.html", items=notas_alumno)
 
 
-@app.route("/send-mail/group-exercise-feedback", methods=['POST'])
+@app.route("/mail/statement")
+@admin_auth.auth_required
+@use_args({
+    "ejercicio": fields.Str(required=True),
+    "mail": fields.Str(required=True),
+    "asunto": fields.Str(required=True),
+})
+def send_mail_enunciado_route(args: dict):
+    ejercicio, email, asunto = args
+    asunto = f"Test email enunciado {ejercicio}"
+
+    html = enunciado_ejercicio_a_html(ejercicio)
+
+    email_sender.send_html_mail(
+        asunto, email, 'Si ves esto, algo salio mal', html)
+    return flask.Response('Message sent')
+
+
+@app.route("/mail/exercise-grades", methods=['POST'])
 @admin_auth.auth_required
 def send_grades_endpoint():
     ejercicio = flask.request.args.get("ejercicio")
