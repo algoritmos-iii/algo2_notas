@@ -157,7 +157,7 @@ def index() -> str:
                 return flask.render_template("email_sent.html", email=email.message['To'])
 
     # TODO change wip.html for index.html when is ready for PROD
-    return flask.render_template("index.html", form=form)
+    return flask.render_template("wip.html", form=form)
 
 
 @app.errorhandler(422)
