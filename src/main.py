@@ -7,6 +7,7 @@ import json
 import itsdangerous
 import dotenv
 import time
+from typing import Any, Dict, Union
 
 from webargs import fields
 from webargs.flaskparser import use_args
@@ -14,33 +15,34 @@ from webargs.flaskparser import use_args
 from .forms.authentication_form import AuthenticationForm
 
 from .api.google_credentials import GoogleCredentials
-from .repositories.notas_repository import NotasRepository, NotasRepositoryConfig
-from .services.sendmail import EmailSender, SendmailException
+from .repositories.notas_repository import Grupo, NotasRepository, NotasRepositoryConfig
+from .services.sendmail import Email, EmailSender, SendmailException
 from .security import WebAdminAuthentication
 
 dotenv.load_dotenv()
 
 # App configuration
-APP_TITLE = f'{os.environ["NOTAS_COURSE_NAME"]} - Consulta de Notas'
-SECRET_KEY = os.environ["NOTAS_SECRET"]
-TEMPLATES_DIR = "../templates"
+APP_TITLE: str = f'{os.environ["NOTAS_COURSE_NAME"]} - Consulta de Notas'
+SECRET_KEY: str = os.environ["NOTAS_SECRET"]
+TEMPLATES_DIR: str = "../templates"
 
 # Notas
-SPREADSHEET_KEY = os.environ["NOTAS_SPREADSHEET_KEY"]
+SPREADSHEET_KEY: str = os.environ["NOTAS_SPREADSHEET_KEY"]
 
 # Google credentials
-CLIENT_ID = os.environ["NOTAS_OAUTH_CLIENT"]
-CLIENT_SECRET = os.environ["NOTAS_OAUTH_SECRET"]
-OAUTH_REFRESH = os.environ["NOTAS_REFRESH_TOKEN"]
-SERVICE_ACCOUNT_CREDENTIALS = os.environ["NOTAS_SERVICE_ACCOUNT_CREDENTIALS"]
+CLIENT_ID: str = os.environ["NOTAS_OAUTH_CLIENT"]
+CLIENT_SECRET: str = os.environ["NOTAS_OAUTH_SECRET"]
+OAUTH_REFRESH: str = os.environ["NOTAS_REFRESH_TOKEN"]
+SERVICE_ACCOUNT_CREDENTIALS: str = os.environ["NOTAS_SERVICE_ACCOUNT_CREDENTIALS"]
 
 # Email
-COURSE = os.environ['NOTAS_COURSE_NAME']
-ACCOUNT = os.environ['NOTAS_ACCOUNT']
+COURSE: str = os.environ['NOTAS_COURSE_NAME']
+EMAIL_ACCOUNT: str = os.environ['NOTAS_ACCOUNT']
+DOCENTES_EMAIL: str = "fiuba-algoritmos-iii-doc@googlegroups.com"
 
 # Admin things
-ADMIN_USERNAME = os.environ['ADMIN_USERNAME']
-ADMIN_PASSWORD = os.environ['ADMIN_PASSWORD']
+ADMIN_USERNAME: str = os.environ['ADMIN_USERNAME']
+ADMIN_PASSWORD: str = os.environ['ADMIN_PASSWORD']
 
 # Notas repository config
 SHEET_ALUMNOS: str = "Listado"
@@ -59,7 +61,7 @@ signer = itsdangerous.URLSafeSerializer(SECRET_KEY)
 
 app = flask.Flask(__name__)
 app.secret_key = SECRET_KEY
-app.config.title = APP_TITLE
+app.config["title"] = APP_TITLE
 app.template_folder = TEMPLATES_DIR
 jinja2_env: flask.templating.Environment = app.jinja_env
 
@@ -92,17 +94,48 @@ notas = NotasRepository(
 )
 
 email_sender = EmailSender(
-    jinja2_env=jinja2_env,
+    gmail_user=EMAIL_ACCOUNT,
     google_credentials=google_credentials,
-    from_name=COURSE,
-    from_email=ACCOUNT
 )
+
+# Emails creators
+def create_login_mail(to_addr: str, padron: str) -> Email:
+    template = jinja2_env.get_template("emails/sign_in.html")
+    email = Email(
+        subject="Enlace para consultar las notas",
+        from_addr=f"Algoritmos3Leveroni <{EMAIL_ACCOUNT}>",
+        to_addr=to_addr,
+        reply_to=f"Docentes Algoritmos 3 <{DOCENTES_EMAIL}>"
+    )
+    email.add_plaintext_content(
+        template.render(curso=COURSE, enlace=genlink(padron))
+    )
+    return email
+
+
+def create_notas_mail(ejercicio: str, grupo: Grupo) -> Email:
+    template = jinja2_env.get_template("emails/notas_ejercicio.html")
+    email = Email(
+        subject=f"Correccion de notas ejercicio {ejercicio} - Grupo {grupo.numero}",
+        from_addr=f"Algoritmos3Leveroni <{EMAIL_ACCOUNT}>",
+        to_addr=grupo.emails,
+        cc="josubouchard@gmail.com",
+        reply_to=f"Docentes Algoritmos 3 <{DOCENTES_EMAIL}>"
+    )
+    email.add_plaintext_content(
+        template.render(
+            curso=COURSE, ejercicio=ejercicio,
+            grupo=grupo.numero, corrector=grupo.corrector,
+            nota=grupo.nota, correcciones=grupo.detalle
+        )
+    )
+    return email
 
 
 # Endpoints
 
 @app.route("/", methods=('GET', 'POST'))
-def index():
+def index() -> str:
     """Sirve la página de solicitud del enlace.
     """
     form = AuthenticationForm()
@@ -115,27 +148,26 @@ def index():
             flask.flash(
                 "La dirección de mail no está asociada a ese padrón", "danger")
         else:
+            email = create_login_mail(email, padron)
             try:
-                email_sender.send_mail(
-                    template_path="emails/sign_in.html",
-                    subject="Enlace para consultar las notas", to_addr=email,
-                    curso=COURSE, enlace=genlink(padron))
+                email_sender.send_mail(email)
             except SendmailException as exception:
                 return flask.render_template("error.html", message=str(exception))
             else:
-                return flask.render_template("email_sent.html", email=email)
+                return flask.render_template("email_sent.html", email=email.message['To'])
+
     # TODO change wip.html for index.html when is ready for PROD
     return flask.render_template("wip.html", form=form)
 
 
 @app.errorhandler(422)
-def bad_request(err):
+def bad_request(err) -> str:
     """Se invoca cuando falla la validación de la clave.
     """
     return flask.render_template("error.html", message="Clave no válida")
 
 
-def _clave_validate(clave) -> bool:
+def _clave_validate(clave: Union[bytes, str]) -> bool:
     # Needed because URLSafeSerializer does not have a validate().
     try:
         return bool(signer.loads(clave))
@@ -144,8 +176,8 @@ def _clave_validate(clave) -> bool:
 
 
 @app.route("/consultar")
-@use_args({ "clave": fields.Str(required=True, validate=_clave_validate) })
-def consultar(args):
+@use_args({"clave": fields.Str(required=True, validate=_clave_validate)})
+def consultar(args: Dict[str, Any]) -> str:
     try:
         notas_alumno = notas.notas(signer.loads(args["clave"]))
     except IndexError as exception:
@@ -156,7 +188,7 @@ def consultar(args):
 
 @app.route("/send-grades", methods=['POST'])
 @admin_auth.auth_required
-def send_grades_endpoint():
+def send_grades_endpoint() -> str:
     ejercicio = flask.request.args.get("ejercicio")
     if ejercicio == None:
         # TODO: improve
@@ -174,13 +206,9 @@ def send_grades_endpoint():
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()),
             }
 
+            message = create_notas_mail(ejercicio, grupo)
             try:
-                email_sender.send_mail(
-                    template_path="emails/notas_ejercicio.html",
-                    subject=f"Correccion de notas ejercicio {ejercicio} - Grupo {grupo.numero}", to_addr=grupo.emails,
-                    curso=COURSE, ejercicio=ejercicio,
-                    grupo=grupo.numero, corrector=grupo.corrector,
-                    nota=grupo.nota, correcciones=grupo.detalle)
+                email_sender.send_mail(message)
             except SendmailException as exception:
                 result = {
                     **result,
@@ -202,7 +230,7 @@ def send_grades_endpoint():
 
 @app.route("/logout")
 @admin_auth.logout_endpoint
-def admin_logout():
+def admin_logout() -> str:
     return flask.jsonify("Admin logged out")
 
 

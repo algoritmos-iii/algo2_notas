@@ -3,22 +3,57 @@ from __future__ import annotations
 
 import base64
 import smtplib
-from email.mime.text import MIMEText
+from email.message import EmailMessage
 from email.utils import formatdate
-from jinja2 import Environment
-from contextlib import contextmanager
-from typing import Sequence, Union
+from typing import TYPE_CHECKING, Iterable, List, Optional
 
-from ..api.google_credentials import GoogleCredentials
+if TYPE_CHECKING:
+    from ..api.google_credentials import GoogleCredentials
 
 SendmailException = smtplib.SMTPException
 
+
+class Email:
+    def __init__(self, subject: str,
+                 from_addr: str,
+                 to_addr: str,
+                 cc: Optional[str] = None,
+                 bcc: Optional[str] = None,
+                 reply_to: Optional[str] = None) -> None:
+        msg = EmailMessage()
+        msg.set_charset("uft-8")
+        msg["Date"] = formatdate(localtime=True)
+        msg["Subject"] = subject
+        msg["From"] = from_addr
+        msg["To"] = to_addr
+        if cc:
+            msg["CC"] = cc
+        if bcc:
+            msg["BCC"] = bcc
+        if reply_to:
+            msg["Reply-to"] = reply_to
+
+        self._msg = msg
+
+    @property
+    def message(self) -> EmailMessage:
+        return self._msg
+
+    def add_plaintext_content(self, content: str) -> None:
+        self._msg.set_content(content)
+
+    def add_html_content(self, content: str) -> None:
+        if self._msg.get_content() is None:
+            raise Exception(
+                "Email has no plaintext content. It should be added before adding an html part")
+
+        self._msg.add_alternative(content, subtype='html')
+
+
 class EmailSender:
-    def __init__(self, jinja2_env: Environment, google_credentials: GoogleCredentials, from_name: str, from_email: str) -> None:
-        self._account = from_email
+    def __init__(self, gmail_user: str, google_credentials: GoogleCredentials) -> None:
+        self._account = gmail_user
         self._google_credentials = google_credentials
-        self._encoded_from_email = "{} <{}>".format(from_name, from_email)
-        self._jinja2_env = jinja2_env
 
     def _encoded_credentials(self) -> bytes:
         creds = self._google_credentials.get_credenciales_email()
@@ -27,37 +62,36 @@ class EmailSender:
 
         return xoauth2_tok
 
-    @contextmanager
-    def _connection(self):
-        # Connect to SMTP server
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.ehlo()
-        server.starttls()
-        server.ehlo()
-        server.docmd("AUTH", "XOAUTH2 " +
-                     base64.b64encode(self._encoded_credentials()).decode("utf-8"))
+    def send_mail(self, email: Email) -> None:
+        self.send_batch_mail([email])
 
+    def send_batch_mail(self, emails: Iterable[Email]) -> None:
         try:
-            yield server
-        finally:
-            server.close()
+            iter(emails)
+        except TypeError:
+            emails: Iterable[Email] = [
+                emails] if emails is not List else emails
 
-    def _create_mail(self, template_path: str, subject: str, to_addr: Sequence[str], **kwargs) -> MIMEText:
-        template = self._jinja2_env.get_template(template_path)
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.docmd("AUTH", "XOAUTH2 " +
+                         base64.b64encode(self._encoded_credentials()).decode("utf-8"))
 
-        msg = MIMEText(template.render(**kwargs), _charset="utf-8")
-        msg["Subject"] = subject
-        msg["From"] = self._encoded_from_email
-        msg["To"] = ", ".join(to_addr)
-        msg["Date"] = formatdate(localtime=True)
+            for email in emails:
+                server.send_message(email.message)
 
-        return msg
+class AppPasswordEmailSender:
+    def __init__(self, gmail_username: str, gmail_password: str) -> None:
+        self._gmail_username = gmail_username
+        self._gmail_password = gmail_password
 
-    def send_mail(self, template_path: str, subject: str, to_addr: Union[str, Sequence[str]], **kwargs) -> None:
+    def send_mail(self, email: Email) -> None:
+        self.send_batch_mail([email])
 
-        if isinstance(to_addr, str):
-            to_addr = [to_addr]
-
-        with self._connection() as server:
-            msg = self._create_mail(template_path, subject, to_addr, **kwargs)
-            server.sendmail(self._account, to_addr, msg.as_string())
+    def send_batch_mail(self, emails: Iterable[Email]) -> None:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+            server.login(self._gmail_username, self._gmail_password)
+            for email in emails:
+                server.send_message(email.message)
