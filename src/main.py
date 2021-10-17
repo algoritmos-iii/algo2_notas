@@ -7,6 +7,9 @@ import json
 import itsdangerous
 import dotenv
 import time
+import markdown
+from marshmallow.fields import Method
+import requests
 from typing import Any, Dict, Union
 
 from webargs import fields
@@ -38,6 +41,7 @@ SERVICE_ACCOUNT_CREDENTIALS: str = os.environ["NOTAS_SERVICE_ACCOUNT_CREDENTIALS
 # Email
 COURSE: str = os.environ['NOTAS_COURSE_NAME']
 EMAIL_ACCOUNT: str = os.environ['NOTAS_ACCOUNT']
+ALUMNOS_EMAIL: str = "fiuba-algoritmos-iii@googlegroups.com"
 DOCENTES_EMAIL: str = "fiuba-algoritmos-iii-doc@googlegroups.com"
 
 # Admin things
@@ -98,9 +102,19 @@ email_sender = EmailSender(
     google_credentials=google_credentials,
 )
 
+
+def markdown2HTML(markdown_text: str) -> str:
+    return markdown.markdown(
+        markdown_text,
+        extensions=['fenced_code']
+    )
+
 # Emails creators
+
+
 def create_login_mail(to_addr: str, padron: str) -> Email:
-    template = jinja2_env.get_template("emails/sign_in.html")
+    plain_mail_template = jinja2_env.get_template("emails/sign_in_plain.html")
+    html_mail_template = jinja2_env.get_template("emails/sign_in.html")
     email = Email(
         subject="Enlace para consultar las notas",
         from_addr=f"Algoritmos3Leveroni <{EMAIL_ACCOUNT}>",
@@ -108,13 +122,18 @@ def create_login_mail(to_addr: str, padron: str) -> Email:
         reply_to=f"Docentes Algoritmos 3 <{DOCENTES_EMAIL}>"
     )
     email.add_plaintext_content(
-        template.render(curso=COURSE, enlace=genlink(padron))
+        plain_mail_template.render(curso=COURSE, enlace=genlink(padron))
+    )
+    email.add_html_content(
+        html_mail_template.render(curso=COURSE, enlace=genlink(padron))
     )
     return email
 
 
 def create_notas_mail(ejercicio: str, grupo: Grupo) -> Email:
-    template = jinja2_env.get_template("emails/notas_ejercicio.html")
+    plain_mail_template = jinja2_env.get_template(
+        "emails/notas_ejercicio_plain.html")
+    html_mail_template = jinja2_env.get_template("emails/notas_ejercicio.html")
     email = Email(
         subject=f"Correccion de notas ejercicio {ejercicio} - Grupo {grupo.numero}",
         from_addr=f"Algoritmos3Leveroni <{EMAIL_ACCOUNT}>",
@@ -123,18 +142,72 @@ def create_notas_mail(ejercicio: str, grupo: Grupo) -> Email:
         reply_to=f"Docentes Algoritmos 3 <{DOCENTES_EMAIL}>"
     )
     email.add_plaintext_content(
-        template.render(
+        plain_mail_template.render(
             curso=COURSE, ejercicio=ejercicio,
             grupo=grupo.numero, corrector=grupo.corrector,
             nota=grupo.nota, correcciones=grupo.detalle
         )
     )
+    email.add_html_content(
+        html_mail_template.render(
+            email_type=f"Corrección del TP {ejercicio}",
+            curso=COURSE, ejercicio=ejercicio,
+            grupo=grupo.numero, corrector=grupo.corrector,
+            nota=grupo.nota,
+            correcciones=markdown2HTML(grupo.detalle)
+        )
+    )
+
+    return email
+
+
+def create_enunciados_mail(enunciado_url: str, ejercicio: str):
+    plain_mail_template = jinja2_env.get_template(
+        "emails/enunciado_plain.html")
+    html_mail_template = jinja2_env.get_template("emails/enunciado.html")
+
+    req = requests.get(enunciado_url)
+    if req.status_code != 200:
+        raise Exception(f"Consigna file not found at: {enunciado_url}")
+    md = req.text
+
+    email = Email(
+        subject=f"Enunciado ejercicio {ejercicio}",
+        from_addr=f"Algoritmos3Leveroni <{EMAIL_ACCOUNT}>",
+        to_addr="jbouchard@fi.uba.ar",
+        reply_to=f"Docentes Algoritmos 3 <{DOCENTES_EMAIL}>"
+    )
+    email.add_plaintext_content(
+        plain_mail_template.render(
+            ejercicio=ejercicio, enunciado_url=enunciado_url
+        )
+    )
+    email.add_html_content(
+        html_mail_template.render(
+            enunciado_html=markdown2HTML(md)
+        )
+    )
+
     return email
 
 
 # Endpoints
 
-@app.route("/", methods=('GET', 'POST'))
+@ app.route("/send-enunciados", methods=['POST'])
+@ use_args({"ejercicio": fields.Str(required=True)})
+def send_enunciados_endpoint(args) -> str:
+    ejercicio = args["ejercicio"]
+    _, name = ejercicio.split("-") #Ej: 01-NPCs
+    enunciado_email = create_enunciados_mail(
+        enunciado_url=f"https://raw.githubusercontent.com/algoritmos-iii/ejercicios-2021-2c/main/{ejercicio}/Consigna.md",
+        ejercicio=name
+    )
+    email_sender.send_mail(enunciado_email)
+
+    return flask.Response("Enunciado enviado exitosamente")
+
+
+@ app.route("/", methods=('GET', 'POST'))
 def index() -> str:
     """Sirve la página de solicitud del enlace.
     """
@@ -157,10 +230,10 @@ def index() -> str:
                 return flask.render_template("email_sent.html", email=email.message['To'])
 
     # TODO change wip.html for index.html when is ready for PROD
-    return flask.render_template("wip.html", form=form)
+    return flask.render_template("index.html", form=form)
 
 
-@app.errorhandler(422)
+@ app.errorhandler(422)
 def bad_request(err) -> str:
     """Se invoca cuando falla la validación de la clave.
     """
@@ -175,8 +248,8 @@ def _clave_validate(clave: Union[bytes, str]) -> bool:
         return False
 
 
-@app.route("/consultar")
-@use_args({"clave": fields.Str(required=True, validate=_clave_validate)})
+@ app.route("/consultar")
+@ use_args({"clave": fields.Str(required=True, validate=_clave_validate)})
 def consultar(args: Dict[str, Any]) -> str:
     try:
         notas_alumno = notas.notas(signer.loads(args["clave"]))
@@ -186,8 +259,8 @@ def consultar(args: Dict[str, Any]) -> str:
         return flask.render_template("result.html", items=notas_alumno)
 
 
-@app.route("/send-grades", methods=['POST'])
-@admin_auth.auth_required
+@ app.route("/send-grades", methods=['POST'])
+@ admin_auth.auth_required
 def send_grades_endpoint() -> str:
     ejercicio = flask.request.args.get("ejercicio")
     if ejercicio == None:
@@ -228,8 +301,8 @@ def send_grades_endpoint() -> str:
     return app.response_class(generator(), mimetype="text/plain")
 
 
-@app.route("/logout")
-@admin_auth.logout_endpoint
+@ app.route("/logout")
+@ admin_auth.logout_endpoint
 def admin_logout() -> str:
     return flask.jsonify("Admin logged out")
 
