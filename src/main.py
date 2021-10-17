@@ -173,7 +173,7 @@ def create_enunciados_mail(enunciado_url: str, ejercicio: str):
     email = Email(
         subject=f"Enunciado ejercicio {ejercicio}",
         from_addr=f"Algoritmos3Leveroni <{EMAIL_ACCOUNT}>",
-        to_addr="jbouchard@fi.uba.ar",
+        to_addr=ALUMNOS_EMAIL,
         reply_to=f"Docentes Algoritmos 3 <{DOCENTES_EMAIL}>"
     )
     email.add_plaintext_content(
