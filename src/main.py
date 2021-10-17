@@ -8,7 +8,6 @@ import itsdangerous
 import dotenv
 import time
 import markdown
-from marshmallow.fields import Method
 import requests
 from typing import Any, Dict, Union
 
