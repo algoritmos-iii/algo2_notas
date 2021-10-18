@@ -119,7 +119,7 @@ def create_notas_mail(ejercicio: str, grupo: Grupo) -> Email:
         subject=f"Correccion de notas ejercicio {ejercicio} - Grupo {grupo.numero}",
         from_addr=f"Algoritmos3Leveroni <{EMAIL_ACCOUNT}>",
         to_addr=grupo.emails,
-        cc="josubouchard@gmail.com",
+        cc=DOCENTES_EMAIL,
         reply_to=f"Docentes Algoritmos 3 <{DOCENTES_EMAIL}>"
     )
     email.add_plaintext_content(
