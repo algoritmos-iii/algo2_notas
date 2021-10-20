@@ -194,6 +194,7 @@ def create_enunciados_mail(enunciado_url: str, ejercicio: str):
 
 @ app.route("/send-enunciados", methods=['POST'])
 @ use_args({"ejercicio": fields.Str(required=True)})
+@ admin_auth.auth_required
 def send_enunciados_endpoint(args) -> str:
     ejercicio = args["ejercicio"]
     _, name = ejercicio.split("-") #Ej: 01-NPCs
