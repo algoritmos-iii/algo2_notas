@@ -1,0 +1,11 @@
+{% extends "emails/layout/layout.html" %}
+
+{% block content %}
+Mail para el grupo {{grupo}}.
+
+Corrector: {{corrector}}.
+
+Hola, este mail es para darles la devolución del ejercicio {{ejercicio}}, su nota es {{nota}}.
+
+{{correcciones}}
+{% endblock %}
