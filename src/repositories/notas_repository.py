@@ -96,13 +96,25 @@ class NotasRepository:
 
         raise IndexError(f"Padrón {padron} no encontrado")
 
+    def _exercise_name_to_named_range(self, exercise: str):
+        """
+        Convierte el nombre del ejercicio al nombre del named range.
+        Ej: `"Codigo Repetido" -> "emails_codigo_repetido"`
+        """
+        words = exercise.strip().split(" ")
+        words_lowercased = [word.lower() for word in words]
+        spreadsheet_exercise_name = "_".join(words_lowercased)
+        named_range_name = f"{self.PREFIJO_RANGO_DEVOLUCIONES}_{spreadsheet_exercise_name}"
+        return named_range_name
+        
+
     def ejercicios(self, ejercicio: str) -> List[Grupo]:
-        exercise_named_interval = self.PREFIJO_RANGO_DEVOLUCIONES + \
-            ''.join([word.capitalize() for word in ejercicio.split()])
+        exercise_named_range = self._exercise_name_to_named_range(ejercicio)
 
         sheet = self._get_sheet(self.SHEET_DEVOLUCIONES)
         emails, correcciones = sheet.batch_get(
-            [f"{self.RANGO_EMAILS}", exercise_named_interval], major_dimension="COLUMNS")
+            [f"{self.RANGO_EMAILS}", exercise_named_range],
+            major_dimension="COLUMNS")
 
         # Construct headers
         email_headers = emails.pop(0)
