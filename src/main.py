@@ -30,8 +30,8 @@ TEMPLATES_DIR: str = "../templates"
 
 # Email
 COURSE: str = os.environ['NOTAS_COURSE_NAME']
-EMAIL_ACCOUNT: str = os.environ['NOTAS_ACCOUNT']
-EMAIL_PASSWORD: str = os.environ['NOTAS_PASSWORD']
+EMAIL_ACCOUNT: str = os.environ['EMAIL_ACCOUNT']
+EMAIL_PASSWORD: str = os.environ['EMAIL_PASSWORD']
 ALUMNOS_EMAIL: str = "fiuba-algoritmos-iii@googlegroups.com"
 DOCENTES_EMAIL: str = "fiuba-algoritmos-iii-doc@googlegroups.com"
 
