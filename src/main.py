@@ -28,20 +28,16 @@ APP_TITLE: str = f'{os.environ["NOTAS_COURSE_NAME"]} - Consulta de Notas'
 SECRET_KEY: str = os.environ["NOTAS_SECRET"]
 TEMPLATES_DIR: str = "../templates"
 
-# Notas
-SPREADSHEET_KEY: str = os.environ["NOTAS_SPREADSHEET_KEY"]
-
-# Google credentials
-CLIENT_ID: str = os.environ["NOTAS_OAUTH_CLIENT"]
-CLIENT_SECRET: str = os.environ["NOTAS_OAUTH_SECRET"]
-OAUTH_REFRESH: str = os.environ["NOTAS_REFRESH_TOKEN"]
-SERVICE_ACCOUNT_CREDENTIALS: str = os.environ["NOTAS_SERVICE_ACCOUNT_CREDENTIALS"]
-
 # Email
 COURSE: str = os.environ['NOTAS_COURSE_NAME']
-EMAIL_ACCOUNT: str = os.environ['NOTAS_ACCOUNT']
+EMAIL_ACCOUNT: str = os.environ['EMAIL_ACCOUNT']
+EMAIL_PASSWORD: str = os.environ['EMAIL_PASSWORD']
 ALUMNOS_EMAIL: str = "fiuba-algoritmos-iii@googlegroups.com"
 DOCENTES_EMAIL: str = "fiuba-algoritmos-iii-doc@googlegroups.com"
+
+# Spreadhseet
+SERVICE_ACCOUNT_CREDENTIALS: str = os.environ["NOTAS_SERVICE_ACCOUNT_CREDENTIALS"]
+SPREADSHEET_KEY: str = os.environ["NOTAS_SPREADSHEET_KEY"]
 
 # Admin things
 ADMIN_USERNAME: str = os.environ['ADMIN_USERNAME']
@@ -76,9 +72,6 @@ admin_auth = WebAdminAuthentication(
 service_account_credentials_info = json.loads(SERVICE_ACCOUNT_CREDENTIALS)
 google_credentials = GoogleCredentials(
     service_account_data=service_account_credentials_info,
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET,
-    oauth_refresh_token=OAUTH_REFRESH
 )
 
 notas = NotasRepository(
@@ -97,8 +90,8 @@ notas = NotasRepository(
 )
 
 email_sender = EmailSender(
-    gmail_user=EMAIL_ACCOUNT,
-    google_credentials=google_credentials,
+    gmail_username=EMAIL_ACCOUNT,
+    gmail_password=EMAIL_PASSWORD
 )
 
 
