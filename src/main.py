@@ -53,7 +53,7 @@ RANGO_NOTAS: str = "1:26"
 
 SHEET_DEVOLUCIONES: str = "Devoluciones"
 PREFIJO_RANGO_DEVOLUCIONES: str = "emails"
-RANGO_EMAILS: str = "emailsGrupos"
+RANGO_EMAILS: str = "emails_grupos"
 
 # Inicialización de objetos
 signer = itsdangerous.URLSafeSerializer(SECRET_KEY)
