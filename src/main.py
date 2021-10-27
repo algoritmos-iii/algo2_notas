@@ -43,18 +43,6 @@ SPREADSHEET_KEY: str = os.environ["NOTAS_SPREADSHEET_KEY"]
 ADMIN_USERNAME: str = os.environ['ADMIN_USERNAME']
 ADMIN_PASSWORD: str = os.environ['ADMIN_PASSWORD']
 
-# Notas repository config
-SHEET_ALUMNOS: str = "Listado"
-COL_EMAIL: str = "E-Mail"
-COL_PADRON: str = "Padrón"
-
-SHEET_NOTAS: str = "Alumnos - Notas"
-RANGO_NOTAS: str = "1:26"
-
-SHEET_DEVOLUCIONES: str = "Devoluciones"
-PREFIJO_RANGO_DEVOLUCIONES: str = "emails"
-RANGO_EMAILS: str = "emails_grupos"
-
 # Inicialización de objetos
 signer = itsdangerous.URLSafeSerializer(SECRET_KEY)
 
@@ -75,16 +63,6 @@ google_credentials = GoogleCredentials(
 )
 
 notas = NotasRepository(
-    config=NotasRepositoryConfig(
-        sheet_alumnos=SHEET_ALUMNOS,
-        col_email=COL_EMAIL,
-        col_padron=COL_PADRON,
-        sheet_notas=SHEET_NOTAS,
-        rango_notas=RANGO_NOTAS,
-        sheet_devoluciones=SHEET_DEVOLUCIONES,
-        prefijo_rango_devoluciones=PREFIJO_RANGO_DEVOLUCIONES,
-        rango_emails=RANGO_EMAILS
-    ),
     spreadsheet_key=SPREADSHEET_KEY,
     credentials=google_credentials
 )
