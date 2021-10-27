@@ -184,22 +184,6 @@ def create_enunciados_mail(enunciado_url: str, ejercicio: str):
 
 
 # Endpoints
-
-@ app.route("/send-enunciados", methods=['POST'])
-@ use_args({"ejercicio": fields.Str(required=True)})
-@ admin_auth.auth_required
-def send_enunciados_endpoint(args) -> str:
-    ejercicio = args["ejercicio"]
-    _, name = ejercicio.split("-") #Ej: 01-NPCs
-    enunciado_email = create_enunciados_mail(
-        enunciado_url=f"https://raw.githubusercontent.com/algoritmos-iii/ejercicios-2021-2c/main/{ejercicio}/Consigna.md",
-        ejercicio=name
-    )
-    email_sender.send_mail(enunciado_email)
-
-    return flask.Response("Enunciado enviado exitosamente")
-
-
 @ app.route("/", methods=('GET', 'POST'))
 def index() -> str:
     """Sirve la página de solicitud del enlace.
@@ -292,6 +276,21 @@ def send_grades_endpoint() -> str:
                 yield json.dumps(result) + "\n"
 
     return app.response_class(generator(), mimetype="text/plain")
+
+
+@ app.route("/send-enunciados", methods=['POST'])
+@ use_args({"ejercicio": fields.Str(required=True)})
+@ admin_auth.auth_required
+def send_enunciados_endpoint(args) -> str:
+    ejercicio = args["ejercicio"]
+    _, name = ejercicio.split("-") #Ej: 01-NPCs
+    enunciado_email = create_enunciados_mail(
+        enunciado_url=f"https://raw.githubusercontent.com/algoritmos-iii/ejercicios-2021-2c/main/{ejercicio}/Consigna.md",
+        ejercicio=name
+    )
+    email_sender.send_mail(enunciado_email)
+
+    return flask.Response("Enunciado enviado exitosamente")
 
 
 @ app.route("/logout")
