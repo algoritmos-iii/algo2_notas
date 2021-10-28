@@ -17,7 +17,7 @@ from webargs.flaskparser import use_args
 from .forms.authentication_form import AuthenticationForm
 
 from .api.google_credentials import GoogleCredentials
-from .repositories.notas_repository import Grupo, NotasRepository, NotasRepositoryConfig
+from .repositories.notas_repository import Grupo, NotasRepository
 from .services.sendmail import Email, EmailSender, SendmailException
 from .security import WebAdminAuthentication
 
