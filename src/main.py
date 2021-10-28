@@ -17,7 +17,7 @@ from webargs.flaskparser import use_args
 from .forms.authentication_form import AuthenticationForm
 
 from .api.google_credentials import GoogleCredentials
-from .repositories.notas_repository import Grupo, NotasRepository
+from .repositories.notas_repository import NotasRepository, DevolucionDeGrupo
 from .services.sendmail import Email, EmailSender, SendmailException
 from .security import WebAdminAuthentication
 
@@ -100,31 +100,31 @@ def create_login_mail(to_addr: str, padron: str) -> Email:
     return email
 
 
-def create_notas_mail(ejercicio: str, grupo: Grupo) -> Email:
+def create_notas_mail(ejercicio: str, grupo: DevolucionDeGrupo) -> Email:
     plain_mail_template = jinja2_env.get_template(
         "emails/notas_ejercicio_plain.html")
     html_mail_template = jinja2_env.get_template("emails/notas_ejercicio.html")
     email = Email(
-        subject=f"Correccion de notas ejercicio {ejercicio} - Grupo {grupo.numero}",
+        subject=f"Correccion de notas ejercicio {ejercicio} - Grupo {grupo['numero']}",
         from_addr=f"Algoritmos3Leveroni <{EMAIL_ACCOUNT}>",
-        to_addr=grupo.emails,
+        to_addr=grupo["emails"],
         cc=DOCENTES_EMAIL,
         reply_to=f"Docentes Algoritmos 3 <{DOCENTES_EMAIL}>"
     )
     email.add_plaintext_content(
         plain_mail_template.render(
             curso=COURSE, ejercicio=ejercicio,
-            grupo=grupo.numero, corrector=grupo.corrector,
-            nota=grupo.nota, correcciones=grupo.detalle
+            grupo=grupo["numero"], corrector=grupo["corrector"],
+            nota=grupo["nota"], correcciones=grupo["detalle"]
         )
     )
     email.add_html_content(
         html_mail_template.render(
             email_type=f"Corrección del TP {ejercicio}",
             curso=COURSE, ejercicio=ejercicio,
-            grupo=grupo.numero, corrector=grupo.corrector,
-            nota=grupo.nota,
-            correcciones=markdown2HTML(grupo.detalle)
+            grupo=grupo["numero"], corrector=grupo["corrector"],
+            nota=grupo["nota"],
+            correcciones=markdown2HTML(grupo["detalle"])
         )
     )
 
@@ -229,8 +229,8 @@ def send_grades_endpoint() -> str:
     def generator():
         for grupo in notas.ejercicios(ejercicio):
             result = {
-                "grupo": grupo.numero,
-                "emails": grupo.emails,
+                "grupo": grupo["numero"],
+                "emails": grupo["emails"],
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()),
             }
 
@@ -250,7 +250,7 @@ def send_grades_endpoint() -> str:
                     "error": None
                 }
             finally:
-                grupo.mark_email_sent("TRUE" if result["message_sent"] else "")
+                grupo["mark_email_sent"]("TRUE" if result["message_sent"] else "")
                 yield json.dumps(result) + "\n"
 
     return app.response_class(generator(), mimetype="text/plain")
