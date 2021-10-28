@@ -3,10 +3,10 @@ import gspread
 import gspread.utils
 from itertools import zip_longest
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 if TYPE_CHECKING:
-    from typing import Any, Iterable, Tuple, List, TypedDict, Dict, Callable
+    from typing import Any, Iterable, Tuple, List, Dict, Callable
     from gspread.models import Worksheet
     from ..api.google_credentials import GoogleCredentials
 
@@ -123,11 +123,11 @@ class NotasRepository:
 
         sheet = self._get_sheet(hoja)
         batch = sheet.batch_get(
-            ranges=[f"{self.RANGO_EMAILS}", exercise_named_range],
+            [f"{self.RANGO_EMAILS}", exercise_named_range],
             major_dimension="COLUMNS",
         )
 
-        data = [{**self._table_to_dict(elem1), **self._table_to_dict(elem2)} for elem1, elem2 in zip(batch[0], batch[1])]
+        data = [{**elem1, **elem2} for elem1, elem2 in zip(self._table_to_dict(batch[0]), self._table_to_dict(batch[1]))]
 
         correciones_range = batch[1].range.split("!")[1]
         # email_sent_row is zero indexed
@@ -143,18 +143,19 @@ class NotasRepository:
         return lambda value: sheet.update_cell(row=row, col=col + 1, value=value)
 
     def _filter_field_not_empty(
+        self,
         fields_which_cant_be_empty: Iterable[str],
     ) -> Callable[[Dict[str, Any]], bool]:
         EMPTY_CHARS_SET = {"#N/A", "#¡REF!", "", "0"}
 
         def _filter_criteria(elem: Dict[str, Any]):
             fields_contents = set(elem[field] for field in fields_which_cant_be_empty)
-            return any(EMPTY_CHARS_SET.intersection(fields_contents))
+            return len(EMPTY_CHARS_SET.intersection(fields_contents)) == 0
 
         return _filter_criteria
 
     def examenes(self, examen: str) -> List[DevolucionDeExamen]:
-        filter_func = self._filter_field_not_empty({"Email", "Corrector", "Detalle"})
+        filter_func = self._filter_field_not_empty({"Emails", "Corrector", "Detalle"})
 
         feedback = self._get_feedback_data(
             hoja=self.SHEET_DEVOLUCIONES, ejercicio=examen
@@ -162,7 +163,7 @@ class NotasRepository:
 
         grupos: List[DevolucionDeGrupo] = [
             {
-                "emails": grupo["Email"],
+                "emails": grupo["Emails"],
                 "corrector": grupo["Corrector"],
                 "detalle": grupo["Detalle"],
                 "nota": grupo["Nota"],
@@ -177,7 +178,7 @@ class NotasRepository:
 
     def ejercicios(self, ejercicio: str) -> List[DevolucionDeGrupo]:
         filter_func = self._filter_field_not_empty(
-            {"Grupo", "Email", "Corrector", "Detalle"}
+            {"Grupo", "Emails", "Corrector", "Detalle"}
         )
         feedback = self._get_feedback_data(
             hoja=self.SHEET_DEVOLUCIONES, ejercicio=ejercicio
