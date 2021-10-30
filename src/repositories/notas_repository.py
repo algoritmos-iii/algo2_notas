@@ -42,7 +42,8 @@ class NotasRepository:
     SHEET_NOTAS: str = "Alumnos - Notas"
     RANGO_NOTAS: str = "1:26"
 
-    SHEET_DEVOLUCIONES: str = "Devoluciones"
+    SHEET_DEVOLUCIONES_TPS: str = "Devoluciones TPs"
+    SHEET_DEVOLUCIONES_EXAMENES: str = "Devoluciones Examenes"
     PREFIJO_RANGO_DEVOLUCIONES: str = "emails"
     RANGO_EMAILS: str = "emails_grupos"
 
@@ -158,7 +159,7 @@ class NotasRepository:
         filter_func = self._filter_field_not_empty({"Emails", "Corrector", "Detalle"})
 
         feedback = self._get_feedback_data(
-            hoja=self.SHEET_DEVOLUCIONES, ejercicio=examen
+            hoja=self.SHEET_DEVOLUCIONES_EXAMENES, ejercicio=examen
         )
 
         grupos: List[DevolucionDeGrupo] = [
@@ -181,7 +182,7 @@ class NotasRepository:
             {"Grupo", "Emails", "Corrector", "Detalle"}
         )
         feedback = self._get_feedback_data(
-            hoja=self.SHEET_DEVOLUCIONES, ejercicio=ejercicio
+            hoja=self.SHEET_DEVOLUCIONES_TPS, ejercicio=ejercicio
         )
 
         grupos: List[DevolucionDeGrupo] = [
