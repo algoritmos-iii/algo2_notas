@@ -17,7 +17,7 @@ from webargs.flaskparser import use_args
 from .forms.authentication_form import AuthenticationForm
 
 from .api.google_credentials import GoogleCredentials
-from .repositories.notas_repository import NotasRepository, DevolucionDeGrupo
+from .repositories.notas_repository import DevolucionDeExamen, NotasRepository, DevolucionDeGrupo
 from .services.sendmail import Email, EmailSender, SendmailException
 from .security import WebAdminAuthentication
 
@@ -161,6 +161,35 @@ def create_enunciados_mail(enunciado_url: str, ejercicio: str):
     return email
 
 
+def create_examen_mail(examen: str, devolucion: DevolucionDeExamen):
+    plain_mail_template = jinja2_env.get_template(
+        "emails/notas_examen_plain.html")
+    html_mail_template = jinja2_env.get_template("emails/notas_examen.html")
+    email = Email(
+        subject=f"Corrección {examen}",
+        from_addr=f"Algoritmos3Leveroni <{EMAIL_ACCOUNT}>",
+        to_addr=devolucion["email"],
+        cc=DOCENTES_EMAIL,
+        reply_to=f"Docentes Algoritmos 3 <{DOCENTES_EMAIL}>"
+    )
+    email.add_plaintext_content(
+        plain_mail_template.render(
+            curso=COURSE, examen=examen,
+            nota=devolucion["nota"], correcciones=devolucion["detalle"]
+        )
+    )
+    email.add_html_content(
+        html_mail_template.render(
+            email_type=f"Corrección del {examen}",
+            curso=COURSE, examen=examen,
+            nota=devolucion["nota"],
+            correcciones=markdown2HTML(devolucion["detalle"])
+        )
+    )
+
+    return email
+
+
 # Endpoints
 @ app.route("/", methods=('GET', 'POST'))
 def index() -> str:
@@ -250,7 +279,8 @@ def send_grades_endpoint() -> str:
                     "error": None
                 }
             finally:
-                grupo["mark_email_sent"]("TRUE" if result["message_sent"] else "")
+                grupo["mark_email_sent"](
+                    "TRUE" if result["message_sent"] else "")
                 yield json.dumps(result) + "\n"
 
     return app.response_class(generator(), mimetype="text/plain")
@@ -261,7 +291,7 @@ def send_grades_endpoint() -> str:
 @ admin_auth.auth_required
 def send_enunciados_endpoint(args) -> str:
     ejercicio = args["ejercicio"]
-    _, name = ejercicio.split("-") #Ej: 01-NPCs
+    _, name = ejercicio.split("-")  # Ej: 01-NPCs
     enunciado_email = create_enunciados_mail(
         enunciado_url=f"https://raw.githubusercontent.com/algoritmos-iii/ejercicios-2021-2c/main/{ejercicio}/Consigna.md",
         ejercicio=name
