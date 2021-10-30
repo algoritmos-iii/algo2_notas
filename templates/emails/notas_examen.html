@@ -1,0 +1,6 @@
+{% extends "emails/layout/html_layout.html" %}
+
+{% block content %}
+<p>Hola, este mail es para darles la devolución del ejercicio {{ejercicio}}, su nota es <strong>{{nota}}</strong>.</p>
+{{correcciones|safe}}
+{% endblock %}
