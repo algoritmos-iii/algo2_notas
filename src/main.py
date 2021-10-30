@@ -290,15 +290,27 @@ def send_grades_endpoint() -> str:
 @ use_args({"ejercicio": fields.Str(required=True)})
 @ admin_auth.auth_required
 def send_enunciados_endpoint(args) -> str:
-    ejercicio = args["ejercicio"]
+    ejercicio: str = args["ejercicio"]
     _, name = ejercicio.split("-")  # Ej: 01-NPCs
     enunciado_email = create_enunciados_mail(
         enunciado_url=f"https://raw.githubusercontent.com/algoritmos-iii/ejercicios-2021-2c/main/{ejercicio}/Consigna.md",
         ejercicio=name
     )
     email_sender.send_mail(enunciado_email)
-
     return flask.Response("Enunciado enviado exitosamente")
+
+
+@ app.route("/send-examen-notas")
+@ use_args({"examen": fields.Str(required=True)})
+@ admin_auth.auth_required
+def send_examen_notas_endpoint(args) -> str:
+    examen: str = args["examen"]
+    examen_notas_email = create_examen_mail(
+        examen=examen,
+        devolucion=notas.examenes(examen)
+    )
+    email_sender.send_mail(examen_notas_email)
+    return flask.Response("Notas de examen enviados exitosamente")
 
 
 @ app.route("/logout")
