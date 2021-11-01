@@ -21,4 +21,4 @@ jobs:
         pipenv install --dev
     - name: Analysing the code with pylint
       run: |
-        pipenv run pylint $(find . -name '*.py')
+        pipenv run python src/lint.py --threshold 6 $(find . -name '*.py')
