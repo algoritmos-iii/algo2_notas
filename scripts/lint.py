@@ -10,10 +10,10 @@ than threshold.
 Common uses:
 
 * Lint all python files:
-`python src/lint.py --threshold 7 $(find . -name '*.py')`
+`python scripts/lint.py --threshold 7 $(find . -name '*.py')`
 
 * Lint all staged files:
-`python src/lint.py --threshold 7 $(git diff --name-only --cached)`
+`python scripts/lint.py --threshold 7 $(git diff --name-only --cached)`
 
 
 """
