@@ -24,9 +24,13 @@ parser.add_argument("--threshold", metavar='threshold', type=float, nargs=1, req
 parser.add_argument("files", metavar='files', nargs='+', type=str,
                     help="files to be linted")
 args = parser.parse_args()
+threshold = args.threshold[0]
+files = args.files
 
-run = lint.Run(args.files, do_exit=False)
+
+run = lint.Run(files, do_exit=False)
 score = run.linter.stats['global_note']
 
-if score < args.threshold[0]:
+if score < threshold:
+    print("The score is less than threshold " + str(threshold))
     sys.exit(1)
