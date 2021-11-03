@@ -20,3 +20,4 @@ markdown = "*"
 
 [dev-packages]
 python-dotenv = "*"
+pylint = "*"
