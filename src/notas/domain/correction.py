@@ -11,7 +11,18 @@ class Correction:
 
 
 @dataclass
-class GroupCorrection:
+class GroupSendingInformation:
     group_number: int
     emails: List[str]
+
+
+@dataclass
+class GroupCorrectionCollection:
+    group: GroupSendingInformation
+    corrections: List[Correction]
+
+
+@dataclass
+class GroupCorrection:
+    group: GroupSendingInformation
     correction: Correction
