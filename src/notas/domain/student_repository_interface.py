@@ -5,7 +5,6 @@ from student import Student
 
 
 class StudentRepositoryInterface(ABC):
-
     @abstractmethod
     def list(self) -> List[Student]:
         ...
