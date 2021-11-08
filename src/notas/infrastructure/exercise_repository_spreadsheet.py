@@ -124,4 +124,4 @@ class ExerciseRepositorySpreadsheet(
                 )
             )
         except StopIteration:
-            pass
+            return None
