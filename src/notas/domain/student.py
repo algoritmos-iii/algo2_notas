@@ -8,4 +8,4 @@ class Student:
     full_name: str
     email: str
     padron: int
-    grupo: int
+    group_number: int
