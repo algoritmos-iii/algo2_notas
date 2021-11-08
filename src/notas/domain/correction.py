@@ -6,7 +6,7 @@ from typing import List
 class Correction:
     exercise_name: str
     corrector_name: str
-    grade: float
+    grade: str
     details: str
 
 
