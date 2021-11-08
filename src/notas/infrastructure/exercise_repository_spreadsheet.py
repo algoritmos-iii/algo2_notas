@@ -47,12 +47,13 @@ class ExerciseRepositorySpreadsheet(
 
         self._worksheet = self._get_worksheet(self.WORKSHEET_NAME)
 
-    def get(self) -> List[GroupCorrectionCollection]:
+    def get_all(self) -> List[GroupCorrectionCollection]:
         ranges = [self.EMAIL_RANGE] + [
             _exercise_to_named_range(exercise) for exercise in self.EXERCISES
         ]
         emails_raw, *correcciones_raw = self._worksheet.batch_get(
-            ranges, major_dimension="COLUMNS"
+            ranges,
+            major_dimension="COLUMNS",
         )
 
         emails = spreadsheet_raw_data_to_dict(emails_raw)
@@ -64,7 +65,7 @@ class ExerciseRepositorySpreadsheet(
         return [
             GroupCorrectionCollection(
                 group=GroupSendingInformation(
-                    group_number=emails[group_idx]["Grupo"],
+                    group_number=int(emails[group_idx]["Grupo"]),
                     emails=emails[group_idx]["Emails"].split(","),
                 ),
                 corrections=[
@@ -83,7 +84,7 @@ class ExerciseRepositorySpreadsheet(
             if not emails[group_idx]["Emails"] == ""
         ]
 
-    def find(self, exercise_name: str) -> Optional[GroupCorrection]:
+    def get_corrections_by_exercise(self, exercise_name: str) -> List[GroupCorrection]:
         exercise_range = _exercise_to_named_range(exercise_name)
         emails_raw, corrections_raw = self._worksheet.batch_get(
             [self.EMAIL_RANGE, exercise_range], major_dimension="COLUMNS"
@@ -95,7 +96,7 @@ class ExerciseRepositorySpreadsheet(
         return [
             GroupCorrection(
                 group=GroupSendingInformation(
-                    group_number=email["Grupo"],
+                    group_number=int(email["Grupo"]),
                     emails=email["Emails"].split(","),
                 ),
                 correction=Correction(
@@ -108,3 +109,19 @@ class ExerciseRepositorySpreadsheet(
             for email, correction in zip(emails, corrections)
             if not email["Emails"] == ""
         ]
+
+    def get_corrections_by_group(
+        self, group_number: int
+    ) -> Optional[GroupCorrectionCollection]:
+        all_corrections = self.get_all()
+
+        try:
+            return next(
+                filter(
+                    lambda group_correction: group_correction.group.group_number
+                    == group_number,
+                    all_corrections,
+                )
+            )
+        except StopIteration:
+            pass
