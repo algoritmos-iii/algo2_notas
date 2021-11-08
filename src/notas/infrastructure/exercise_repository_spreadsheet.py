@@ -85,12 +85,12 @@ class ExerciseRepositorySpreadsheet(
 
     def find(self, exercise_name: str) -> Optional[GroupCorrection]:
         exercise_range = _exercise_to_named_range(exercise_name)
-        emails_raw, correcciones_raw = self._worksheet.batch_get(
+        emails_raw, corrections_raw = self._worksheet.batch_get(
             [self.EMAIL_RANGE, exercise_range], major_dimension="COLUMNS"
         )
 
         emails = spreadsheet_raw_data_to_dict(emails_raw)
-        correcciones = spreadsheet_raw_data_to_dict(correcciones_raw)
+        corrections = spreadsheet_raw_data_to_dict(corrections_raw)
 
         return [
             GroupCorrection(
@@ -100,11 +100,11 @@ class ExerciseRepositorySpreadsheet(
                 ),
                 correction=Correction(
                     exercise_name=exercise_name,
-                    grade=correccion["Nota"],
-                    corrector_name=correccion["Corrector"],
-                    details=correccion["Detalle"],
+                    grade=correction["Nota"],
+                    corrector_name=correction["Corrector"],
+                    details=correction["Detalle"],
                 ),
             )
-            for email, correccion in zip(emails, correcciones)
+            for email, correction in zip(emails, corrections)
             if not email["Emails"] == ""
         ]
