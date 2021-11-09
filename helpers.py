@@ -16,3 +16,6 @@ class EnhancedJSONEncoder(json.JSONEncoder):
         if dataclasses.is_dataclass(o):
             return dataclasses.asdict(o)
         return super().default(o)
+
+def stringify(dict: dict) -> str:
+    return json.dumps(dict, cls=EnhancedJSONEncoder, ensure_ascii=False)
