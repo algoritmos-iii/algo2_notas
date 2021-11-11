@@ -14,8 +14,8 @@ class StudentInfo:
 
     full_name: str
     email: str
-    padron: int
-    group_number: int
+    padron: str
+    group_number: str
 
 
 @dataclass

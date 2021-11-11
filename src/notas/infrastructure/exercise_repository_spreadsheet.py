@@ -58,7 +58,7 @@ class ExerciseRepositorySpreadsheet(
         return [
             GroupCorrectionCollection(
                 group=GroupSendingInformation(
-                    group_number=int(emails[group_idx]["Grupo"]),
+                    group_number=emails[group_idx]["Grupo"],
                     emails=emails[group_idx]["Emails"].split(","),
                 ),
                 corrections=[
@@ -89,7 +89,7 @@ class ExerciseRepositorySpreadsheet(
         return [
             GroupCorrection(
                 group=GroupSendingInformation(
-                    group_number=int(email["Grupo"]),
+                    group_number=email["Grupo"],
                     emails=email["Emails"].split(","),
                 ),
                 correction=Correction(
@@ -104,7 +104,7 @@ class ExerciseRepositorySpreadsheet(
         ]
 
     def get_corrections_by_group(
-        self, group_number: int
+        self, group_number: str
     ) -> Optional[GroupCorrectionCollection]:
         all_corrections = self.get_all()
 

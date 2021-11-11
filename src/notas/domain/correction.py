@@ -12,7 +12,7 @@ class Correction:
 
 @dataclass
 class GroupSendingInformation:
-    group_number: int
+    group_number: str
     emails: List[str]
 
 
