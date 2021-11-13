@@ -1,18 +1,18 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from .spreadsheet_repository_base import (
-    SpreadsheetRepositoryBase,
-    spreadsheet_raw_data_to_dict,
-)
 from ..domain.exercises_repository_interface import ExerciseRepositoryInterface
-from ..domain.correction import (
+from ...shared.domain.correction import (
     GroupCorrectionCollection,
     GroupCorrection,
     Correction,
     GroupSendingInformation,
 )
-from ..shared.helpers import _exercise_to_named_range
+from ...shared.infrastructure.spreadsheet_repository_base import (
+    SpreadsheetRepositoryBase,
+    spreadsheet_raw_data_to_dict,
+    exercise_to_named_range
+)
 
 if TYPE_CHECKING:
     from typing import List, Optional
@@ -42,7 +42,7 @@ class ExerciseRepositorySpreadsheet(
 
     def get_all(self) -> List[GroupCorrectionCollection]:
         ranges = [self.EMAIL_RANGE] + [
-            _exercise_to_named_range(exercise) for exercise in self.EXERCISES
+            exercise_to_named_range(exercise) for exercise in self.EXERCISES
         ]
         emails_raw, *correcciones_raw = self._worksheet.batch_get(
             ranges,
@@ -58,7 +58,7 @@ class ExerciseRepositorySpreadsheet(
         return [
             GroupCorrectionCollection(
                 group=GroupSendingInformation(
-                    group_number=emails[group_idx]["Grupo"],
+                    group_number=int(emails[group_idx]["Grupo"]),
                     emails=emails[group_idx]["Emails"].split(","),
                 ),
                 corrections=[
@@ -78,7 +78,7 @@ class ExerciseRepositorySpreadsheet(
         ]
 
     def get_corrections_by_exercise(self, exercise_name: str) -> List[GroupCorrection]:
-        exercise_range = _exercise_to_named_range(exercise_name)
+        exercise_range = exercise_to_named_range(exercise_name)
         emails_raw, corrections_raw = self._worksheet.batch_get(
             [self.EMAIL_RANGE, exercise_range], major_dimension="COLUMNS"
         )
@@ -89,7 +89,7 @@ class ExerciseRepositorySpreadsheet(
         return [
             GroupCorrection(
                 group=GroupSendingInformation(
-                    group_number=email["Grupo"],
+                    group_number=int(email["Grupo"]),
                     emails=email["Emails"].split(","),
                 ),
                 correction=Correction(
@@ -104,7 +104,7 @@ class ExerciseRepositorySpreadsheet(
         ]
 
     def get_corrections_by_group(
-        self, group_number: str
+        self, group_number: int
     ) -> Optional[GroupCorrectionCollection]:
         all_corrections = self.get_all()
 

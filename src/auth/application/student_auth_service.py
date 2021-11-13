@@ -4,6 +4,7 @@ from ..domain.student import StudentInfo
 from ..domain.student_repository_interface import StudentRepositoryInterface
 from ..domain.message_sender_interface import MessageSenderInterface
 from ..domain.messages.login_message import LoginMessage
+from ...shared.domain.signer_interface import SignerInterface
 
 
 class StudentAuthService:
@@ -11,12 +12,11 @@ class StudentAuthService:
         self,
         student_repository: StudentRepositoryInterface,
         message_sender: MessageSenderInterface,
+        signer: SignerInterface,
     ) -> None:
         self._student_repository = student_repository
         self._message_sender = message_sender
-
-    def _create_login_message(self, user_link: str):
-        return LoginMessage(login_link=user_link)
+        self._signer = signer
 
     def find_student(self, email: str, padron: int) -> Optional[StudentInfo]:
         student_with_grades = self._student_repository.get_student_by_padron(padron)
@@ -27,6 +27,9 @@ class StudentAuthService:
 
         return student_info
 
-    def send_login_message(self, student: StudentInfo, user_link: str):
-        message = self._create_login_message(user_link)
+    def send_login_message(self, student: StudentInfo, base_link_notas: str):
+        signed_padron = self._signer.sign(student.padron)
+        link_notas = base_link_notas.format(signed_padron=signed_padron)
+        message = LoginMessage(login_link=link_notas)
+        
         self._message_sender.send(student, message)

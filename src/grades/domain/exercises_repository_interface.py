@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from .correction import GroupCorrectionCollection, GroupCorrection
+from ...shared.domain.correction import GroupCorrectionCollection, GroupCorrection
 
 
 class ExerciseRepositoryInterface(ABC):

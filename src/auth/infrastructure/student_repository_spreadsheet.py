@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from .spreadsheet_repository_base import (
+from ...shared.infrastructure.spreadsheet_repository_base import (
     SpreadsheetRepositoryBase,
     spreadsheet_raw_data_to_dict,
 )

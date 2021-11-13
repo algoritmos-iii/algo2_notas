@@ -10,6 +10,13 @@ if TYPE_CHECKING:
     from typing import List
     from gspread.models import ValueRange
 
+# Helpers
+def _string_to_snake_case(string: str) -> str:
+    return string.lower().replace(" ", "_")
+
+
+def exercise_to_named_range(exercise_name: str) -> str:
+    return "emails_" + _string_to_snake_case(exercise_name)
 
 def spreadsheet_raw_data_to_dict(raw_data: ValueRange) -> List:
     values: List[str] = gspread.utils.fill_gaps(raw_data)
