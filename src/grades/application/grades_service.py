@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Tuple
+from typing import Optional
 
 from ..domain.models.student import StudentWithGrades
 from ..domain.interfaces.student_repository_interface import StudentRepositoryInterface
