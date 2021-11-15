@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from .student import StudentWithGrades
+from ..models.student import StudentWithGrades
 
 
 class StudentRepositoryInterface(ABC):
@@ -10,5 +10,5 @@ class StudentRepositoryInterface(ABC):
         ...
 
     @abstractmethod
-    def get_student_by_padron(self, padron: int) -> Optional[StudentWithGrades]:
+    def get_student_by_padron(self, padron: str) -> Optional[StudentWithGrades]:
         ...

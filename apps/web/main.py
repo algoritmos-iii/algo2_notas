@@ -3,13 +3,17 @@ import json
 import flask
 
 from src.shared.infrastructure.itsdangerous_signer import ItsDangerousSigner
-from src.auth.infrastructure.email_message_sender import EmailMessageSender
-from src.auth.infrastructure.student_repository_spreadsheet import (
-    StudentRepositorySpreadsheet,
-)
+
+from src.email.infrastructure.email_message_sender import EmailMessageSender
+from src.email.infrastructure.mock_email_message_sender import MockEmailMessageSender
+from src.email.application.email_service import EmailService
+
+from src.auth.infrastructure.students_repository import StudentRepository
 from src.auth.application.student_auth_service import StudentAuthService
 
-from src.grades.infrastructure.exercise_repository_spreadsheet import ExerciseRepositorySpreadsheet
+from src.grades.infrastructure.student_grades_repository_spreadsheet import (
+    StudentGradesRepositorySpreadsheet,
+)
 from src.grades.application.grades_service import GradesService
 
 # Views imports
@@ -20,41 +24,54 @@ from apps.web.endpoints.grades_view import GradesView
 SECRET_KEY: str = os.environ["NOTAS_SECRET"]
 
 # Spreadhseet config
-SERVICE_ACCOUNT_CREDENTIALS: str = os.environ["NOTAS_SERVICE_ACCOUNT_CREDENTIALS"]
+SERVICE_ACCOUNT_CREDENTIALS: str = json.loads(
+    os.environ["NOTAS_SERVICE_ACCOUNT_CREDENTIALS"]
+)
 SPREADSHEET_KEY: str = os.environ["NOTAS_SPREADSHEET_KEY"]
 
 # Gmail config
-EMAIL_ACCOUNT: str = os.environ['EMAIL_ACCOUNT']
-EMAIL_PASSWORD: str = os.environ['EMAIL_PASSWORD']
+EMAIL_ACCOUNT: str = os.environ["EMAIL_ACCOUNT"]
+EMAIL_PASSWORD: str = os.environ["EMAIL_PASSWORD"]
 
 # Flask configuration
 app = flask.Flask(__name__)
 app.secret_key = SECRET_KEY
 
-# Infrastructure
+# Signer
 signer = ItsDangerousSigner(SECRET_KEY)
-email_sender = EmailMessageSender(EMAIL_ACCOUNT, EMAIL_PASSWORD, app.jinja_env)
-student_repository = StudentRepositorySpreadsheet(
-    service_account_credentials=json.loads(SERVICE_ACCOUNT_CREDENTIALS),
+
+# Email
+email_sender = MockEmailMessageSender(EMAIL_ACCOUNT, EMAIL_PASSWORD, app.jinja_env)
+email_service = EmailService(email_sender)
+
+# Students auth
+student_repository = StudentRepository(
+    service_account_credentials=SERVICE_ACCOUNT_CREDENTIALS,
     spreadsheet_key=SPREADSHEET_KEY,
 )
+student_auth_service = StudentAuthService(student_repository=student_repository)
 
-# Application Services
-student_auth_service = StudentAuthService(
-    student_repository, email_sender, signer)
-grades_service = GradesService()
+# Students grades
+grades_repository = StudentGradesRepositorySpreadsheet(
+    service_account_credentials=SERVICE_ACCOUNT_CREDENTIALS,
+    spreadsheet_key=SPREADSHEET_KEY,
+)
+grades_service = GradesService(grades_repository=grades_repository, signer=signer)
+
 
 # Views
 signin_view = SigninView.as_view(
-    name='index',
+    name="index",
     student_auth_service=student_auth_service,
-    email_sender=email_sender
+    email_service=email_service,
+    signer=signer,
 )
 grades_view = GradesView.as_view(
-    name='grades',
-    signer=signer
+    name="grades",
+    grades_service=grades_service,
+    signer=signer,
 )
 
 # Endpoints
-app.add_url_rule('/', view_func=signin_view)
-app.add_url_rule('/grades/', view_func=grades_view)
+app.add_url_rule("/", view_func=signin_view)
+app.add_url_rule("/grades/", view_func=grades_view)

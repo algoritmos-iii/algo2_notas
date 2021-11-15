@@ -4,27 +4,21 @@
 
 {% block content %}
 
-{% for key, val in items if key == "Nombre"%}
-  <h1>{{ val }}</h1>
-{% endfor %}
+<h1>{{ student.student_info.full_name }}</h1>
 
-{% for key, val in items if key == "Email"%}
-  <b style="color: grey;">{{ val }}</b>
-{% endfor %}
+<b style="color: grey;">{{ student.student_info.email }}</b>
 <br>
-{% for key, val in items if key == "Padrón"%}
-  <b style="color: grey;">{{ val }}</b>
-{% endfor %}
+<b style="color: grey;">{{ student.student_info.padron }}</b>
 <br><br>
 
 <div class="card-group">
   <div class="card border-0">
     <table class="table table-sm table-striped table-hover">
       <tbody>
-        {% for key, val in items if not key == "Nombre" if not key == "Email" if not key == "Padrón" if not key == "Condición final" if not val == "" %}
+        {% for grade in student.grades %}
           <tr>
-            <td>{{ key }}</td>
-            <td>{{ val }}</td>
+            <td>{{ grade.activity_name }}</td>
+            <td>{{ grade.grade }}</td>
           </tr>
         {% endfor %}
     </tbody>

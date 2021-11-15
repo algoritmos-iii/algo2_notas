@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from ..domain.exercises_repository_interface import ExerciseRepositoryInterface
-from ...shared.domain.correction import (
+from ..domain.interfaces.exercises_repository_interface import ExerciseRepositoryInterface
+from ..domain.models.correction import (
     GroupCorrectionCollection,
     GroupCorrection,
     Correction,

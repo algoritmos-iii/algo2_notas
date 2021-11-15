@@ -7,8 +7,8 @@ class Email:
     def __init__(
         self,
         subject: str,
-        # from_addr: str,
-        # to_addr: str,
+        from_addr: str,
+        to_addr: str,
         cc: Optional[str] = None,
         bcc: Optional[str] = None,
         reply_to: Optional[str] = None,
@@ -17,8 +17,8 @@ class Email:
         msg.set_charset("uft-8")
         msg["Date"] = formatdate(localtime=True)
         msg["Subject"] = subject
-        # msg["From"] = from_addr
-        # msg["To"] = to_addr
+        msg["From"] = from_addr
+        msg["To"] = to_addr
         if cc:
             msg["CC"] = cc
         if bcc:
