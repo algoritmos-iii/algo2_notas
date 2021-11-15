@@ -40,8 +40,6 @@ class StudentGradesRepositorySpreadsheet(
         exercises = spreadsheet_raw_data_to_dict(exercises_data_raw)
         exams = spreadsheet_raw_data_to_dict(exams_data_raw)
 
-        activities = [*exercises, *exams]
-
         return [
             StudentWithGrades(
                 student_info=StudentInfo(
@@ -50,11 +48,16 @@ class StudentGradesRepositorySpreadsheet(
                     padron=student["Padrón"],
                     group_number=student["Grupo"],
                 ),
-                grades=[
+                exercises_grades=[
                     Grade(activity_name=activity_name, grade=grade)
-                    for activity_name, grade in activities[student_idx].items()
+                    for activity_name, grade in exercises[student_idx].items()
                     if grade.strip() != ""
                 ],
+                exams_grades=[
+                    Grade(activity_name=activity_name, grade=grade)
+                    for activity_name, grade in exams[student_idx].items()
+                    if grade.strip() != ""
+                ]
             )
             for student_idx, student in enumerate(students)
             if not student["Padrón"] == ""

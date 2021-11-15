@@ -21,4 +21,5 @@ class StudentInfo:
 @dataclass
 class StudentWithGrades:
     student_info: StudentInfo
-    grades: List[Grade]
+    exercises_grades: List[Grade]
+    exams_grades: List[Grade]

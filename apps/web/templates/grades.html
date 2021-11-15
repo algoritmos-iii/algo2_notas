@@ -4,52 +4,59 @@
 
 {% block content %}
 
-<h1>{{ student.student_info.full_name }}</h1>
+<h1>{{ student_name }}</h1>
 
-<b style="color: grey;">{{ student.student_info.email }}</b>
+<b style="color: grey;">{{ student_email }}</b>
 <br>
-<b style="color: grey;">{{ student.student_info.padron }}</b>
+<b style="color: grey;">{{ student_padron }}</b>
 <br><br>
 
 <div class="card-group">
   <div class="card border-0">
     <table class="table table-sm table-striped table-hover">
       <tbody>
-        {% for grade in student.grades %}
-          <tr>
-            <td>{{ grade.activity_name }}</td>
-            <td>{{ grade.grade }}</td>
-          </tr>
+        {% for activity_name, grade in exercises %}
+        <tr>
+          <td>{{ activity_name }}</td>
+          <td>{{ grade }}</td>
+        </tr>
         {% endfor %}
-    </tbody>
+
+        <!-- {% for exam_name, grade in exams %}
+        <tr>
+          <td>{{ exam_name }}</td>
+          <td>{{ grade }}</td>
+        </tr>
+        {% endfor %} -->
+      </tbody>
     </table>
   </div>
   <div class="card border-0">
     <div class="card-body">
       {% for key, val in items if key == "Condición final" if not val == "" %}
-        <h3 class="card-title">{{ key }}</h3>
-        {% if val == "Promociona" %}
-          <p class="card-text" style="color: green;"><b>{{ val }}</b></p>
-        {% elif val == "Final" %}
-          <p class="card-text" style="color: green;"><b>{{ val }}</b></p>
-        {% elif val == "Recursa" %}
-          <p class="card-text" style="color: red;"><b>{{ val }}</b></p>
-        {% else %}
-          <p class="card-text" style="color: grey;"><b>Aún no tenemos la condición final de cursada</b></p>
-        {% endif %}
+      <h3 class="card-title">{{ key }}</h3>
+      {% if val == "Promociona" %}
+      <p class="card-text" style="color: green;"><b>{{ val }}</b></p>
+      {% elif val == "Final" %}
+      <p class="card-text" style="color: green;"><b>{{ val }}</b></p>
+      {% elif val == "Recursa" %}
+      <p class="card-text" style="color: red;"><b>{{ val }}</b></p>
+      {% else %}
+      <p class="card-text" style="color: grey;"><b>Aún no tenemos la condición final de cursada</b></p>
+      {% endif %}
       {% endfor %}
-    </div> 
+    </div>
   </div>
 </div>
-  {% set ns = namespace(noData=false) %}     
-  
-  {% for key, val in items if val == " " %}
-    {% set ns.noData = true %}
-  {% endfor %}
-  
-  {% if ns.noData %}
-    <b>Próximamente vas a poder ver tus notas</b>
-    <img src="{{ url_for('static', filename = 'images/nothing_see_here.png') }}" width="350" height="375" class="center" style="display: block; margin: 0 auto;">
-  {% endif %}
-{% endblock %}
+{% set ns = namespace(noData=false) %}
 
+{% for key, val in items if val == " " %}
+{% set ns.noData = true %}
+{% endfor %}
+
+{% if ns.noData %}
+<b>Próximamente vas a poder ver tus notas</b>
+<img src="{{ url_for('static', filename = 'images/nothing_see_here.png') }}" width="350" height="375" class="center"
+  style="display: block; margin: 0 auto;">
+{% endif %}
+{% endblock %}

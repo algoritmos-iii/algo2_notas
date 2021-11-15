@@ -7,6 +7,7 @@ from webargs.flaskparser import parser
 from src.grades.application.grades_service import GradesService
 from src.shared.domain.signer_interface import SignerInterface, BadData
 
+
 class GradesView(MethodView):
     argmap = {"key": fields.Str(required=True)}
 
@@ -22,13 +23,33 @@ class GradesView(MethodView):
 
     def get(self):
         args = parser.parse(self.argmap)
-        padron = self._validate_signed_padron(args['key'])
+        padron = self._validate_signed_padron(args["key"])
         if not padron:
-            return flask.render_template("error.html", message="El link utilizado es inválido. Por favor, intente nuevamente.")
+            return flask.render_template(
+                "error.html",
+                message="El link utilizado es inválido. Por favor, intente nuevamente.",
+            )
 
         # padron is valid at this point
         student = self._grades_service.get_student_with_grades_by_padron(padron)
         if not student:
-            return flask.render_template("error.html", message="El link utilizado es inválido. Por favor, intente nuevamente.")
+            return flask.render_template(
+                "error.html",
+                message="El link utilizado es inválido. Por favor, intente nuevamente.",
+            )
 
-        return flask.render_template("grades.html", student=student)
+        return flask.render_template(
+            "grades.html",
+            **{
+                "student_name": student.student_info.full_name,
+                "student_email": student.student_info.email,
+                "student_padron": student.student_info.padron,
+                "exercises": [
+                    (grade.activity_name, grade.grade)
+                    for grade in student.exercises_grades
+                ],
+                "exams": [
+                    (grade.activity_name, grade.grade) for grade in student.exams_grades
+                ],
+            },
+        )
