@@ -1,8 +1,8 @@
 {% extends "emails/layout/html_layout.html" %}
 
 {% block content %}
-<p>Mail para el grupo {{nombre}}.</p>
+<p>Mail para {{nombre|title}}.</p>
 <p>Corrector: {{corrector}}.</p>
-<p>Hola, este mail es para darles la devolución del {{ejercicio}}, su nota es <strong>{{nota}}</strong>.</p>
+<p>Hola, este mail es para darles la devolución del {{examen}}, su nota es <strong>{{nota}}</strong>.</p>
 {{correcciones|md|safe}}
 {% endblock %}
