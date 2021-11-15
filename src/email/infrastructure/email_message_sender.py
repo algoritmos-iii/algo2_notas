@@ -1,5 +1,5 @@
 import smtplib
-from typing import Text
+from typing import Text, Tuple
 import jinja2
 
 from .email import Email
@@ -21,7 +21,7 @@ class EmailMessageSender(MessageSenderInterface):
         self._templater = templater
         self.from_addr = f"Algoritmos3Leveroni <{gmail_username}>"
 
-    def render_content(self, message: TemplateMessage) -> tuple[Text, Text]:
+    def render_content(self, message: TemplateMessage) -> Tuple[Text, Text]:
         plain_template = self._templater.get_template(
             f"emails/{message.template_name}_plain.html"
         )

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Text
+from typing import Text, Tuple
 from ..models.message import TemplateMessage
 
 class MessageSenderInterface(ABC):
@@ -8,5 +8,5 @@ class MessageSenderInterface(ABC):
         ...
 
     @abstractmethod
-    def render_content(self, message: TemplateMessage) -> tuple[Text, Text]:
+    def render_content(self, message: TemplateMessage) -> Tuple[Text, Text]:
         ...
