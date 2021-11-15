@@ -74,7 +74,7 @@ class FeedbackRepositorySpreadsheet(
         return [
             GroupCorrection(
                 group=GroupSendingInformation(
-                    group_number=int(email["Grupo"]),
+                    group_number=email["Grupo"],
                     emails=email["Emails"].split(","),
                 ),
                 correction=Correction(
