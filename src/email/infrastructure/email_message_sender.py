@@ -2,8 +2,8 @@ import smtplib
 import jinja2
 
 from .email import Email
-from ..domain.message import TemplateMessage
-from ..domain.message_sender_interface import MessageSenderInterface
+from ..domain.models.message import TemplateMessage
+from ..domain.interfaces.message_sender_interface import MessageSenderInterface
 
 
 class EmailMessageSender(MessageSenderInterface):

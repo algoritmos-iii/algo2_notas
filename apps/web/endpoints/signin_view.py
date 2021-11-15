@@ -3,7 +3,7 @@ from flask.views import MethodView
 from ..forms.authentication_form import AuthenticationForm
 
 from src.auth.application.student_auth_service import StudentAuthService
-from src.email.domain.message import TemplateMessage
+from src.email.domain.models.message import TemplateMessage
 from src.email.application.email_service import EmailService
 from src.shared.domain.signer_interface import SignerInterface
 

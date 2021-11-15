@@ -1,4 +1,4 @@
-from ..domain.message import TemplateMessage
+from ..domain.models.message import TemplateMessage
 from .email_message_sender import EmailMessageSender
 
 class MockEmailMessageSender(EmailMessageSender):
