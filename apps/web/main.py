@@ -35,6 +35,7 @@ EMAIL_PASSWORD: str = os.environ["EMAIL_PASSWORD"]
 
 # Flask configuration
 app = flask.Flask(__name__)
+app.config["title"] = "Algoritmos 3 - Consulta de Notas"
 app.secret_key = SECRET_KEY
 
 # Signer
