@@ -107,7 +107,7 @@ app.add_url_rule(
     view_func=exercises_email_view.send,
 )
 app.add_url_rule(
-    "/api/emails/exercise/<exercise_name>/preview/<int:group_number>",
+    "/api/emails/exercise/<exercise_name>/preview/<group_number>",
     view_func=exercises_email_view.preview,
 )
 
@@ -117,7 +117,7 @@ app.add_url_rule(
     view_func=exams_email_view.send,
 )
 app.add_url_rule(
-    "/api/emails/exam/<exam_name>/preview/<int:padron_number>",
+    "/api/emails/exam/<exam_name>/preview/<padron_number>",
     endpoint="preview_email",
     view_func=exams_email_view.preview,
 )

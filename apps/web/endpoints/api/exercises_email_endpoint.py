@@ -37,7 +37,7 @@ class ExercisesEmailView:
             )
         return exercise_name
 
-    def preview(self, exercise_name: str, group_number: int):
+    def preview(self, exercise_name: str, group_number: str):
         for group_correction in self._grades_service.get_exercise_feedback_by_name(
             exercise_name
         ):

@@ -37,10 +37,11 @@ class ExamsEmailView:
 
         return exam_name
 
-    def preview(self, exam_name: str, padron_number: int):
+    def preview(self, exam_name: str, padron_number: str):
         for individual_correction in self._grades_service.get_exam_feedback_by_name(
             exam_name
         ):
+            print(individual_correction)
             if individual_correction.individual.padron == padron_number:
                 return self._email_service.preview_template_message(
                     self._message_from_correction(individual_correction)
