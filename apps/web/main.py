@@ -72,7 +72,10 @@ grades_view = GradesView.as_view(
     grades_service=grades_service,
     signer=signer,
 )
+from apps.web.endpoints.api.exercises_email_endpoint import ExercisesEmailView
+exercises_email_view = ExercisesEmailView()
 
 # Endpoints
 app.add_url_rule("/", view_func=signin_view)
 app.add_url_rule("/grades/", view_func=grades_view)
+app.add_url_rule("/api/emails/exercise/<exercise_name>/send", view_func=exercises_email_view.send)
