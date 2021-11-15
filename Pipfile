@@ -19,3 +19,7 @@ markdown = "*"
 
 [dev-packages]
 pylint = "*"
+black = "*"
+
+[pipenv]
+allow_prereleases = true

@@ -1,0 +1,11 @@
+{% extends "emails/layout/layout.html" %}
+
+{% block content %}
+Mail para {{nombre}}.
+
+Corrector: {{corrector}}.
+
+Hola, este mail es para darles la devolución del {{examen}}, su nota es {{nota}}.
+
+{{correcciones}}
+{% endblock %}

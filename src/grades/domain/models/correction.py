@@ -4,7 +4,7 @@ from typing import List
 
 @dataclass
 class Correction:
-    exercise_name: str
+    activity_name: str
     corrector_name: str
     grade: str
     details: str
@@ -17,12 +17,25 @@ class GroupSendingInformation:
 
 
 @dataclass
-class GroupCorrectionCollection:
-    group: GroupSendingInformation
-    corrections: List[Correction]
-
-
-@dataclass
 class GroupCorrection:
     group: GroupSendingInformation
     correction: Correction
+
+
+@dataclass
+class IndividualSendingInformation:
+    padron: str
+    email: str
+    full_name: str
+
+
+@dataclass
+class IndividualCorrection:
+    individual: IndividualSendingInformation
+    correction: Correction
+
+
+# @dataclass
+# class GroupCorrectionCollection:
+#     group: GroupSendingInformation
+#     corrections: List[Correction]

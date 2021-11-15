@@ -11,6 +11,9 @@ from src.email.application.email_service import EmailService
 from src.auth.infrastructure.students_repository import StudentRepository
 from src.auth.application.student_auth_service import StudentAuthService
 
+from src.grades.infrastructure.feedback_repository_spreadsheet import (
+    FeedbackRepositorySpreadsheet,
+)
 from src.grades.infrastructure.student_grades_repository_spreadsheet import (
     StudentGradesRepositorySpreadsheet,
 )
@@ -19,6 +22,11 @@ from src.grades.application.grades_service import GradesService
 # Views imports
 from apps.web.endpoints.signin_view import SigninView
 from apps.web.endpoints.grades_view import GradesView
+from apps.web.endpoints.api.exercises_email_endpoint import ExercisesEmailView
+from apps.web.endpoints.api.exams_email_endpoint import ExamsEmailView
+
+# Filters imports
+from apps.markdown_filter import markdown2HTML
 
 # App config
 SECRET_KEY: str = os.environ["NOTAS_SECRET"]
@@ -37,6 +45,7 @@ EMAIL_PASSWORD: str = os.environ["EMAIL_PASSWORD"]
 app = flask.Flask(__name__)
 app.config["title"] = "Algoritmos 3 - Consulta de Notas"
 app.secret_key = SECRET_KEY
+app.jinja_env.filters["md"] = markdown2HTML
 
 # Signer
 signer = ItsDangerousSigner(SECRET_KEY)
@@ -57,7 +66,15 @@ grades_repository = StudentGradesRepositorySpreadsheet(
     service_account_credentials=SERVICE_ACCOUNT_CREDENTIALS,
     spreadsheet_key=SPREADSHEET_KEY,
 )
-grades_service = GradesService(grades_repository=grades_repository, signer=signer)
+feedback_repository = FeedbackRepositorySpreadsheet(
+    service_account_credentials=SERVICE_ACCOUNT_CREDENTIALS,
+    spreadsheet_key=SPREADSHEET_KEY,
+)
+grades_service = GradesService(
+    grades_repository=grades_repository,
+    feedback_repository=feedback_repository,
+    signer=signer,
+)
 
 
 # Views
@@ -72,10 +89,36 @@ grades_view = GradesView.as_view(
     grades_service=grades_service,
     signer=signer,
 )
-from apps.web.endpoints.api.exercises_email_endpoint import ExercisesEmailView
-exercises_email_view = ExercisesEmailView()
+
+exercises_email_view = ExercisesEmailView(
+    grades_service=grades_service,
+    email_service=email_service,
+)
+exams_email_view = ExamsEmailView(
+    grades_service=grades_service,
+    email_service=email_service,
+)
 
 # Endpoints
 app.add_url_rule("/", view_func=signin_view)
 app.add_url_rule("/grades/", view_func=grades_view)
-app.add_url_rule("/api/emails/exercise/<exercise_name>/send", view_func=exercises_email_view.send)
+app.add_url_rule(
+    "/api/emails/exercise/<exercise_name>/send",
+    view_func=exercises_email_view.send,
+)
+app.add_url_rule(
+    "/api/emails/exercise/<exercise_name>/preview/<int:group_number>",
+    view_func=exercises_email_view.preview,
+)
+
+app.add_url_rule(
+    "/api/emails/exam/<exercise_name>/send",
+    endpoint="send_email",
+    view_func=exams_email_view.send,
+)
+app.add_url_rule(
+    "/api/emails/exam/<exam_name>/preview/<int:padron_number>",
+    endpoint="preview_email",
+    view_func=exams_email_view.preview,
+)
+

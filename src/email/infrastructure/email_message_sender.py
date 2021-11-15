@@ -1,4 +1,5 @@
 import smtplib
+from typing import Text
 import jinja2
 
 from .email import Email
@@ -20,7 +21,7 @@ class EmailMessageSender(MessageSenderInterface):
         self._templater = templater
         self.from_addr = f"Algoritmos3Leveroni <{gmail_username}>"
 
-    def _create_email(self, message: TemplateMessage):
+    def render_content(self, message: TemplateMessage) -> tuple[Text, Text]:
         plain_template = self._templater.get_template(
             f"emails/{message.template_name}_plain.html"
         )
@@ -28,8 +29,14 @@ class EmailMessageSender(MessageSenderInterface):
             f"emails/{message.template_name}.html"
         )
 
-        to_addr = message.to if isinstance(message.to, str) else ",".join(message.to)
+        return (
+            plain_template.render(**message.context),
+            html_template.render(**message.context),
+        )
 
+    def _create_email(self, message: TemplateMessage):
+        to_addr = message.to if isinstance(message.to, str) else ",".join(message.to)
+        plain_content, html_content = self.render_content(self, message)
         email = Email(
             from_addr=self.from_addr,
             subject=message.subject,
@@ -37,8 +44,8 @@ class EmailMessageSender(MessageSenderInterface):
             reply_to=self.docentes_email,
             cc=self.docentes_email if message.with_copy_to_docentes else None,
         )
-        email.add_plaintext_content(plain_template.render(**message.context))
-        email.add_html_content(html_template.render(**message.context))
+        email.add_plaintext_content(plain_content)
+        email.add_html_content(html_content)
         return email
 
     def send(self, message: TemplateMessage):

@@ -1,3 +1,4 @@
+from typing import Text
 from ..domain.models.message import TemplateMessage
 from ..domain.interfaces.message_sender_interface import MessageSenderInterface
 
@@ -9,3 +10,6 @@ class EmailService:
 
     def send_template_message(self, message: TemplateMessage) -> None:
         self._message_sender.send(message)
+
+    def preview_template_message(self, message: TemplateMessage) -> Text:
+        return self._message_sender.render_content(message)[1]
