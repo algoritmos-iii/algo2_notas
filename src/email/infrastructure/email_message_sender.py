@@ -8,7 +8,7 @@ from ..domain.interfaces.message_sender_interface import MessageSenderInterface
 
 
 class EmailMessageSender(MessageSenderInterface):
-    docentes_email = "Docentes Algoritmos 3 <fiuba.algoritmos.iii.doc@gmail.com>"
+    docentes_email = "Docentes Algoritmos 3 <fiuba-algoritmos-iii-doc@googlegroups.com>"
 
     def __init__(
         self,
@@ -36,7 +36,7 @@ class EmailMessageSender(MessageSenderInterface):
 
     def _create_email(self, message: TemplateMessage):
         to_addr = message.to if isinstance(message.to, str) else ",".join(message.to)
-        plain_content, html_content = self.render_content(self, message)
+        plain_content, html_content = self.render_content(message)
         email = Email(
             from_addr=self.from_addr,
             subject=message.subject,
