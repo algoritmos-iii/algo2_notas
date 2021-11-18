@@ -35,8 +35,6 @@ class ExercisesEmailView:
             self._email_service.send_template_message(
                 self._message_from_correction(group_correction)
             )
-            print(self._message_from_correction(group_correction))
-            print("-"*10)
         return exercise_name
 
     def preview(self, exercise_name: str, group_number: str):
