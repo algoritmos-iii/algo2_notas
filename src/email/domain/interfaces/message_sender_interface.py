@@ -1,12 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Text, Tuple
-from ..models.message import TemplateMessage
+from ..models.message import Message
 
 class MessageSenderInterface(ABC):
     @abstractmethod
-    def send(self, message: TemplateMessage) -> None:
-        ...
-
-    @abstractmethod
-    def render_content(self, message: TemplateMessage) -> Tuple[Text, Text]:
+    def send(self, message: Message) -> None:
         ...

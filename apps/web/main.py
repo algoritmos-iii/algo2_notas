@@ -6,6 +6,7 @@ from src.shared.infrastructure.itsdangerous_signer import ItsDangerousSigner
 
 from src.email.infrastructure.email_message_sender import EmailMessageSender
 from src.email.infrastructure.mock_email_message_sender import MockEmailMessageSender
+from src.email.infrastructure.jinja2_templater import Jinja2Templater
 from src.email.application.email_service import EmailService
 
 from src.auth.infrastructure.students_repository import StudentRepository
@@ -25,9 +26,6 @@ from apps.web.endpoints.grades_view import GradesView
 from apps.web.endpoints.api.exercises_email_endpoint import ExercisesEmailView
 from apps.web.endpoints.api.exams_email_endpoint import ExamsEmailView
 
-# Filters imports
-from apps.markdown_filter import markdown2HTML
-
 # App config
 SECRET_KEY: str = os.environ["NOTAS_SECRET"]
 
@@ -45,14 +43,14 @@ EMAIL_PASSWORD: str = os.environ["EMAIL_PASSWORD"]
 app = flask.Flask(__name__)
 app.config["title"] = "Algoritmos 3 - Consulta de Notas"
 app.secret_key = SECRET_KEY
-app.jinja_env.filters["md"] = markdown2HTML
 
 # Signer
 signer = ItsDangerousSigner(SECRET_KEY)
 
 # Email
-email_sender = MockEmailMessageSender(EMAIL_ACCOUNT, EMAIL_PASSWORD, app.jinja_env)
-email_service = EmailService(email_sender)
+templater = Jinja2Templater("./apps/web/templates")
+email_sender = EmailMessageSender(EMAIL_ACCOUNT, EMAIL_PASSWORD)
+email_service = EmailService(email_sender, templater)
 
 # Students auth
 student_repository = StudentRepository(
@@ -112,7 +110,7 @@ app.add_url_rule(
 )
 
 app.add_url_rule(
-    "/api/emails/exam/<exercise_name>/send",
+    "/api/emails/exam/<exam_name>/send",
     endpoint="send_email",
     view_func=exams_email_view.send,
 )
