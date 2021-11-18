@@ -15,7 +15,7 @@ class ExercisesEmailView:
     def _message_from_correction(self, group_correction: GroupCorrection):
         exercise_name = group_correction.correction.activity_name
         return TemplateMessage(
-            subject=f"Corrección de ejercicio {exercise_name}",
+            subject=f"Corrección de ejercicio {exercise_name} - Grupo {group_correction.group.group_number}",
             to=group_correction.group.emails,
             template_name="notas_ejercicio",
             context={
@@ -35,6 +35,8 @@ class ExercisesEmailView:
             self._email_service.send_template_message(
                 self._message_from_correction(group_correction)
             )
+            print(self._message_from_correction(group_correction))
+            print("-"*10)
         return exercise_name
 
     def preview(self, exercise_name: str, group_number: str):
