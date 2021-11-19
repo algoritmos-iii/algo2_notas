@@ -6,6 +6,7 @@ from ..domain.interfaces.feedback_repository_interface import (
 )
 from ..domain.models.correction import (
     Correction,
+    ExamCorrection,
     GroupCorrection,
     GroupSendingInformation,
     IndividualCorrection,
@@ -98,7 +99,7 @@ class FeedbackRepositorySpreadsheet(
         )
 
         return [
-            IndividualCorrection(
+            ExamCorrection(
                 individual=IndividualSendingInformation(
                     padron=email["Padrón"],
                     email=email["Email"],
@@ -110,6 +111,10 @@ class FeedbackRepositorySpreadsheet(
                     corrector_name=correction["Corrector"],
                     details=correction["Detalle"],
                 ),
+                exam_data={
+                    "extra_points": correction["Puntos extra"],
+                    "final_grade": correction["Nota final"],
+                },
             )
             for email, correction in zip(emails, corrections)
             if not email["Email"] == ""

@@ -35,7 +35,8 @@ class IndividualCorrection:
     correction: Correction
 
 
-# @dataclass
-# class GroupCorrectionCollection:
-#     group: GroupSendingInformation
-#     corrections: List[Correction]
+@dataclass
+class ExamCorrection:
+    individual: IndividualSendingInformation
+    correction: Correction
+    exam_data: dict
