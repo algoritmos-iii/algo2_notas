@@ -4,10 +4,14 @@ import flask
 
 from src.shared.infrastructure.itsdangerous_signer import ItsDangerousSigner
 
-from src.email.infrastructure.email_message_sender import EmailMessageSender
 from src.email.infrastructure.mock_email_message_sender import MockEmailMessageSender
+from src.email.infrastructure.email_message_sender import EmailMessageSender
 from src.email.infrastructure.jinja2_templater import Jinja2Templater
-from src.email.application.email_service import EmailService
+
+# Email services
+from src.email.application.login_email import LoginEmail
+from src.email.application.exercise_email import ExerciseEmail
+from src.email.application.exam_email import ExamEmail
 
 from src.auth.infrastructure.students_repository import StudentRepository
 from src.auth.application.student_auth_service import StudentAuthService
@@ -38,6 +42,7 @@ SPREADSHEET_KEY: str = os.environ["NOTAS_SPREADSHEET_KEY"]
 # Gmail config
 EMAIL_ACCOUNT: str = os.environ["EMAIL_ACCOUNT"]
 EMAIL_PASSWORD: str = os.environ["EMAIL_PASSWORD"]
+DOCENTES_EMAIL = '"Docentes Algoritmos 3" <fiuba-algoritmos-iii-doc@googlegroups.com>'
 
 # Flask configuration
 app = flask.Flask(__name__)
@@ -50,7 +55,9 @@ signer = ItsDangerousSigner(SECRET_KEY)
 # Email
 templater = Jinja2Templater("./apps/web/templates")
 email_sender = EmailMessageSender(EMAIL_ACCOUNT, EMAIL_PASSWORD)
-email_service = EmailService(email_sender, templater)
+login_email = LoginEmail(email_sender, templater, DOCENTES_EMAIL)
+exercise_email = ExerciseEmail(email_sender, templater, DOCENTES_EMAIL)
+exam_email = ExamEmail(email_sender, templater, DOCENTES_EMAIL)
 
 # Students auth
 student_repository = StudentRepository(
@@ -79,7 +86,7 @@ grades_service = GradesService(
 signin_view = SigninView.as_view(
     name="index",
     student_auth_service=student_auth_service,
-    email_service=email_service,
+    signin_email_service=login_email,
     signer=signer,
 )
 grades_view = GradesView.as_view(
@@ -90,11 +97,11 @@ grades_view = GradesView.as_view(
 
 exercises_email_view = ExercisesEmailView(
     grades_service=grades_service,
-    email_service=email_service,
+    email_service=exercise_email,
 )
 exams_email_view = ExamsEmailView(
     grades_service=grades_service,
-    email_service=email_service,
+    email_service=exam_email,
 )
 
 # Endpoints
@@ -119,4 +126,3 @@ app.add_url_rule(
     endpoint="preview_email",
     view_func=exams_email_view.preview,
 )
-

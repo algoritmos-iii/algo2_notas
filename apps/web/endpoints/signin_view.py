@@ -1,23 +1,26 @@
 import flask
 from flask.views import MethodView
+
+
 from ..forms.authentication_form import AuthenticationForm
 
 from src.auth.application.student_auth_service import StudentAuthService
 from src.email.domain.models.message import TemplateMessage
-from src.email.application.email_service import EmailService
 from src.shared.domain.signer_interface import SignerInterface
+
+from src.email.application.login_email import LoginData, LoginEmail, LoginEmailData
 
 
 class SigninView(MethodView):
     def __init__(
         self,
         student_auth_service: StudentAuthService,
-        email_service: EmailService,
+        signin_email_service: LoginEmail,
         signer: SignerInterface,
     ) -> None:
         self._form = AuthenticationForm()
         self._student_auth_service = student_auth_service
-        self._email_service = email_service
+        self._signin_email_service = signin_email_service
         self._signer = signer
 
     def get(self):
@@ -41,13 +44,11 @@ class SigninView(MethodView):
         )
 
         try:
-            self._email_service.send_template_message(
-                TemplateMessage(
-                    to=student.email,
-                    subject="Enlace para consultar las notas",
-                    template_name="sign_in",
-                    context={"enlace": student_login_url},
-                ),
+            self._signin_email_service.send_email(
+                LoginEmailData(
+                    student_email=student.email,
+                    login_data=LoginData(student_login_url),
+                )
             )
         # TODO: replace exception for a more specific
         except Exception as exception:
