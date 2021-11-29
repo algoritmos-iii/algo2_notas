@@ -57,7 +57,7 @@ class StudentGradesRepositorySpreadsheet(
                     Grade(activity_name=activity_name, grade=grade)
                     for activity_name, grade in exams[student_idx].items()
                     if grade.strip() != ""
-                ]
+                ],
             )
             for student_idx, student in enumerate(students)
             if not student["Padrón"] == ""

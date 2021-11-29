@@ -12,7 +12,10 @@ class StudentRepository(SpreadsheetRepositoryBase):
         self._sheet = self._get_worksheet("Alumnos - Notas")
 
     def get_student_by_padron(self, padron: str) -> Optional[StudentSigninInfo]:
-        students_raw = self._sheet.get_values("datos_estudiantes", major_dimension="COLUMNS")
+        students_raw = self._sheet.get_values(
+            "datos_estudiantes",
+            major_dimension="COLUMNS",
+        )
         students = spreadsheet_raw_data_to_dict(students_raw)
 
         for student in students:

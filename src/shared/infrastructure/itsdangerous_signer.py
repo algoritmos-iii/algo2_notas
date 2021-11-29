@@ -3,10 +3,11 @@ from ..domain.signer_interface import SignerInterface, BadData
 
 import itsdangerous
 
+
 class ItsDangerousSigner(SignerInterface):
     def __init__(self, secret_key: str) -> None:
         self._signer = itsdangerous.URLSafeSerializer(secret_key)
-    
+
     def sign(self, data: str) -> str:
         return self._signer.dumps(data)
 

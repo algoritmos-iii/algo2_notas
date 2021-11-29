@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
+
 class BadData(Exception):
     """
     Exception to be raised in case something has gone wrong
@@ -11,6 +12,7 @@ class BadData(Exception):
     def __init__(self, signed_data: str) -> None:
         self.signed_data = signed_data
         super().__init__()
+
 
 class SignerInterface(ABC):
     """
@@ -24,10 +26,10 @@ class SignerInterface(ABC):
 
     @abstractmethod
     def sign(self, data: Any) -> str:
-        """ Signs an object using the secret key. """
+        """Signs an object using the secret key."""
         ...
 
     @abstractmethod
     def unsign(self, signed_data: str) -> Any:
-        """ Decodes the data and verifies the signature. """
+        """Decodes the data and verifies the signature."""
         ...

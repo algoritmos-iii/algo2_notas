@@ -5,6 +5,7 @@ from ..domain.interfaces.students_repository_interface import (
     StudentsRepositoryInterface,
 )
 
+
 class StudentAuthService:
     def __init__(self, student_repository: StudentsRepositoryInterface) -> None:
         self._student_repository = student_repository
