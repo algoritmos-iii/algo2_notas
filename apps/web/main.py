@@ -30,8 +30,12 @@ from apps.web.endpoints.grades_view import GradesView
 from apps.web.endpoints.api.exercises_email_endpoint import ExercisesEmailView
 from apps.web.endpoints.api.exams_email_endpoint import ExamsEmailView
 
+from apps.web.webauthentication import WebAdminAuthentication
+
 # App config
 SECRET_KEY: str = os.environ["NOTAS_SECRET"]
+ADMIN_USERNAME: str = os.environ["ADMIN_USERNAME"]
+ADMIN_PASSWORD: str = os.environ["ADMIN_PASSWORD"]
 
 # Spreadhseet config
 SERVICE_ACCOUNT_CREDENTIALS: str = json.loads(
@@ -48,6 +52,9 @@ DOCENTES_EMAIL = "fiuba-algoritmos-iii-doc@googlegroups.com"
 app = flask.Flask(__name__)
 app.config["title"] = "Algoritmos 3 - Consulta de Notas"
 app.secret_key = SECRET_KEY
+
+# Web admin authentication
+admin_authentication = WebAdminAuthentication(ADMIN_USERNAME, ADMIN_PASSWORD)
 
 # Signer
 signer = ItsDangerousSigner(SECRET_KEY)
@@ -109,20 +116,20 @@ app.add_url_rule("/", view_func=signin_view)
 app.add_url_rule("/grades/", view_func=grades_view)
 app.add_url_rule(
     "/api/emails/exercise/<exercise_name>/send",
-    view_func=exercises_email_view.send,
+    view_func=admin_authentication.auth_required(exercises_email_view.send),
 )
 app.add_url_rule(
     "/api/emails/exercise/<exercise_name>/preview/<group_number>",
-    view_func=exercises_email_view.preview,
+    view_func=admin_authentication.auth_required(exercises_email_view.preview),
 )
 
 app.add_url_rule(
     "/api/emails/exam/<exam_name>/send",
     endpoint="send_email",
-    view_func=exams_email_view.send,
+    view_func=admin_authentication.auth_required(exams_email_view.send),
 )
 app.add_url_rule(
     "/api/emails/exam/<exam_name>/preview/<padron_number>",
     endpoint="preview_email",
-    view_func=exams_email_view.preview,
+    view_func=admin_authentication.auth_required(exams_email_view.preview),
 )
