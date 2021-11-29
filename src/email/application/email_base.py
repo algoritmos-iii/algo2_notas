@@ -2,7 +2,7 @@ from typing import Any, Dict, Union
 
 from ..domain.interfaces.message_sender_interface import MessageSenderInterface
 from ..domain.interfaces.templater_interface import TemplaterInterface
-from ..domain.models.message import Message
+from ..domain.models.message import EmailIntent
 
 
 class EmailBase:
@@ -36,7 +36,7 @@ class EmailBase:
         subject: str,
         context: Dict[str, Any],
     ):
-        return Message(
+        return EmailIntent(
             to=to_email_address,
             subject=subject,
             reply_to=self._docentes_email,

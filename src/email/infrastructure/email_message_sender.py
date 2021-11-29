@@ -3,7 +3,7 @@ from typing import List, Union
 
 from .email import Email
 
-from ..domain.models.message import Message
+from ..domain.models.message import EmailIntent
 from ..domain.interfaces.message_sender_interface import MessageSenderInterface
 
 
@@ -25,7 +25,7 @@ class EmailMessageSender(MessageSenderInterface):
         else:
             return ",".join(addr)
 
-    def _create_email(self, message: Message):
+    def _create_email(self, message: EmailIntent):
         email = Email(
             from_addr=self.from_addr,
             subject=message.subject,
@@ -37,7 +37,7 @@ class EmailMessageSender(MessageSenderInterface):
         email.add_html_content(message.html_content)
         return email
 
-    def send(self, message: Message):
+    def send(self, message: EmailIntent):
         email = self._create_email(message).message
 
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
