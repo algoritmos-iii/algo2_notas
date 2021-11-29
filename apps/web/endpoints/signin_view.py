@@ -1,11 +1,9 @@
 import flask
 from flask.views import MethodView
 
-
 from ..forms.authentication_form import AuthenticationForm
 
 from src.auth.application.student_auth_service import StudentAuthService
-from src.email.domain.models.message import TemplateMessage
 from src.shared.domain.signer_interface import SignerInterface
 
 from src.email.application.login_email import LoginData, LoginEmail, LoginEmailData
