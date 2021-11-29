@@ -18,7 +18,7 @@ class EmailBase:
     ) -> None:
         assert self.TEMPLATE_PLAIN_DIR
         assert self.TEMPLATE_HTML_DIR
-        assert self.WITH_COPY_TO_DOCENTES
+        assert self.WITH_COPY_TO_DOCENTES != None
 
         self._templater = templater
         self._docentes_email = docentes_email
