@@ -1,4 +1,4 @@
-from grades.domain.models.correction import IndividualCorrection
+from src.grades.domain.models.correction import IndividualCorrection
 from src.grades.application.grades_service import GradesService
 from src.email.application.exam_email import ExamData, ExamEmail, ExamEmailData
 

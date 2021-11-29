@@ -34,7 +34,7 @@ class ExerciseEmail(EmailBase):
             "grupo": data.group_number,
             "corrector": data.corrector_name,
             "nota": float(data.grade.replace(",", ".")),
-            "correcciones": data.details,
+            "correcciones": data.correction_details,
         }
 
     def send_email(self, data: ExerciseEmailData) -> None:
@@ -45,5 +45,5 @@ class ExerciseEmail(EmailBase):
         self._message_sender.send(message)
 
     def preview_email(self, data: ExerciseEmailData) -> str:
-        context = self._create_context(data)
+        context = self._create_context(data.exercise_data)
         return self._render_html(context)

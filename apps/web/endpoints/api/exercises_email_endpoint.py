@@ -1,4 +1,4 @@
-from grades.domain.models.correction import GroupCorrection
+from src.grades.domain.models.correction import GroupCorrection
 from src.grades.application.grades_service import GradesService
 from src.email.application.exercise_email import (
     ExerciseData,
@@ -41,7 +41,7 @@ class ExercisesEmailView:
             exercise_name
         ):
             if group_correction.group.group_number == group_number:
-                return self._email_service.preview_template_message(
+                return self._email_service.preview_email(
                     self._generate_exercises_data(group_correction)
                 )
 
