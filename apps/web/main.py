@@ -42,7 +42,7 @@ SPREADSHEET_KEY: str = os.environ["NOTAS_SPREADSHEET_KEY"]
 # Gmail config
 EMAIL_ACCOUNT: str = os.environ["EMAIL_ACCOUNT"]
 EMAIL_PASSWORD: str = os.environ["EMAIL_PASSWORD"]
-DOCENTES_EMAIL = '"Docentes Algoritmos 3" <fiuba-algoritmos-iii-doc@googlegroups.com>'
+DOCENTES_EMAIL = "fiuba-algoritmos-iii-doc@googlegroups.com"
 
 # Flask configuration
 app = flask.Flask(__name__)
