@@ -1,4 +1,4 @@
-from ..domain.models.message import TemplateMessage
+from ..domain.models.email_intent import TemplateMessage
 from .email_message_sender import EmailMessageSender
 
 

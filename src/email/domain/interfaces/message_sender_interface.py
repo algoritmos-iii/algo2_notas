@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from ..models.message import EmailIntent
+from ..models.email_intent import EmailIntent
 
 
 class MessageSenderInterface(ABC):

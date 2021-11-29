@@ -2,7 +2,7 @@ from typing import Any, Dict, Union
 
 from ..domain.interfaces.message_sender_interface import MessageSenderInterface
 from ..domain.interfaces.templater_interface import TemplaterInterface
-from ..domain.models.message import EmailIntent
+from ..domain.models.email_intent import EmailIntent
 
 
 class EmailBase:

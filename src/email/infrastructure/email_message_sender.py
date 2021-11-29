@@ -3,7 +3,7 @@ from typing import List, Union
 
 from .email import Email
 
-from ..domain.models.message import EmailIntent
+from ..domain.models.email_intent import EmailIntent
 from ..domain.interfaces.message_sender_interface import MessageSenderInterface
 
 
