@@ -49,12 +49,18 @@ class StudentGradesRepositorySpreadsheet(
                     group_number=student["Grupo"],
                 ),
                 exercises_grades=[
-                    Grade(activity_name=activity_name, grade=grade)
+                    Grade(
+                        activity_name=activity_name,
+                        grade=float(grade.replace(",", ".")),
+                    )
                     for activity_name, grade in exercises[student_idx].items()
                     if grade.strip() != ""
                 ],
                 exams_grades=[
-                    Grade(activity_name=activity_name, grade=grade)
+                    Grade(
+                        activity_name=activity_name,
+                        grade=float(grade.replace(",", ".")),
+                    )
                     for activity_name, grade in exams[student_idx].items()
                     if grade.strip() != ""
                 ],

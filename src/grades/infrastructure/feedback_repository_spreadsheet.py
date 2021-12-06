@@ -80,7 +80,7 @@ class FeedbackRepositorySpreadsheet(
                 ),
                 correction=Correction(
                     activity_name=exercise_name,
-                    grade=correction["Nota"],
+                    grade=float(correction["Nota"].replace(",", ".")),
                     corrector_name=correction["Corrector"],
                     details=correction["Detalle"],
                 ),
@@ -107,13 +107,13 @@ class FeedbackRepositorySpreadsheet(
                 ),
                 correction=Correction(
                     activity_name=exam_name,
-                    grade=correction["Nota"],
+                    grade=float(correction["Nota"].replace(",", ".")),
                     corrector_name=correction["Corrector"],
                     details=correction["Detalle"],
                 ),
                 exam_data={
-                    "extra_points": correction["Puntos extra"],
-                    "final_grade": correction["Nota final"],
+                    "extra_points": float(correction["Puntos extra"].replace(",", ".")),
+                    "final_grade": float(correction["Nota final"].replace(",", ".")),
                 },
             )
             for email, correction in zip(emails, corrections)

@@ -5,7 +5,7 @@ from typing import List
 @dataclass
 class Grade:
     activity_name: str
-    grade: str
+    grade: float
 
 
 @dataclass
