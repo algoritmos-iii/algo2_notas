@@ -33,7 +33,7 @@ class ExerciseEmail(EmailBase):
             "ejercicio": data.exercise_name,
             "grupo": data.group_number,
             "corrector": data.corrector_name,
-            "nota": float(data.grade.replace(",", ".")),
+            "nota": data.grade,
             "correcciones": data.correction_details,
         }
 
