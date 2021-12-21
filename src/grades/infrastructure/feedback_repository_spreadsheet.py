@@ -117,5 +117,5 @@ class FeedbackRepositorySpreadsheet(
                 },
             )
             for email, correction in zip(emails, corrections)
-            if not email["Email"] == ""
+            if (not email["Email"] == "") and (not correction["EMAIL_SENT"])
         ]
