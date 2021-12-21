@@ -17,6 +17,7 @@ class ExamsEmailView:
             student_email=individual_correction.individual.email,
             exam_data=ExamData(
                 exam_name=exam_name,
+                student_padron=individual_correction.individual.padron,
                 student_full_name=individual_correction.individual.full_name,
                 corrector_name=individual_correction.correction.corrector_name,
                 correction_details=individual_correction.correction.details,
@@ -30,7 +31,9 @@ class ExamsEmailView:
         for individual_correction in self._grades_service.get_exam_feedback_by_name(
             exam_name
         ):
-            self._email_service.send_email(exam_name, individual_correction)
+            self._email_service.send_email(
+                self._generate_exam_data(exam_name, individual_correction),
+            )
 
         return exam_name
 

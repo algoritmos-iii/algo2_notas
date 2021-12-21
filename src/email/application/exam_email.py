@@ -6,12 +6,13 @@ from .email_base import EmailBase
 @dataclass
 class ExamData:
     exam_name: str
+    student_padron: str
     student_full_name: str
     corrector_name: str
     correction_details: str
-    grade: str
-    extra_points: str
-    final_grade: str
+    grade: float
+    extra_points: float
+    final_grade: float
 
 
 @dataclass
@@ -34,9 +35,9 @@ class ExamEmail(EmailBase):
             "nombre": data.student_full_name,
             "corrector": data.corrector_name,
             "correcciones": data.correction_details,
-            "nota": float(data.grade.replace(",", ".")),
-            "puntos_extras": float(data.extra_points.replace(",", ".")),
-            "nota_final": float(data.final_grade.replace(",", ".")),
+            "nota": data.grade,
+            "puntos_extras": data.extra_points,
+            "nota_final": data.final_grade,
         }
 
     def send_email(self, data: ExamEmailData) -> None:
@@ -47,5 +48,5 @@ class ExamEmail(EmailBase):
         self._message_sender.send(message)
 
     def preview_email(self, data: ExamEmailData) -> str:
-        context = self._create_context(data)
+        context = self._create_context(data.exam_data)
         return self._render_html(context)
