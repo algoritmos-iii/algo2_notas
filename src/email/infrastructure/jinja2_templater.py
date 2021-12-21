@@ -9,7 +9,7 @@ def markdown2HTML(value: str) -> str:
 
 
 def as_grade_str(value: float) -> str:
-    return "{:.2g}".format(value)
+    return "{:.3g}".format(value)
 
 
 class Jinja2Templater(TemplaterInterface):
