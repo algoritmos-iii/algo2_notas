@@ -8,6 +8,7 @@ class Correction:
     corrector_name: str
     grade: float
     details: str
+    email_has_been_sent: bool
 
 
 @dataclass

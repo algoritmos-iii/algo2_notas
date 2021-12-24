@@ -83,6 +83,7 @@ class FeedbackRepositorySpreadsheet(
                     grade=float(correction["Nota"].replace(",", ".")),
                     corrector_name=correction["Corrector"],
                     details=correction["Detalle"],
+                    email_has_been_sent=(correction["EMAIL_SENT"] == "TRUE"),
                 ),
             )
             for email, correction in zip(emails, corrections)
@@ -110,6 +111,7 @@ class FeedbackRepositorySpreadsheet(
                     grade=float(correction["Nota"].replace(",", ".")),
                     corrector_name=correction["Corrector"],
                     details=correction["Detalle"],
+                    email_has_been_sent=(correction["EMAIL_SENT"] == "TRUE"),
                 ),
                 exam_data={
                     "extra_points": float(correction["Puntos extra"].replace(",", ".")),
@@ -117,5 +119,5 @@ class FeedbackRepositorySpreadsheet(
                 },
             )
             for email, correction in zip(emails, corrections)
-            if (not email["Email"] == "") and (not correction["EMAIL_SENT"])
+            if not email["Email"] == ""
         ]
