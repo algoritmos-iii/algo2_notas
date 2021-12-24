@@ -13,8 +13,8 @@ def _parse_header(header: Optional[SingleOrMultipleRecipient]) -> Optional[str]:
         return None
     elif isinstance(header, str):
         return header
-    else:
-        return ",".join(header)
+
+    return ",".join(header)
 
 
 class SmtpEmail:
