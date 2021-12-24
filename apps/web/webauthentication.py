@@ -1,6 +1,5 @@
-from os import name
-from flask import request, make_response
 from functools import wraps
+from flask import request, make_response
 
 from flask.wrappers import Response
 
