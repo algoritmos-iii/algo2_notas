@@ -1,6 +1,6 @@
 from src.grades.domain.models.correction import IndividualCorrection
 from src.grades.application.grades_service import GradesService
-from src.emails.application.exam_email import ExamEmailBuilder, ExamData
+from src.emails.application.exam_email_builder import ExamEmailBuilder, ExamData
 from src.emails.domain.interfaces.email_sender_interface import (
     EmailSenderInterface,
 )

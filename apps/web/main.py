@@ -10,9 +10,9 @@ from src.emails.infrastructure.email_sender import EmailSender
 from src.emails.infrastructure.jinja2_templater import Jinja2Templater
 
 # Email Builders
-from src.emails.application.exam_email import ExamEmailBuilder
-from src.emails.application.exercise_email import ExerciseEmailBuilder
-from src.emails.application.login_email import LoginEmailBuilder
+from src.emails.application.exam_email_builder import ExamEmailBuilder
+from src.emails.application.exercise_email_builder import ExerciseEmailBuilder
+from src.emails.application.login_email_builder import LoginEmailBuilder
 
 # Spreadsheet repositories
 from src.auth.infrastructure.students_repository import StudentRepository

@@ -1,6 +1,6 @@
 from src.grades.domain.models.correction import GroupCorrection
 from src.grades.application.grades_service import GradesService
-from src.emails.application.exercise_email import (
+from src.emails.application.exercise_email_builder import (
     ExerciseData,
     ExerciseEmailBuilder,
 )

@@ -4,7 +4,7 @@ from flask.views import MethodView
 from src.auth.application.student_auth_service import StudentAuthService
 from src.shared.domain.signer_interface import SignerInterface
 
-from src.emails.application.login_email import LoginEmailBuilder
+from src.emails.application.login_email_builder import LoginEmailBuilder
 from src.emails.domain.interfaces.email_sender_interface import (
     EmailSenderInterface,
 )
