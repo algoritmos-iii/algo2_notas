@@ -4,15 +4,17 @@ import flask
 
 from src.shared.infrastructure.itsdangerous_signer import ItsDangerousSigner
 
-from src.email.infrastructure.mock_email_message_sender import MockEmailMessageSender
-from src.email.infrastructure.email_message_sender import EmailMessageSender
-from src.email.infrastructure.jinja2_templater import Jinja2Templater
+# Email things
+from src.emails.infrastructure.mock_email_sender import MockEmailSender
+from src.emails.infrastructure.email_sender import EmailSender
+from src.emails.infrastructure.jinja2_templater import Jinja2Templater
 
-# Email services
-from src.email.application.login_email import LoginEmail
-from src.email.application.exercise_email import ExerciseEmail
-from src.email.application.exam_email import ExamEmail
+# Email Builders
+from src.emails.application.exam_email import ExamEmailBuilder
+from src.emails.application.exercise_email import ExerciseEmailBuilder
+from src.emails.application.login_email import LoginEmailBuilder
 
+# Spreadsheet repositories
 from src.auth.infrastructure.students_repository import StudentRepository
 from src.auth.application.student_auth_service import StudentAuthService
 
@@ -56,15 +58,15 @@ app.secret_key = SECRET_KEY
 # Web admin authentication
 admin_authentication = WebAdminAuthentication(ADMIN_USERNAME, ADMIN_PASSWORD)
 
-# Signer
+# Signer, templater and email sender
 signer = ItsDangerousSigner(SECRET_KEY)
-
-# Email
 templater = Jinja2Templater("./apps/web/templates")
-email_sender = EmailMessageSender(EMAIL_ACCOUNT, EMAIL_PASSWORD)
-login_email = LoginEmail(email_sender, templater, DOCENTES_EMAIL)
-exercise_email = ExerciseEmail(email_sender, templater, DOCENTES_EMAIL)
-exam_email = ExamEmail(email_sender, templater, DOCENTES_EMAIL)
+email_sender = EmailSender(EMAIL_ACCOUNT, EMAIL_PASSWORD)
+
+# Email builders
+exam_email_builder = ExamEmailBuilder(templater, EMAIL_ACCOUNT, DOCENTES_EMAIL)
+exercise_email_builder = ExerciseEmailBuilder(templater, EMAIL_ACCOUNT, DOCENTES_EMAIL)
+login_email_builder = LoginEmailBuilder(templater, EMAIL_ACCOUNT, DOCENTES_EMAIL)
 
 # Students auth
 student_repository = StudentRepository(
@@ -93,9 +95,11 @@ grades_service = GradesService(
 signin_view = SigninView.as_view(
     name="index",
     student_auth_service=student_auth_service,
-    signin_email_service=login_email,
     signer=signer,
+    signin_email_builder=login_email_builder,
+    email_sender=email_sender,
 )
+
 grades_view = GradesView.as_view(
     name="grades",
     grades_service=grades_service,
@@ -104,16 +108,20 @@ grades_view = GradesView.as_view(
 
 exercises_email_view = ExercisesEmailView(
     grades_service=grades_service,
-    email_service=exercise_email,
+    exercise_email_builder=exercise_email_builder,
+    email_sender=email_sender,
 )
 exams_email_view = ExamsEmailView(
     grades_service=grades_service,
-    email_service=exam_email,
+    exam_email_builder=exam_email_builder,
+    email_sender=email_sender,
 )
 
 # Endpoints
 app.add_url_rule("/", view_func=signin_view)
 app.add_url_rule("/grades/", view_func=grades_view)
+
+# API endpoints
 app.add_url_rule(
     "/api/emails/exercise/<exercise_name>/send",
     view_func=admin_authentication.auth_required(exercises_email_view.send),

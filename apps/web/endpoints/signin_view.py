@@ -1,25 +1,31 @@
 import flask
 from flask.views import MethodView
 
-from ..forms.authentication_form import AuthenticationForm
-
 from src.auth.application.student_auth_service import StudentAuthService
 from src.shared.domain.signer_interface import SignerInterface
 
-from src.email.application.login_email import LoginData, LoginEmail, LoginEmailData
+from src.emails.application.login_email import LoginEmailBuilder
+from src.emails.domain.interfaces.email_sender_interface import (
+    EmailSenderInterface,
+)
+
+from ..forms.authentication_form import AuthenticationForm
 
 
 class SigninView(MethodView):
     def __init__(
         self,
         student_auth_service: StudentAuthService,
-        signin_email_service: LoginEmail,
         signer: SignerInterface,
+        signin_email_builder: LoginEmailBuilder,
+        email_sender: EmailSenderInterface,
     ) -> None:
         self._form = AuthenticationForm()
         self._student_auth_service = student_auth_service
-        self._signin_email_service = signin_email_service
         self._signer = signer
+
+        self._signin_email_builder = signin_email_builder
+        self._email_sender = email_sender
 
     def get(self):
         # TODO change wip.html for index.html when is ready for PROD
@@ -41,13 +47,13 @@ class SigninView(MethodView):
             _external=True,
         )
 
+        email = self._signin_email_builder.create_email(
+            to_addr=student.email,
+            login_url=student_login_url,
+        )
+
         try:
-            self._signin_email_service.send_email(
-                LoginEmailData(
-                    student_email=student.email,
-                    login_data=LoginData(student_login_url),
-                )
-            )
+            self._email_sender.send(email)
         # TODO: replace exception for a more specific
         except Exception as exception:
             return flask.render_template("error.html", message=str(exception))

@@ -31,7 +31,7 @@ class GradesView(MethodView):
             )
 
         # padron is valid at this point
-        student = self._grades_service.get_student_with_grades_by_padron(padron)
+        student = self._grades_service.get_students_with_grades(padron)
         if not student:
             return flask.render_template(
                 "error.html",
