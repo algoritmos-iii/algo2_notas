@@ -1,4 +1,3 @@
-import os
 import sys
 import argparse
 from pylint import lint
@@ -18,18 +17,25 @@ Common uses:
 
 """
 
-parser = argparse.ArgumentParser(description='Lint application')
-parser.add_argument("--threshold", metavar='threshold', type=float, nargs=1, required=True,
-                    help='lowest threshold accepted')
-parser.add_argument("files", metavar='files', nargs='+', type=str,
-                    help="files to be linted")
+parser = argparse.ArgumentParser(description="Lint application")
+parser.add_argument(
+    "--threshold",
+    metavar="threshold",
+    type=float,
+    nargs=1,
+    required=True,
+    help="lowest threshold accepted",
+)
+parser.add_argument(
+    "files", metavar="files", nargs="+", type=str, help="files to be linted"
+)
 args = parser.parse_args()
 threshold = args.threshold[0]
 files = args.files
 
 
 run = lint.Run(files, do_exit=False)
-score = run.linter.stats['global_note']
+score = run.linter.stats["global_note"]
 
 if score < threshold:
     print("The score is less than threshold " + str(threshold))
