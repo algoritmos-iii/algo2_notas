@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List
-from .email_base import EmailBase
+
+from ..domain.models.template_email_builder_base import TemplateEmailBuilderBase
 
 
 @dataclass
@@ -12,18 +13,12 @@ class ExerciseData:
     correction_details: str
 
 
-@dataclass
-class ExerciseEmailData:
-    student_emails: List[str]
-    exercise_data: ExerciseData
-
-
-class ExerciseEmail(EmailBase):
+class ExerciseEmailBuilder(TemplateEmailBuilderBase):
     TEMPLATE_PLAIN_DIR = "emails/notas_ejercicio_plain.html"
     TEMPLATE_HTML_DIR = "emails/notas_ejercicio.html"
     WITH_COPY_TO_DOCENTES = True
 
-    def _create_subject(self, data: ExerciseData) -> str:
+    def _create_subject(self, data: ExerciseData):
         return (
             f"Corrección de ejercicio {data.exercise_name} - Grupo {data.group_number}"
         )
@@ -37,13 +32,13 @@ class ExerciseEmail(EmailBase):
             "correcciones": data.correction_details,
         }
 
-    def send_email(self, data: ExerciseEmailData) -> None:
-        subject = self._create_subject(data.exercise_data)
-        context = self._create_context(data.exercise_data)
+    def html_part(self, exercise_email_data: ExerciseData) -> str:
+        context = self._create_context(exercise_email_data)
+        return super()._render_html(context)
 
-        message = self._create_message(data.student_emails, subject, context)
-        self._message_sender.send(message)
-
-    def preview_email(self, data: ExerciseEmailData) -> str:
-        context = self._create_context(data.exercise_data)
-        return self._render_html(context)
+    def create_email(self, to_addr: List[str], exercise_email_data: ExerciseData):
+        return super().create_email(
+            to_addr=to_addr,
+            subject=self._create_subject(exercise_email_data),
+            context=self._create_context(exercise_email_data),
+        )

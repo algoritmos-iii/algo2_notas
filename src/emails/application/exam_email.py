@@ -1,6 +1,7 @@
-from dataclasses import dataclass
 from typing import Any, Dict
-from .email_base import EmailBase
+from dataclasses import dataclass
+
+from ..domain.models.template_email_builder_base import TemplateEmailBuilderBase
 
 
 @dataclass
@@ -15,13 +16,7 @@ class ExamData:
     final_grade: float
 
 
-@dataclass
-class ExamEmailData:
-    student_email: str
-    exam_data: ExamData
-
-
-class ExamEmail(EmailBase):
+class ExamEmailBuilder(TemplateEmailBuilderBase):
     TEMPLATE_PLAIN_DIR = "emails/notas_examen_plain.html"
     TEMPLATE_HTML_DIR = "emails/notas_examen.html"
     WITH_COPY_TO_DOCENTES = True
@@ -40,13 +35,13 @@ class ExamEmail(EmailBase):
             "nota_final": data.final_grade,
         }
 
-    def send_email(self, data: ExamEmailData) -> None:
-        subject = self._create_subject(data.exam_data)
-        context = self._create_context(data.exam_data)
+    def html_part(self, data: ExamData) -> str:
+        context = self._create_context(data)
+        return super()._render_html(context)
 
-        message = self._create_message(data.student_email, subject, context)
-        self._message_sender.send(message)
-
-    def preview_email(self, data: ExamEmailData) -> str:
-        context = self._create_context(data.exam_data)
-        return self._render_html(context)
+    def create_email(self, to_addr: str, data: ExamData):
+        return super().create_email(
+            to_addr=to_addr,
+            subject=self._create_subject(data),
+            context=self._create_context(data),
+        )
