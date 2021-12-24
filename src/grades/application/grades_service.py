@@ -25,20 +25,18 @@ class GradesService:
         )
 
     def get_not_sent_exercise_feedback(self, exam_name: str):
-        return list(
-            filter(
-                lambda feedback: not feedback.correction.email_has_been_sent,
-                self.get_exercise_feedback(exam_name),
-            )
-        )
+        return [
+            feedback
+            for feedback in self.get_exercise_feedback(exam_name)
+            if not feedback.correction.email_has_been_sent
+        ]
 
     def get_exam_feedback(self, exam_name: str):
         return self._feedback_repository.get_exams_corrections_by_exam_name(exam_name)
 
     def get_not_sent_exam_feedback(self, exam_name: str):
-        return list(
-            filter(
-                lambda feedback: not feedback.correction.email_has_been_sent,
-                self.get_exam_feedback(exam_name),
-            )
-        )
+        return [
+            feedback
+            for feedback in self.get_exam_feedback(exam_name)
+            if not feedback.correction.email_has_been_sent
+        ]
