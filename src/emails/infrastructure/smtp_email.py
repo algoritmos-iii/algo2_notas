@@ -19,7 +19,10 @@ def _parse_header(header: Optional[SingleOrMultipleRecipient]) -> Optional[str]:
 
 class SmtpEmail:
     """
-    An OOP abstraction of an SMTP email
+    Represents an email which complies with the RFC 822 standards.
+    An OOP abstraction of `EmailMessage`. It encapsulates some functionality
+    from Python email's examples.
+    (https://docs.python.org/es/3/library/email.examples.html)
     """
 
     def __init__(
@@ -55,6 +58,7 @@ class SmtpEmail:
 
     @classmethod
     def from_email(cls, email: NormalEmail):
+        """A constructor to create an `SmtpEmail` from a `NormalEmail`"""
         smtp_email = SmtpEmail(
             from_addr=email.from_addr,
             to_addr=email.to_addr,
@@ -67,12 +71,15 @@ class SmtpEmail:
         return smtp_email
 
     def message(self) -> EmailMessage:
+        """Returns an `EmailMessage` with all the content"""
         return self._msg
 
     def add_plaintext_content(self, content: str) -> None:
+        """Adds plaintext content to the email. Must be called before `add_html_content`."""
         self._msg.set_content(content)
 
     def add_html_content(self, content: str) -> None:
+        """Adds html content to the email."""
         if self._msg.get_content() is None:
             raise Exception(
                 "Email has no plaintext content. It should be added before adding an html part"
