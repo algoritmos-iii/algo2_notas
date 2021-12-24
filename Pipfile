@@ -20,6 +20,8 @@ markdown = "*"
 [dev-packages]
 pylint = "*"
 black = "*"
+mypy = "*"
+types-markdown = "*"
 
 [pipenv]
 allow_prereleases = true
