@@ -5,6 +5,10 @@ from flask.wrappers import Response
 
 
 class WebAdminAuthentication:
+    """
+    An authentication system for Flask using `basic auth`.
+    """
+
     def __init__(self, admin_username: str, admin_password: str) -> None:
         self.admin_username = admin_username
         self.admin_password = admin_password
