@@ -1,7 +1,6 @@
 from typing import Any
-from ..domain.signer_interface import SignerInterface, BadData
-
 import itsdangerous
+from ..domain.signer_interface import SignerInterface, BadData
 
 
 class ItsDangerousSigner(SignerInterface):
