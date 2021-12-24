@@ -6,6 +6,12 @@ from ..interfaces.templater_interface import TemplaterInterface
 
 
 class TemplateEmailBuilderBase(ABC):
+    """
+    A base class for email builders which use templates.
+    The `__init__` asks some basic initial data and then it enables the user to
+    create emails using the `create_email` method.
+    """
+
     TEMPLATE_PLAIN_DIR: Optional[str] = None
     TEMPLATE_HTML_DIR: Optional[str] = None
     WITH_COPY_TO_DOCENTES: Optional[bool] = None
@@ -42,6 +48,10 @@ class TemplateEmailBuilderBase(ABC):
         subject: str,
         context: Dict[str, Any],
     ) -> NormalEmail:
+        """
+        Returns a `NormalEmail` created with the templates, and the sending info
+        with which the object was instantiated.
+        """
         return NormalEmail(
             from_addr=self._from_addr,
             to_addr=to_addr,
