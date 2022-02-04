@@ -23,6 +23,12 @@ class DataMapper:
     def all_group_numbers(self):
         return [group.group_number for group in self.all_groups()]
 
+    def group_by_number(self, group_number: str):
+        for group in self.all_groups():
+            if group.group_number == group_number:
+                return group
+        return None
+
     def group_of_student(self, padron: str):
         for group in self.all_groups():
             if padron in group.padrones:
