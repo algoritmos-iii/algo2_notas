@@ -7,6 +7,8 @@ from blueprints.admin import admin_blueprint
 from blueprints.student_front import student_front_blueprint
 from spreadsheet_data_mapper import DataMapper
 
+from jinja2_filters import markdown2HTML, as_grade_str
+
 from config import AppConfig
 
 app_config = AppConfig()
@@ -17,9 +19,11 @@ app.config["title"] = app_config.title
 app.secret_key = app_config.secret_key
 app.template_folder = app_config.template_folder
 
-DataMapper.repository.get_data()
+# Register jinja templates helpers
+app.jinja_env.filters['md'] = markdown2HTML
+app.jinja_env.filters["as_grade_str"] = as_grade_str
 
-# Register jinja templates helpers in `app.jinja_env`
+DataMapper.repository.get_data()
 
 # Endpoints
 app.register_blueprint(student_front_blueprint)
