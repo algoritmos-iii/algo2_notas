@@ -26,14 +26,14 @@ class Group:
 class BaseFeedback:
     grade: str
     corrector: str
-    detalle: str
+    details: str
 
 @define
 class ExamFeedback(BaseFeedback):
-    padron: str
+    student_padron: str
     name: str
 
 @define
 class ExerciseFeedback(BaseFeedback):
-    grupo: str
+    group: str
     name: str
