@@ -62,7 +62,7 @@ def notas():
     padron = key
 
     student = data_mapper.student_by_padron(padron)
-    student_group = data_mapper.get_group_of_student(student.padron)
+    student_group = data_mapper.group_of_student(student.padron)
     exercises = data_mapper.exercises_feedback_by_group_number(
         student_group.group_number
     )
