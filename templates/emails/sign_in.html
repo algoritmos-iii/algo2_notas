@@ -1,0 +1,11 @@
+{% extends "emails/layout/html_layout.html" %}
+
+{% block content %}
+<p>Este es el link para consultar tus notas:</p>
+<a href="{{enlace}}">{{enlace}}</a>
+
+<p>
+    Nota: El enlace generado es único para tu padrón. No lo compartas con nadie (a menos que quieras que otros puedan
+    ver tus notas).
+</p>
+{% endblock %}
