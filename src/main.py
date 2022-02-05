@@ -21,7 +21,7 @@ app.template_folder = app_config.template_folder
 
 # Register jinja templates helpers
 # pylint: disable=no-member
-app.jinja_env.filters['md'] = markdown2HTML
+app.jinja_env.filters["md"] = markdown2HTML
 app.jinja_env.filters["as_grade_str"] = as_grade_str
 # pylint: enable=no-member
 
