@@ -83,8 +83,8 @@ class DataRepository:
 
         self.exercises = [
             ExerciseFeedback(
-                group=exercise["identifier"],
-                name=exercise["activity_name"],
+                group_number=exercise["identifier"],
+                exercise_name=exercise["activity_name"],
                 grade=exercise["Nota"],
                 corrector=exercise["Corrector"],
                 details=exercise["Detalle"],
@@ -95,8 +95,10 @@ class DataRepository:
         self.exams = [
             ExamFeedback(
                 student_padron=exam["identifier"],
-                name=exam["activity_name"],
+                exam_name=exam["activity_name"],
                 grade=exam["Nota"],
+                extra_points=exam["Puntos extra"],
+                final_grade=exam["Nota final"],
                 corrector=exam["Corrector"],
                 details=exam["Detalle"],
             )

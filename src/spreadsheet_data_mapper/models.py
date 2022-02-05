@@ -1,5 +1,6 @@
 from attrs import define
 
+
 @define
 class Student:
     padron: str
@@ -11,10 +12,12 @@ class Student:
     def full_name(self) -> str:
         return f"{self.first_names} {self.last_names}"
 
+
 @define
 class Paper:
     padron: str
     papers: dict
+
 
 @define
 class Group:
@@ -22,18 +25,22 @@ class Group:
     padrones: list
     repository: str
 
+
 @define
-class BaseFeedback:
+class ExerciseFeedback:
+    group_number: str
+    exercise_name: str
     grade: str
     corrector: str
     details: str
 
-@define
-class ExamFeedback(BaseFeedback):
-    student_padron: str
-    name: str
 
 @define
-class ExerciseFeedback(BaseFeedback):
-    group: str
-    name: str
+class ExamFeedback:
+    student_padron: str
+    exam_name: str
+    grade: str
+    extra_points: str
+    final_grade: str
+    corrector: str
+    details: str

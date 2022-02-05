@@ -62,14 +62,14 @@ class DataMapper:
         return [
             exercise
             for exercise in self.repository.exercises
-            if exercise.details and exercise.group in self.all_group_numbers()
+            if exercise.details and exercise.group_number in self.all_group_numbers()
         ]
 
     def all_exercises_feedback_by_name(self, exercise_name: str):
         return [
             exercise
             for exercise in self._valid_exercises_feedback()
-            if exercise.name == exercise_name
+            if exercise.exercise_name == exercise_name
         ]
 
     def not_sent_exercises_feedback_by_name(self, exercise_name: str):
@@ -83,7 +83,7 @@ class DataMapper:
         return [
             exercise
             for exercise in self._valid_exercises_feedback()
-            if exercise.group == group_number
+            if exercise.group_number == group_number
         ]
 
     # Exams
@@ -95,7 +95,7 @@ class DataMapper:
         return [
             exam
             for exam in self.repository.exams
-            if exam.name == exam_name and exam.details
+            if exam.exam_name == exam_name and exam.details
         ]
 
     def not_sent_exam_feedback_by_name(self, exam_name: str):
