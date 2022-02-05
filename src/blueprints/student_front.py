@@ -22,6 +22,7 @@ def create_login_email(url, email):
         Email()
         .set_subject("Enlace para consultar las notas")
         .set_recipients(email)
+        .set_cc(None)
         .set_plaintext_content_from_template("emails/sign_in_plain.html", context)
         .set_html_content_from_template("emails/sign_in.html", context)
     )

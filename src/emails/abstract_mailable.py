@@ -1,6 +1,6 @@
 from abc import ABC
 from email.message import EmailMessage
-from typing import Dict
+from typing import Dict, Optional
 
 
 class MissingHeadersException(ValueError):
@@ -14,7 +14,7 @@ class AbstractMailable:
     _REQUIRED_HEADERS = ["from", "to", "subject"]
 
     def __init__(self) -> None:
-        self._headers: Dict[str, str] = {}
+        self._headers: Dict[str, Optional[str]] = {}
 
     # MAIN HEADERS
 
@@ -28,6 +28,10 @@ class AbstractMailable:
 
     def set_recipients(self, recipients: str):
         self._headers["to"] = recipients
+        return self
+
+    def set_cc(self, cc_addresses: Optional[str]):
+        self._headers["cc"] = cc_addresses
         return self
 
     # CONTENT
@@ -59,6 +63,9 @@ class AbstractMailable:
         msg["From"] = self._headers["from"]
         msg["To"] = self._headers["to"]
         msg["Subject"] = self._headers["subject"]
+
+        if self._is_field_set("cc"):
+            msg["CC"] = self._headers["cc"]
 
         if self._is_field_set("plaintext"):
             msg.set_content(self._headers["plaintext"])
