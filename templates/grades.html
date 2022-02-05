@@ -13,15 +13,15 @@ la consulta{% endblock %} {% block content %}
   <div class="card border-0">
     <table class="table table-sm table-striped table-hover">
       <tbody>
-        {% for exercise in exercises %}
+        {% for exercise_feedback in exercises %}
         <tr>
-          <td>{{ exercise.name }}</td>
-          <td>{{ exercise.grade }}</td>
+          <td>{{ exercise_feedback.exercise_name }}</td>
+          <td>{{ exercise_feedback.grade }}</td>
         </tr>
-        {% endfor %} {% for exam in exams %}
+        {% endfor %} {% for exam_feedback in exams %}
         <tr>
-          <td>{{ exam.name }}</td>
-          <td>{{ exam.grade }}</td>
+          <td>{{ exam_feedback.exam_name }}</td>
+          <td>{{ exam_feedback.grade }}</td>
         </tr>
         {% endfor %}
       </tbody>
