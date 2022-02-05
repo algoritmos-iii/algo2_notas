@@ -88,6 +88,8 @@ class DataRepository:
                 grade=exercise["Nota"],
                 corrector=exercise["Corrector"],
                 details=exercise["Detalle"],
+                email_sent=(exercise["EMAIL_SENT"] == "TRUE"),
+                email_sent_position=exercise["email_sent_cell"],
             )
             for exercise in process_feedbacks(ejercicios_raw)
         ]
@@ -101,6 +103,14 @@ class DataRepository:
                 final_grade=exam["Nota final"],
                 corrector=exam["Corrector"],
                 details=exam["Detalle"],
+                email_sent=(exam["EMAIL_SENT"] == "TRUE"),
+                email_sent_position=exam["email_sent_cell"],
             )
             for exam in process_feedbacks(examenes_raw)
         ]
+
+    def write_to_exercise_sheet(self, cell: str, value: str):
+        self._spreadsheet.worksheet("Devoluciones").update_acell(cell, value)
+
+    def write_to_exam_sheet(self, cell:str, value: str):
+        self._spreadsheet.worksheet("Devoluciones examenes").update_acell(cell, value)

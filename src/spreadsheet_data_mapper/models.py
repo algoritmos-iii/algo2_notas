@@ -33,6 +33,8 @@ class ExerciseFeedback:
     grade: str
     corrector: str
     details: str
+    email_sent: bool
+    email_sent_position: str
 
 
 @define
@@ -44,3 +46,5 @@ class ExamFeedback:
     final_grade: str
     corrector: str
     details: str
+    email_sent: bool
+    email_sent_position: str

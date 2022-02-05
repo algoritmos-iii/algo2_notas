@@ -76,7 +76,7 @@ class DataMapper:
         return [
             exercise
             for exercise in self.all_exercises_feedback_by_name(exercise_name)
-            # if not exercise.sent
+            if not exercise.email_sent
         ]
 
     def exercises_feedback_by_group_number(self, group_number: str):
@@ -85,6 +85,9 @@ class DataMapper:
             for exercise in self._valid_exercises_feedback()
             if exercise.group_number == group_number
         ]
+
+    def write_to_exercise_sheet(self, cell: str, value: str):
+        self.repository.write_to_exercise_sheet(cell, value)
 
     # Exams
 
@@ -102,7 +105,7 @@ class DataMapper:
         return [
             exam
             for exam in self.all_exam_feedback_by_name(exam_name)
-            # if not exam.sent
+            if not exam.email_sent
         ]
 
     def exams_feedback_by_student(self, padron: str):
@@ -111,6 +114,9 @@ class DataMapper:
             for exam in self._valid_exam_feedbacks()
             if exam.student_padron == padron
         ]
+
+    def write_to_exam_sheet(self, cell: str, value: str):
+        self.repository.write_to_exam_sheet(cell, value)
 
     # Students
 

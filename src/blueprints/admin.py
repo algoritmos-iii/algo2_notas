@@ -71,27 +71,31 @@ def create_exam_email(feedback: ExamFeedback):
 # Endpoints
 @admin_blueprint.get("/emails/exercise/<exercise>/send")
 def send_exercise_email(exercise: str):
+    data_mapper.repository.get_data()
     feedbacks = data_mapper.not_sent_exercises_feedback_by_name(exercise)
     if not feedbacks:
-        return f"Ejercicio {exercise} no encontrado"
+        return f"Ejercicio {exercise} no encontrado o ya enviado"
 
     with smtp_connection() as connection:
         for feedback in feedbacks:
             email = create_exercise_email(feedback)
             connection.send_message(email.generate_email_message())
+            data_mapper.write_to_exercise_sheet(feedback.email_sent_position, "TRUE")
 
     return "Mensajes enviados"
 
 
 @admin_blueprint.get("/emails/exam/<exam>/send")
 def send_exam_email(exam: str):
+    data_mapper.repository.get_data()
     feedbacks = data_mapper.not_sent_exam_feedback_by_name(exam)
     if not feedbacks:
-        return f"Examen {exam} no encontrado"
+        return f"Examen {exam} no encontrado o ya enviado"
 
     with smtp_connection() as connection:
         for feedback in feedbacks:
             email = create_exam_email(feedback)
             connection.send_message(email.generate_email_message())
+            data_mapper.write_to_exam_sheet(feedback.email_sent_position, "TRUE")
 
     return "Mensajes enviados"

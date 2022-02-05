@@ -49,20 +49,20 @@ def index():
     auth_form = AuthenticationForm()
 
     if auth_form.validate_on_submit():
-        padron = auth_form.normalized_padron()
-        email = auth_form.normalized_email()
+        student_padron = auth_form.normalized_padron()
+        student_email = auth_form.normalized_email()
 
-        if user_is_valid(padron, email):
-            key = signer.dumps(padron)
+        if user_is_valid(student_padron, student_email):
+            key = signer.dumps(student_padron)
             url = flask.request.url + flask.url_for(".notas", key=key)
 
-            email = create_login_email(url, email)
+            email = create_login_email(url, student_email)
 
             # TODO: put try-except for errors
             with smtp_connection() as connection:
                 connection.send_message(email.generate_email_message())
 
-            return flask.render_template("email_sent.html", email=email)
+            return flask.render_template("email_sent.html", email=student_email)
         else:
             flask.flash("La dirección de mail no está asociada a ese padrón", "danger")
 
