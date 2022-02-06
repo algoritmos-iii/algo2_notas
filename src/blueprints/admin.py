@@ -1,4 +1,5 @@
 import flask
+from security import auth_required
 from emails import smtp_connection, Email
 from spreadsheet_data_mapper import DataMapper
 from spreadsheet_data_mapper.models import ExamFeedback, ExerciseFeedback
@@ -70,6 +71,7 @@ def create_exam_email(feedback: ExamFeedback):
 
 # Endpoints
 @admin_blueprint.get("/emails/exercise/<exercise>/send")
+@auth_required
 def send_exercise_email(exercise: str):
     data_mapper.repository.get_data()
     feedbacks = data_mapper.not_sent_exercises_feedback_by_name(exercise)
@@ -86,6 +88,7 @@ def send_exercise_email(exercise: str):
 
 
 @admin_blueprint.get("/emails/exam/<exam>/send")
+@auth_required
 def send_exam_email(exam: str):
     data_mapper.repository.get_data()
     feedbacks = data_mapper.not_sent_exam_feedback_by_name(exam)
