@@ -34,6 +34,10 @@ class AppConfig(BaseConfig):
     def template_folder(self) -> str:
         return self.get_config_variable("TEMPLATES_DIR")
 
+    @property
+    def environment(self):
+        return self.get_config_variable("ENVIRONMENT")
+
 
 class AdminConfig(BaseConfig):
     @property

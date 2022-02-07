@@ -1,8 +1,9 @@
 import smtplib
 import flask
-from config import EmailConfig
+from config import AppConfig, EmailConfig
 from .abstract_mailable import AbstractMailable
 
+app_config = AppConfig()
 email_config = EmailConfig()
 
 
@@ -42,4 +43,7 @@ A variable to decide which smtp service to use.
 (first initialize mailhog)
 * Use `gmail_smtp_connection` for production
 """
-smtp_connection = mailhog_smtp_connection
+if app_config.environment == "PRODUCTION":
+    smtp_connection = gmail_smtp_connection
+else:
+    smtp_connection = mailhog_smtp_connection
