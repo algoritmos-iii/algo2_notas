@@ -29,6 +29,7 @@ def create_exercise_email(feedback: ExerciseFeedback):
         .set_subject(
             f"Correción de ejercicio {feedback.exercise_name} - Grupo {feedback.group_number}"
         )
+        .set_cc_to_lista_docente(True)
         .set_plaintext_content_from_template(
             template_name="emails/notas_ejercicio_plain.html",
             context=context,
@@ -59,6 +60,7 @@ def create_exam_email(feedback: ExamFeedback):
         .set_subject(
             f"Corrección de {feedback.exam_name} - Padrón {feedback.student_padron}"
         )
+        .set_cc_to_lista_docente(True)
         .set_plaintext_content_from_template(
             template_name="emails/notas_examen_plain.html",
             context=context,
