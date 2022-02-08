@@ -83,7 +83,7 @@ def send_exercise_email(exercise: str):
 
     def generate():
         with smtp_connection() as connection:
-            print("hola")
+            
             for feedback in feedbacks:
                 email = create_exercise_email(feedback)
                 email_sent_error = ""
