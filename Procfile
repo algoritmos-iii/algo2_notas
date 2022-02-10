@@ -1,1 +1,1 @@
-gunicorn --time=180 --pythonpath './src' main:app
+web: gunicorn --time=180 --pythonpath './src' main:app
