@@ -17,7 +17,10 @@ class BaseConfig:
         self.config = {**self.config, **os.environ}
 
     def get_config_variable(self, name: str, default: Any = None):
-        return self.config.get(name, default)
+        config = self.config.get(name, default)
+        if config:
+            return config.strip()
+        return config
 
 
 class AppConfig(BaseConfig):
@@ -61,6 +64,18 @@ class EmailConfig(BaseConfig):
     @property
     def docentes_email(self) -> str:
         return self.get_config_variable("EMAIL_DOCENTES")
+
+    @property
+    def smtp_server_address(self) -> str:
+        return self.get_config_variable("EMAIL_SMTP_ADDRESS")
+
+    @property
+    def smtp_server_port(self) -> str:
+        return self.get_config_variable("EMAIL_SMTP_PORT")
+
+    @property
+    def use_ssl(self) -> bool:
+        return self.get_config_variable("EMAIL_USE_SSL").lower() == 'true'
 
 
 class SpreadsheetConfig(BaseConfig):

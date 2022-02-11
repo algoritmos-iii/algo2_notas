@@ -17,14 +17,22 @@ $ pipenv install
 Crear un archivo llamado `.env` y poner los datos pertinentes:
 
 ```bash
+ENVIRONMENT='*****'
+
 NOTAS_COURSE_NAME='Algoritmos III - Leveroni'
-NOTAS_ACCOUNT='*****@gmail.com'
 NOTAS_SECRET='*****'
+
+ADMIN_USERNAME='*****'
+ADMIN_PASSWORD='*****'
+
+EMAIL_ACCOUNT='*****'
+EMAIL_PASSWORD='*****'
+EMAIL_SMTP_ADDRESS='*****'
+EMAIL_SMTP_PORT='*****'
+EMAIL_USE_SSL='*****'
+
+NOTAS_SERVICE_ACCOUNT_CREDENTIALS='*****'
 NOTAS_SPREADSHEET_KEY='*****'
-NOTAS_SERVICE_ACCOUNT_JSON='./service_account.json'
-NOTAS_OAUTH_CLIENT='*****'
-NOTAS_OAUTH_SECRET='*****'
-NOTAS_REFRESH_TOKEN='*****'
 ```
 
 Solo es necesario completar todos los campos en caso de que se desee la funcionalidad completa. Para más información, leer la sección *'Variables de entorno'* debajo.
