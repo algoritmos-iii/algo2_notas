@@ -1,4 +1,3 @@
-from abc import ABC
 from email.message import EmailMessage
 from typing import Dict, Optional
 
