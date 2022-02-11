@@ -62,6 +62,18 @@ class EmailConfig(BaseConfig):
     def docentes_email(self) -> str:
         return self.get_config_variable("EMAIL_DOCENTES")
 
+    @property
+    def smtp_server_address(self) -> str:
+        return self.get_config_variable("EMAIL_SMTP_ADDRESS")
+
+    @property
+    def smtp_server_port(self) -> str:
+        return self.get_config_variable("EMAIL_SMTP_PORT")
+
+    @property
+    def use_ssl(self) -> bool:
+        return self.get_config_variable("EMAIL_USE_SSL").lower() == 'true'
+
 
 class SpreadsheetConfig(BaseConfig):
     @property
