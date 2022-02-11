@@ -12,7 +12,7 @@ def smtp_connection():
         host=email_config.smtp_server_address,
         port=int(email_config.smtp_server_port),
     )
-    if email_config.account:
+    if email_config.account and email_config.password:
         connection.login(user=email_config.account, password=email_config.password)
 
     return connection
