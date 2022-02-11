@@ -1,5 +1,6 @@
-from email.message import EmailMessage
 from typing import Dict, Optional
+from email.message import EmailMessage
+from email.utils import formatdate
 
 
 class MissingHeadersException(ValueError):
@@ -62,6 +63,7 @@ class AbstractMailable:
         msg["From"] = self._headers["from"]
         msg["To"] = self._headers["to"]
         msg["Subject"] = self._headers["subject"]
+        msg["Date"] = formatdate()
 
         if self._is_field_set("cc"):
             msg["CC"] = self._headers["cc"]
