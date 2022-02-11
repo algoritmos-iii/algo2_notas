@@ -17,7 +17,10 @@ class BaseConfig:
         self.config = {**self.config, **os.environ}
 
     def get_config_variable(self, name: str, default: Any = None):
-        return self.config.get(name, default)
+        config = self.config.get(name, default)
+        if config:
+            return config.strip()
+        return config
 
 
 class AppConfig(BaseConfig):
