@@ -6,16 +6,16 @@ from .abstract_mailable import AbstractMailable
 app_config = AppConfig()
 email_config = EmailConfig()
 
-
-def gmail_smtp_connection():
-    connection = smtplib.SMTP_SSL(host="smtp.gmail.com", port=465)
-    connection.login(user=email_config.account, password=email_config.password)
+def smtp_connection():
+    SMTPConnection = smtplib.SMTP_SSL if email_config.use_ssl else smtplib.SMTP
+    connection = SMTPConnection(
+        host=email_config.smtp_server_address,
+        port=int(email_config.smtp_server_port),
+    )
+    if email_config.account:
+        connection.login(user=email_config.account, password=email_config.password)
 
     return connection
-
-
-def mailhog_smtp_connection():
-    return smtplib.SMTP(host="localhost", port=1025)
 
 
 class Email(AbstractMailable):
@@ -35,15 +35,3 @@ class Email(AbstractMailable):
 
     def set_cc_to_lista_docente(self, should_send_copy: bool):
         return self.set_cc(email_config.docentes_email if should_send_copy else None)
-
-
-"""
-A variable to decide which smtp service to use.
-* Use `mailhog_smtp_connection` for testing purposes
-(first initialize mailhog)
-* Use `gmail_smtp_connection` for production
-"""
-if app_config.environment == "PRODUCTION":
-    smtp_connection = gmail_smtp_connection
-else:
-    smtp_connection = mailhog_smtp_connection
