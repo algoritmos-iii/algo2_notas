@@ -66,7 +66,7 @@ class AbstractMailable:
         msg["Date"] = formatdate()
 
         if self._is_field_set("cc"):
-            msg["CC"] = self._headers["cc"]
+            msg["Cc"] = self._headers["cc"]
 
         if self._is_field_set("plaintext"):
             msg.set_content(self._headers["plaintext"])
