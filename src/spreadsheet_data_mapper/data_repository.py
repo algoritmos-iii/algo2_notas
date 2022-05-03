@@ -39,7 +39,7 @@ class DataRepository:
             examenes_raw,
         ) = self._spreadsheet_values_batch_get(
             [
-                "Listado",
+                "Listado!1:90",
                 "Grupos",
                 "Puntos extra papers!1:14",
                 "Devoluciones",
@@ -53,14 +53,14 @@ class DataRepository:
                 padron=student["Padrón"],
                 first_names=student["Nombre"].split(", ")[1],
                 last_names=student["Nombre"].split(", ")[0],
-                email=student["E-Mail"],
+                email=student["Email"],
             )
             for student in process_students(listado_raw)
         ]
 
         self.groups = [
             Group(
-                group_number=group["*"],
+                group_number=group["#"],
                 padrones=[
                     val
                     for key, val in group.items()
