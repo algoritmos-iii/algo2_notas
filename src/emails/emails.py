@@ -22,6 +22,7 @@ class Email(AbstractMailable):
     def __init__(self) -> None:
         super().__init__()
         self.set_from(email_config.account)
+        self.set_reply_to(email_config.docentes_email)
 
     def set_plaintext_content_from_template(self, template_name: str, context: dict):
         return self.set_plaintext_content(
