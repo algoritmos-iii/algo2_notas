@@ -1,3 +1,4 @@
+from optparse import Option
 from typing import Dict, Optional
 from email.message import EmailMessage
 from email.utils import formatdate
@@ -34,6 +35,10 @@ class AbstractMailable:
         self._headers["cc"] = cc_addresses
         return self
 
+    def set_reply_to(self, reply_to_address: Optional[str]):
+        self._headers["reply_to"] = reply_to_address
+        return self
+
     # CONTENT
 
     def set_plaintext_content(self, plaintext_content: str):
@@ -68,10 +73,14 @@ class AbstractMailable:
         if self._is_field_set("cc"):
             msg["Cc"] = self._headers["cc"]
 
+        if self._is_field_set("reply_to"):
+            msg["Reply-To"] = self._headers["reply_to"]
+
         if self._is_field_set("plaintext"):
             msg.set_content(self._headers["plaintext"])
 
         if self._is_field_set("html"):
             msg.add_alternative(self._headers["html"], subtype="html")
+
 
         return msg

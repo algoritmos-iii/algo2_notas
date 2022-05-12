@@ -60,7 +60,7 @@ class DataRepository:
 
         self.groups = [
             Group(
-                group_number=group["#"],
+                group_number=group["Grupo"],
                 padrones=[
                     val
                     for key, val in group.items()
