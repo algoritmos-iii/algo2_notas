@@ -1,0 +1,58 @@
+{% extends "layout.html" %} {% block title %}{{ config.title }} - Resultado de
+la consulta{% endblock %} {% block content %}
+
+<h1>{{ student_name }}</h1>
+<h3 style="color: grey">Grupo: {{ student_group }}</h3>
+
+<b style="color: grey">{{ student_email }}</b>
+<br />
+<b style="color: grey">{{ student_padron }}</b>
+<br /><br />
+
+<div class="card-group">
+  <div class="card border-0">
+    <table class="table table-sm table-striped table-hover">
+      <tbody>
+        {% for exercise_feedback in exercises %}
+        <tr>
+          <td>{{ exercise_feedback.exercise_name }}</td>
+          <td>{{ exercise_feedback.grade }}</td>
+        </tr>
+        {% endfor %} {% for exam_feedback in exams %}
+        <tr>
+          <td>{{ exam_feedback.exam_name }}</td>
+          <td>{{ exam_feedback.grade }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {# <div class="card border-0">
+    <div class="card-body">
+      <p class="card-text" style="color: grey"><b>Aún no tenemos la condición final de cursada</b></p>
+
+      {% for key, val in items if key == "Condición final" if not val == "" %}
+      <h3 class="card-title">{{ key }}</h3>
+      {% if val == "Promociona" %}
+      <p class="card-text" style="color: green"><b>{{ val }}</b></p>
+      {% elif val == "Final" %}
+      <p class="card-text" style="color: green"><b>{{ val }}</b></p>
+      {% elif val == "Recursa" %}
+      <p class="card-text" style="color: red"><b>{{ val }}</b></p>
+      {% endif %} {% endfor %}
+    </div>
+  </div> #}
+</div>
+
+{% if not exercises and not exams %}
+<b>Próximamente vas a poder ver tus notas</b>
+<img
+  src="{{ url_for('static', filename = 'images/nothing_see_here.png') }}"
+  width="350"
+  height="375"
+  class="center"
+  style="display: block; margin: 0 auto"
+/>
+{% endif %}
+
+{% endblock %}
