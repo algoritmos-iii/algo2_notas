@@ -1,3 +1,4 @@
+from typing import Optional
 from pymongo import MongoClient
 from config import MongoConfig
 
@@ -11,19 +12,27 @@ def get_student_by_padron(padron: int):
     return _db["students"].find_one({"padron": padron})
 
 
-def get_exercises_by_group(group: int):
+def get_exercises_by_group(group: int, email_sent: Optional[bool] = None):
+    query_filter = {"grupo": group}
+    if email_sent is not None:
+        query_filter["email_sent"] = email_sent
+
     return list(
         _db["exercises"].find(
-            filter={"grupo": group},
+            filter=query_filter,
             sort=[("_id", 1)],
         ),
     )
 
 
-def get_exams_by_padron(padron: int):
+def get_exams_by_padron(padron: int, email_sent: Optional[bool] = None):
+    query_filter = {"padron": padron}
+    if email_sent is not None:
+        query_filter["email_sent"] = email_sent
+
     return list(
         _db["exams"].find(
-            filter={"padron": padron},
+            filter=query_filter,
             sort=[("_id", 1)],
         ),
     )
