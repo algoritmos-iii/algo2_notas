@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 import flask
 
-from blueprints.admin import admin_blueprint
+# from blueprints.admin import admin_blueprint
 from blueprints.student_front import student_front_blueprint
-from spreadsheet_data_mapper import DataMapper
 
 from jinja2_filters import markdown2HTML, as_grade_str
 
@@ -25,11 +25,12 @@ app.jinja_env.filters["md"] = markdown2HTML
 app.jinja_env.filters["as_grade_str"] = as_grade_str
 # pylint: enable=no-member
 
-DataMapper.repository.get_data()
-
 # Endpoints
 app.register_blueprint(student_front_blueprint)
-app.register_blueprint(admin_blueprint)
+# app.register_blueprint(admin_blueprint)
+
+if os.environ.get("FLASK_DEBUG", "0") == "1":
+    print(os.environ)
 
 if __name__ == "__main__":
     app.run(debug=True)

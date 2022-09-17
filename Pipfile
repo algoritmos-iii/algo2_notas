@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-gspread = "*"
 webargs = "*"
 flask = "*"
 flask-wtf = "*"
@@ -13,6 +12,11 @@ python-dotenv = "*"
 gunicorn = "*"
 markdown = "*"
 attrs = "*"
+pymongo = "*"
 
 [dev-packages]
 pylint = "*"
+black = "*"
+
+[pipenv]
+allow_prereleases = true

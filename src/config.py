@@ -1,3 +1,4 @@
+from lib2to3.pytree import Base
 from typing import Any
 import json
 import os
@@ -77,13 +78,7 @@ class EmailConfig(BaseConfig):
     def use_ssl(self) -> bool:
         return self.get_config_variable("EMAIL_USE_SSL").lower() == 'true'
 
-
-class SpreadsheetConfig(BaseConfig):
+class MongoConfig(BaseConfig):
     @property
-    def spreadsheet_auth_dict(self) -> dict:
-        auth_data = self.get_config_variable("NOTAS_SERVICE_ACCOUNT_CREDENTIALS")
-        return json.loads(auth_data)
-
-    @property
-    def spreadsheet_key(self) -> str:
-        return self.get_config_variable("NOTAS_SPREADSHEET_KEY")
+    def url(self) -> str:
+        return self.get_config_variable("MONGO_URL")

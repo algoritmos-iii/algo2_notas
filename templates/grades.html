@@ -1,5 +1,5 @@
-{% extends "layout.html" %} {% block title %}{{ config.title }} - Resultado de
-la consulta{% endblock %} {% block content %}
+{% extends "layout.html" %} {% block title %} {{ config.title }} - Resultado de
+la consulta {% endblock %} {% block content %}
 
 <h1>{{ student_name }}</h1>
 <h3 style="color: grey">Grupo: {{ student_group }}</h3>
@@ -11,25 +11,46 @@ la consulta{% endblock %} {% block content %}
 
 <div class="card-group">
   <div class="card border-0">
+    <h3>Ejercicios</h3>
     <table class="table table-sm table-striped table-hover">
       <tbody>
-        {% for exercise_feedback in exercises %}
+        {% for exercise in exercises %}
         <tr>
-          <td>{{ exercise_feedback.exercise_name }}</td>
-          <td>{{ exercise_feedback.grade }}</td>
+          <td>
+            <a
+              href="/grades/exercises/{{exercise['title']}}?key={{encoded_key}}"
+            >
+              {{ exercise['title'] | replace("_"," ") | upper }}
+            </a>
+          </td>
+          <td>{{ exercise['nota'] }}</td>
         </tr>
-        {% endfor %} {% for exam_feedback in exams %}
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h3>Examenes</h3>
+    <table class="table table-sm table-striped table-hover">
+      <tbody>
+        {% for exam in exams %}
         <tr>
-          <td>{{ exam_feedback.exam_name }}</td>
-          <td>{{ exam_feedback.grade }}</td>
+          <td>
+            <a href="/grades/exams/{{exams['title']}}?key={{encoded_key}}">
+              {{ exam['title'] | replace("_"," ") | upper }}
+            </a>
+          </td>
+          <td>{{ exam['nota'] }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
-  {# <div class="card border-0">
+  {#
+  <div class="card border-0">
     <div class="card-body">
-      <p class="card-text" style="color: grey"><b>Aún no tenemos la condición final de cursada</b></p>
+      <p class="card-text" style="color: grey">
+        <b>Aún no tenemos la condición final de cursada</b>
+      </p>
 
       {% for key, val in items if key == "Condición final" if not val == "" %}
       <h3 class="card-title">{{ key }}</h3>
@@ -41,7 +62,8 @@ la consulta{% endblock %} {% block content %}
       <p class="card-text" style="color: red"><b>{{ val }}</b></p>
       {% endif %} {% endfor %}
     </div>
-  </div> #}
+  </div>
+  #}
 </div>
 
 {% if not exercises and not exams %}
@@ -53,6 +75,4 @@ la consulta{% endblock %} {% block content %}
   class="center"
   style="display: block; margin: 0 auto"
 />
-{% endif %}
-
-{% endblock %}
+{% endif %} {% endblock %}

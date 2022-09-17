@@ -6,6 +6,7 @@ from .abstract_mailable import AbstractMailable
 app_config = AppConfig()
 email_config = EmailConfig()
 
+
 def smtp_connection():
     SMTPConnection = smtplib.SMTP_SSL if email_config.use_ssl else smtplib.SMTP
     connection = SMTPConnection(
