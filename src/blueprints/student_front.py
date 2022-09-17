@@ -80,8 +80,8 @@ def notas():
 
     # Get data from padron
     student = get_student_by_padron(padron)
-    exercises = get_exercises_by_group(student["grupo"])
-    exams = get_exams_by_padron(student["padron"])
+    exercises = get_exercises_by_group(student["grupo"], email_sent=True)
+    exams = get_exams_by_padron(student["padron"], email_sent=True)
 
     return flask.render_template(
         "grades.html",
@@ -115,7 +115,7 @@ def exercise_detail(exercise: str):
 
     return flask.render_template(
         "emails/notas_ejercicio.html",
-        ejercicio=exercise_data["title"],
+        ejercicio=exercise_data["title"].replace("_", " ").upper(),
         grupo=exercise_data["grupo"],
         corrector=exercise_data["corrector"],
         nota=exercise_data["nota"],
@@ -142,9 +142,9 @@ def exam_detail(exam: str):
     exam_data = get_exam_by_padron_and_name(padron, exam)
 
     return flask.render_template(
-        "emails/notas_ejercicio.html",
+        "emails/notas_examen.html",
         nombre=student["nombre"],
-        examen=exam_data["title"],
+        examen=exam_data["title"].replace("_", " ").upper(),
         corrector=exam_data["corrector"],
         correcciones=exam_data["detalle"],
         nota=exam_data["nota"],

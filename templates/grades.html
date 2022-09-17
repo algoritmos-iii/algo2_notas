@@ -35,7 +35,7 @@ la consulta {% endblock %} {% block content %}
         {% for exam in exams %}
         <tr>
           <td>
-            <a href="/grades/exams/{{exams['title']}}?key={{encoded_key}}">
+            <a href="/grades/exams/{{exam['title']}}?key={{encoded_key}}">
               {{ exam['title'] | replace("_"," ") | upper }}
             </a>
           </td>
