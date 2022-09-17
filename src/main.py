@@ -29,8 +29,5 @@ app.jinja_env.filters["as_grade_str"] = as_grade_str
 app.register_blueprint(student_front_blueprint)
 # app.register_blueprint(admin_blueprint)
 
-if os.environ.get("FLASK_DEBUG", "0") == "1":
-    print(os.environ)
-
 if __name__ == "__main__":
     app.run(debug=True)
