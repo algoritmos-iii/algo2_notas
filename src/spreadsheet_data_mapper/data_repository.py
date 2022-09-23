@@ -39,8 +39,8 @@ class DataRepository:
             examenes_raw,
         ) = self._spreadsheet_values_batch_get(
             [
-                "Listado!1:90",
-                "Grupos",
+                "Listado!1:86",
+                "Grupos!1:43",
                 "Puntos extra papers!1:14",
                 "Devoluciones",
                 "Devoluciones examenes",
@@ -57,7 +57,7 @@ class DataRepository:
             )
             for student in process_students(listado_raw)
         ]
-
+        
         self.groups = [
             Group(
                 group_number=group["Grupo"],
