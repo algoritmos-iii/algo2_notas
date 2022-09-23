@@ -40,7 +40,7 @@ class DataRepository:
         ) = self._spreadsheet_values_batch_get(
             [
                 "Listado!1:86",
-                "Grupos!1:10",
+                "Grupos!1:43",
                 "Puntos extra papers!1:14",
                 "Devoluciones",
                 "Devoluciones examenes",
