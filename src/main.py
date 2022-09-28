@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
 import flask
 
 # from blueprints.admin import admin_blueprint
@@ -18,6 +17,7 @@ app = flask.Flask(__name__)
 app.config["title"] = app_config.title
 app.secret_key = app_config.secret_key
 app.template_folder = app_config.template_folder
+app.static_folder = app_config.static_folder
 
 # Register jinja templates helpers
 # pylint: disable=no-member

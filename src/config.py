@@ -8,7 +8,9 @@ dotenv.load_dotenv(dotenv_path="../")
 
 config = {
     "EMAIL_DOCENTES": "fiuba-algoritmos-iii-doc@googlegroups.com",
-    "TEMPLATES_DIR": "../templates"
+    "TEMPLATES_DIR": "../templates",
+    "STATIC_DIR": "../static",
+    "ENVIRONMENT": "DEV"
 }
 
 
@@ -37,6 +39,10 @@ class AppConfig(BaseConfig):
     @property
     def template_folder(self) -> str:
         return self.get_config_variable("TEMPLATES_DIR")
+
+    @property
+    def static_folder(self) -> str:
+        return self.get_config_variable("STATIC_DIR")
 
     @property
     def environment(self):
