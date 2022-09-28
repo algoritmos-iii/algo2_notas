@@ -3,7 +3,7 @@
 
 import flask
 
-# from blueprints.admin import admin_blueprint
+from blueprints.admin import admin_blueprint
 from blueprints.student_front import student_front_blueprint
 
 from jinja2_filters import markdown2HTML, as_grade_str
@@ -27,7 +27,7 @@ app.jinja_env.filters["as_grade_str"] = as_grade_str
 
 # Endpoints
 app.register_blueprint(student_front_blueprint)
-# app.register_blueprint(admin_blueprint)
+app.register_blueprint(admin_blueprint)
 
 if __name__ == "__main__":
     app.run(debug=True)
