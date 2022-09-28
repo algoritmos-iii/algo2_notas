@@ -20,3 +20,7 @@ black = "*"
 
 [pipenv]
 allow_prereleases = true
+
+[scripts]
+dev = "flask run"
+generate_key = "python generate_key.py"
