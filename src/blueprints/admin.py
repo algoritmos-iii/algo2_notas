@@ -41,11 +41,11 @@ def create_exercise_email(feedback):
 
 # Endpoints
 @admin_blueprint.get("/emails/exercise/<exercise>/send")
-@auth_required
+# @auth_required
 def send_exercise_email(exercise: str):
     feedbacks = _db["exercises"].aggregate(
         [
-            {"$match": {"email_sent": False}},
+            {"$match": {"title": exercise, "email_sent": False}},
             {
                 "$lookup": {
                     "from": "students",
