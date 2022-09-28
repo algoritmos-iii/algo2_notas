@@ -11,6 +11,7 @@ la consulta {% endblock %} {% block content %}
 
 <div class="card-group">
   <div class="card border-0">
+    {% if exercises %}
     <h3>Ejercicios</h3>
     <table class="table table-sm table-striped table-hover">
       <tbody>
@@ -28,7 +29,9 @@ la consulta {% endblock %} {% block content %}
         {% endfor %}
       </tbody>
     </table>
+    {% endif %}
 
+    {% if exams %}
     <h3>Examenes</h3>
     <table class="table table-sm table-striped table-hover">
       <tbody>
@@ -44,6 +47,7 @@ la consulta {% endblock %} {% block content %}
         {% endfor %}
       </tbody>
     </table>
+    {% endif %}
   </div>
   {#
   <div class="card border-0">
