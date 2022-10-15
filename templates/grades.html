@@ -19,9 +19,9 @@ la consulta {% endblock %} {% block content %}
         <tr>
           <td>
             <a
-              href="/grades/exercises/{{exercise['title']}}?key={{encoded_key}}"
+              href="/grades/exercises/{{exercise['ejercicio']}}?key={{encoded_key}}"
             >
-              {{ exercise['title'] | replace("_"," ") | upper }}
+              {{ exercise['ejercicio'] }}
             </a>
           </td>
           <td>{{ exercise['nota'] }}</td>
@@ -38,8 +38,8 @@ la consulta {% endblock %} {% block content %}
         {% for exam in exams %}
         <tr>
           <td>
-            <a href="/grades/exams/{{exam['title']}}?key={{encoded_key}}">
-              {{ exam['title'] | replace("_"," ") | upper }}
+            <a href="/grades/exams/{{exam['examen']}}?key={{encoded_key}}">
+              {{ exam['examen'] }}
             </a>
           </td>
           <td>{{ exam['nota'] }}</td>

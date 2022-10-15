@@ -115,7 +115,7 @@ def exercise_detail(exercise: str):
 
     return flask.render_template(
         "emails/notas_ejercicio.html",
-        ejercicio=exercise_data["title"].replace("_", " ").upper(),
+        ejercicio=exercise_data["ejercicio"],
         grupo=exercise_data["grupo"],
         corrector=exercise_data["corrector"],
         nota=exercise_data["nota"],
@@ -144,7 +144,7 @@ def exam_detail(exam: str):
     return flask.render_template(
         "emails/notas_examen.html",
         nombre=student["nombre"],
-        examen=exam_data["title"].replace("_", " ").upper(),
+        examen=exam_data["examen"],
         corrector=exam_data["corrector"],
         correcciones=exam_data["detalle"],
         nota=exam_data["nota"],
