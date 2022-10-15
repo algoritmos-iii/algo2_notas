@@ -21,11 +21,11 @@ def update_all():
     students = spreadsheet_to_dict(students_raw["values"])
     exercises = spreadsheet_to_dict(
         exercises_raw["values"],
-        filter_func=lambda exercise: len(exercise) >= 6 and exercise[5].strip() == "",
+        filter_func=lambda exercise: len(exercise) >= 6 and exercise[5].strip() != "",
     )
     exams = spreadsheet_to_dict(
         exams_raw["values"],
-        filter_func=lambda exam: len(exam) >= 7 and exam[6].strip() == "",
+        filter_func=lambda exam: len(exam) >= 7 and exam[6].strip() != "",
     )
 
     # Filter and transform data

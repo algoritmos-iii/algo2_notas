@@ -27,7 +27,7 @@ def create_exercise_email(feedback):
     emails = [integrante["email"] for integrante in feedback["integrantes"]]
 
     context = {
-        "ejercicio": feedback["title"].replace("_", " ").upper(),
+        "ejercicio": feedback["ejercicio"],
         "grupo": feedback["grupo"],
         "corrector": feedback["corrector"],
         "nota": feedback["nota"],
@@ -58,7 +58,7 @@ def create_exercise_email(feedback):
 def send_exercise_email(exercise: str):
     feedbacks = _db["exercises"].aggregate(
         [
-            {"$match": {"title": exercise, "email_sent": False}},
+            {"$match": {"ejercicio": exercise, "email_sent": False}},
             {
                 "$lookup": {
                     "from": "students",
