@@ -10,6 +10,17 @@ admin_blueprint = flask.Blueprint(
     template_folder="template",
 )
 
+@admin_blueprint.get("/updatedb")
+@auth_required
+def updatedb():
+    try:
+        # Update db
+        update_all()
+    except Exception as ex:
+        return flask.jsonify({"status": "error", "details": ex}), 400
+    else:
+        return flask.jsonify({"status": "ok"}), 200
+
 
 # Emails
 def create_exercise_email(feedback):
@@ -45,9 +56,6 @@ def create_exercise_email(feedback):
 @admin_blueprint.get("/emails/exercise/<exercise>/send")
 @auth_required
 def send_exercise_email(exercise: str):
-    # Update db
-    update_all()
-
     feedbacks = _db["exercises"].aggregate(
         [
             {"$match": {"title": exercise, "email_sent": False}},
