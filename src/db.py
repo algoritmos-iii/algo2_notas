@@ -1,6 +1,6 @@
 from typing import Optional
 from pymongo import MongoClient
-from config import MongoConfig
+from .config import MongoConfig
 
 _mongo_config = MongoConfig()
 

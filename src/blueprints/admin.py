@@ -1,13 +1,15 @@
 import flask
-from security import auth_required
-from emails import smtp_connection, Email
-from db import _db
+from ..security import auth_required
+from ..emails import smtp_connection, Email
+from ..db import _db
+from ..dataupdater import update_all
 
 admin_blueprint = flask.Blueprint(
     name="admin",
     import_name=__name__,
     template_folder="template",
 )
+
 
 # Emails
 def create_exercise_email(feedback):
@@ -43,6 +45,9 @@ def create_exercise_email(feedback):
 @admin_blueprint.get("/emails/exercise/<exercise>/send")
 @auth_required
 def send_exercise_email(exercise: str):
+    # Update db
+    update_all()
+
     feedbacks = _db["exercises"].aggregate(
         [
             {"$match": {"title": exercise, "email_sent": False}},

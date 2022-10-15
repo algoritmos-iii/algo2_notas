@@ -3,12 +3,11 @@
 
 import flask
 
-from blueprints.admin import admin_blueprint
-from blueprints.student_front import student_front_blueprint
+from .blueprints.admin import admin_blueprint
+from .blueprints.student_front import student_front_blueprint
 
-from jinja2_filters import markdown2HTML, as_grade_str
-
-from config import AppConfig
+from .jinja2_filters import markdown2HTML, as_grade_str
+from .config import AppConfig
 
 app_config = AppConfig()
 

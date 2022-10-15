@@ -1,6 +1,6 @@
 import smtplib
 import flask
-from config import AppConfig, EmailConfig
+from ..config import AppConfig, EmailConfig
 from .abstract_mailable import AbstractMailable
 
 app_config = AppConfig()

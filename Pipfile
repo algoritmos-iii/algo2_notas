@@ -12,7 +12,8 @@ python-dotenv = "*"
 gunicorn = "*"
 markdown = "*"
 attrs = "*"
-pymongo = "*"
+pymongo = {extras = ["srv"], version = "*"}
+gspread = "*"
 
 [dev-packages]
 pylint = "*"
@@ -24,3 +25,4 @@ allow_prereleases = true
 [scripts]
 dev = "flask run"
 generate_key = "python generate_key.py"
+update = "python -m src.dataupdater"

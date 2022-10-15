@@ -1,9 +1,9 @@
 import flask
 import itsdangerous
-from config import AppConfig
-from forms.authentication_form import AuthenticationForm
-from emails import smtp_connection, Email
-from db import (
+from ..config import AppConfig
+from ..forms.authentication_form import AuthenticationForm
+from ..emails import smtp_connection, Email
+from ..db import (
     get_exam_by_padron_and_name,
     get_student_by_padron,
     get_exercises_by_group,

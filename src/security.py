@@ -1,8 +1,7 @@
 from flask import request, make_response
-from functools import wraps
-
 from flask.wrappers import Response
-from config import AdminConfig
+from functools import wraps
+from .config import AdminConfig
 
 admin_config = AdminConfig()
 
