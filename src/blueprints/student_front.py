@@ -35,7 +35,6 @@ def create_login_email(url, email):
 
 def user_is_valid(padron: str, email: str) -> bool:
     candidate = get_student_by_padron(padron)
-    print(candidate)
     return candidate != None and candidate["email"] == email
 
 
