@@ -9,6 +9,7 @@ from ..db import (
     get_exercises_by_group,
     get_exams_by_padron,
     get_exercise_by_group_and_name,
+    get_student_data
 )
 
 config = AppConfig()
@@ -79,18 +80,17 @@ def notas():
         )
 
     # Get data from padron
-    student = get_student_by_padron(padron)
-    exercises = get_exercises_by_group(student["grupo"], email_sent=True)
-    exams = get_exams_by_padron(student["padron"], email_sent=True)
+    student_data = get_student_data(padron)
 
     return flask.render_template(
         "grades.html",
-        student_name=student["nombre"],
-        student_group=student["grupo"],
-        student_email=student["email"],
-        student_padron=student["padron"],
-        exercises=exercises,
-        exams=exams,
+        student_name=student_data["nombre"],
+        student_group=student_data["grupo"],
+        student_email=student_data["email"],
+        student_padron=student_data["padron"],
+        exercises=student_data["exercises"],
+        exams=student_data["exams"],
+        papers=student_data["papers"],
         encoded_key=encoded_key,
     )
 

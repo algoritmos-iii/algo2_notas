@@ -18,9 +18,7 @@ la consulta {% endblock %} {% block content %}
         {% for exercise in exercises %}
         <tr>
           <td>
-            <a
-              href="/grades/exercises/{{exercise['ejercicio']}}?key={{encoded_key}}"
-            >
+            <a href="/grades/exercises/{{exercise['ejercicio']}}?key={{encoded_key}}">
               {{ exercise['ejercicio'] }}
             </a>
           </td>
@@ -49,6 +47,20 @@ la consulta {% endblock %} {% block content %}
     </table>
     {% endif %}
   </div>
+  <div class="card border-0">
+    {% if papers %}
+    <h3>Papers aprobados</h3>
+    <table class="table table-sm table-striped table-hover">
+      <tbody>
+        {% for paper in papers %}
+        <tr>
+          <td>{{paper}} </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
   {#
   <div class="card border-0">
     <div class="card-body">
@@ -69,7 +81,6 @@ la consulta {% endblock %} {% block content %}
   </div>
   #}
 </div>
-
 {% if not exercises and not exams %}
 <b>Próximamente vas a poder ver tus notas</b>
 <img

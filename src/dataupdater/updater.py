@@ -1,3 +1,4 @@
+from typing import List
 import gspread
 from pymongo import MongoClient
 import pymongo
@@ -5,7 +6,7 @@ from src.config import MongoConfig, SpreadsheetConfig
 from .spreadsheet_utils import spreadsheet_to_dict, s_to_float, s_to_int_or_none
 
 
-def _filter_raw(fields: list[str], amount: int):
+def _filter_raw(fields: List[str], amount: int):
     return len(fields) == amount and all([field.strip() != "" for field in fields])
 
 
