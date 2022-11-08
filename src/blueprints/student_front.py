@@ -6,8 +6,6 @@ from ..emails import smtp_connection, Email
 from ..db import (
     get_exam_by_padron_and_name,
     get_student_by_padron,
-    get_exercises_by_group,
-    get_exams_by_padron,
     get_exercise_by_group_and_name,
     get_student_data
 )
@@ -33,7 +31,7 @@ def create_login_email(url, email):
     )
 
 
-def user_is_valid(padron: str, email: str) -> bool:
+def _user_is_valid(padron: str, email: str) -> bool:
     candidate = get_student_by_padron(padron)
     return candidate != None and candidate["email"] == email
 
@@ -46,7 +44,7 @@ def index():
         student_padron = auth_form.normalized_padron()
         student_email = auth_form.normalized_email()
 
-        if user_is_valid(student_padron, student_email):
+        if _user_is_valid(student_padron, student_email):
             key = signer.dumps(student_padron)
             url = flask.request.url + flask.url_for(".notas", key=key)
 

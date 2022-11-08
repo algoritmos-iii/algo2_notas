@@ -61,25 +61,6 @@ la consulta {% endblock %} {% block content %}
     </table>
     {% endif %}
   </div>
-  {#
-  <div class="card border-0">
-    <div class="card-body">
-      <p class="card-text" style="color: grey">
-        <b>Aún no tenemos la condición final de cursada</b>
-      </p>
-
-      {% for key, val in items if key == "Condición final" if not val == "" %}
-      <h3 class="card-title">{{ key }}</h3>
-      {% if val == "Promociona" %}
-      <p class="card-text" style="color: green"><b>{{ val }}</b></p>
-      {% elif val == "Final" %}
-      <p class="card-text" style="color: green"><b>{{ val }}</b></p>
-      {% elif val == "Recursa" %}
-      <p class="card-text" style="color: red"><b>{{ val }}</b></p>
-      {% endif %} {% endfor %}
-    </div>
-  </div>
-  #}
 </div>
 {% if not exercises and not exams %}
 <b>Próximamente vas a poder ver tus notas</b>
