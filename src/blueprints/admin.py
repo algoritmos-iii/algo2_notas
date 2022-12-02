@@ -85,7 +85,7 @@ def create_exam_email(feedback):
 
 
 # Streaming function
-def email_streaming_generator(feedbacks):
+def email_streaming_generator(feedbacks, collection):
     with smtp_connection() as connection:
 
         for feedback in feedbacks:
@@ -96,7 +96,7 @@ def email_streaming_generator(feedbacks):
             except Exception as e:
                 email_sent_error = str(e)
             else:
-                _db["exercises"].update_one(
+                _db[collection].update_one(
                     filter={"_id": feedback["_id"]},
                     update={"$set": {"email_sent": True}},
                 )
@@ -128,7 +128,7 @@ def send_exercise_email(exercise: str):
         return f"Ejercicio {exercise} no encontrado o ya enviado"
 
     return flask.Response(
-        flask.stream_with_context(email_streaming_generator(feedbacks))
+        flask.stream_with_context(email_streaming_generator(feedbacks, "exercises"))
     )
 
 
@@ -155,5 +155,5 @@ def send_exam_email(exam: str):
         return f"Examen {exam} no encontrado o ya enviado"
 
     return flask.Response(
-        flask.stream_with_context(email_streaming_generator(feedbacks))
+        flask.stream_with_context(email_streaming_generator(feedbacks, "exams"))
     )
