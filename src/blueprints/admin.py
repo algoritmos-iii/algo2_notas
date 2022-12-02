@@ -132,7 +132,7 @@ def send_exercise_email(exercise: str):
     )
 
 
-@admin_blueprint.get("/emails/exam/<exam>/send")
+@admin_blueprint.post("/emails/exam/<exam>/send")
 @auth_required
 def send_exam_email(exam: str):
     feedbacks = _db["exams"].aggregate(
