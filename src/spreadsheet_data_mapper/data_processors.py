@@ -106,3 +106,33 @@ def process_students(dataset: Iterable):
 def process_groups(dataset: Iterable):
     headers, *data = list(itertools.zip_longest(*dataset, fillvalue=None))
     return [dict(zip(headers, group)) for group in data]
+
+def process_summary(dataset: Iterable):
+
+    [headers_col, *data_cols] = dataset
+    data_groups = [(3, 29)]
+
+    output = []
+
+    for column, column_data in enumerate(data_cols):
+        identifier = column_data[0]
+        for group_idx in data_groups:
+            output.append(
+                {
+                    "identifier": identifier,
+                    **dict(
+                        itertools.zip_longest(
+                            headers_col[group_idx[0] + 1 : group_idx[1] + 1],
+                            [
+                                field.strip()
+                                for field in column_data[
+                                    group_idx[0] + 1 : group_idx[1] + 1
+                                ]
+                            ],
+                            fillvalue="",
+                        ),
+                    ),
+                }
+            )
+
+    return output

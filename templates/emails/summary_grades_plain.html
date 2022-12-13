@@ -1,0 +1,89 @@
+{% extends "emails/layout/html_layout.html" %}
+
+{% block content %}
+Mail para {{nombre|title}}.
+
+Buenas!
+
+{% if condicion_final == "Recursa" %}
+Te esperamos el próximo martes 20 de diciembre a las 19:00hs en el zoom de la materia para rendir el recuperatorio
+del segundo parcial. El mismo consistirá de un ejercicio de características similares al segundo parcial.
+
+
+{% else %}
+Te pasamos un resumen de tu cuatrimestre en Algo3:
+
+Ejercicios
+{% for exercise_feedback in ejercicios %}
+{{ exercise_feedback.name }}: {{ exercise_feedback.grade }}
+{% endfor %}
+
+Promedio de los ejercicios: {{promedio_ejercicios}}
+
+Primer parcial: {{primer_parcial}}
+
+Promedio de ejercicios con 1er parcial: {{promedio_ej_primer_parcial}}
+
+
+Parcial
+2do Parcial + Papers: {{ segundo_parcial }}
+{% if primer_recu != "" %}
+1er Recu + Papers: {{ primer_recu }}
+{% endif %}
+
+{% if punto_adicional != "" %}
+Nota cursada + Punto adicional: {{nota_cursada}} + {{punto_adicional}} = {{nota_cursada_final}}
+{% else %}
+Nota cursada: {{nota_cursada_final}}
+{% endif %}
+
+{% if condicion_final == "Promociona" %}
+
+Desde el equipo del curso 3 de Algoritmos y Programación III queremos felicitarte por haber promocionado la materia.
+
+
+Para terminar con la cursada, necesitamos que te inscribas a través del SIU Guaraní a alguna de las fechas de
+final
+(preferentemente la próxima, el martes 20 de diciembre), para que allí podamos asentar tu nota. No hace falta que
+vengas
+a la facultad ni te conectes a Zoom ese día, nos alcanza con que te inscribas a través del SIU.
+
+Si no estás conforme con tu nota y preferís rendir el examen final, por favor respondé a este mail avisándonos,
+así te
+esperamos para rendir en la fecha que te anotes.
+
+{% endif %}
+
+{% if condicion_final == "A Final" %}
+
+Desde el equipo del curso 3 de Algoritmos y Programación III queremos felicitarte por haber aprobado la cursada.
+
+Para terminar con la materia falta que rindas el examen final, que consistirá de un oral acerca de las lecturas
+obligatorias de la materia y un repaso sobre los ejercicios que hiciste durante la cursada. Si tu idea es rendirlo
+este
+cuatrimestre, necesitamos que te inscribas a través del SIU Guaraní a alguna de las fechas de final y vengas
+presencialmente a la facultad tal y como hiciste para rendir los parciales. Recordá que las inscripciones a cada
+mesa de
+examen cierran 72 horas hábiles antes de la misma.
+
+
+Las fechas para este cuatrimestre son:
+- Martes 13/12 a las 19:00hs
+- Martes 20/12 a las 19:00hs
+- Jueves 23/02 a las 19:00hs
+- Jueves 02/03 a las 19:00hs
+- Jueves 09/03 a las 19:00hs
+
+...
+Por disposición de las autoridades de la Facultad los finales serán presenciales, todo indica que en el Pabellón
+2 de
+Ciudad Universitaria. Las aulas están publicadas en el SIU.
+
+
+{% endif %}
+{% endif %}
+
+Como siempre, estamos a disposición por mail o en Discord para cualquier consulta.
+¡Saludos!
+
+{% endblock %}

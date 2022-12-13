@@ -1,0 +1,89 @@
+{% extends "emails/layout/html_layout.html" %}
+
+{% block content %}
+<p>Mail para {{nombre|title}}.</p>
+
+<p>Buenas!</p>
+
+{% if condicion_final == "Recursa" %}
+<p>Te esperamos el próximo martes 20 de diciembre a las 19:00hs en el zoom de la materia para rendir el recuperatorio
+    del segundo parcial. El mismo consistirá de un ejercicio de características similares al segundo parcial.</p>
+<br>
+
+{% else %}
+<p>Te pasamos un resumen de tu cuatrimestre en Algo3:</p>
+
+<h2>Ejercicios</h2>
+{% for exercise_feedback in ejercicios %}
+<li><b>{{ exercise_feedback.name }}:</b> {{ exercise_feedback.grade }}</li>
+{% endfor %}
+<br>
+<p><b>Promedio de los ejercicios:</b> {{promedio_ejercicios}}</p>
+<br>
+<li><b>Primer parcial:</b> {{primer_parcial}}</li>
+<br>
+<p><b>Promedio de ejercicios con 1er parcial:</b> {{promedio_ej_primer_parcial}}</p>
+<br>
+
+<h2>Parcial</h2>
+<li><b>2do Parcial + Papers:</b> {{ segundo_parcial }}</li>
+{% if primer_recu != "" %}
+<li><b>1er Recu + Papers:</b> {{ primer_recu }}</li>
+{% endif %}
+<br>
+{% if punto_adicional != "" %}
+<p><b>Nota cursada + Punto adicional:</b> {{nota_cursada}} + {{punto_adicional}} = {{nota_cursada_final}}</p>
+{% else %}
+<p><b>Nota cursada:</b> {{nota_cursada_final}}</p>
+{% endif %}
+
+{% if condicion_final == "Promociona" %}
+
+<p> Desde el equipo del curso 3 de Algoritmos y Programación III queremos felicitarte por haber promocionado la materia.
+</p>
+
+<p>Para terminar con la cursada, necesitamos que te inscribas a través del SIU Guaraní a alguna de las fechas de
+    final
+    (preferentemente la próxima, el martes 20 de diciembre), para que allí podamos asentar tu nota. No hace falta que
+    vengas
+    a la facultad ni te conectes a Zoom ese día, nos alcanza con que te inscribas a través del SIU.</p>
+
+<p>Si no estás conforme con tu nota y preferís rendir el examen final, por favor respondé a este mail avisándonos,
+    así te
+    esperamos para rendir en la fecha que te anotes.</p>
+
+{% endif %}
+
+{% if condicion_final == "A Final" %}
+
+<p>Desde el equipo del curso 3 de Algoritmos y Programación III queremos felicitarte por haber aprobado la cursada.</p>
+
+<p>Para terminar con la materia falta que rindas el examen final, que consistirá de un oral acerca de las lecturas
+    obligatorias de la materia y un repaso sobre los ejercicios que hiciste durante la cursada. Si tu idea es rendirlo
+    este
+    cuatrimestre, necesitamos que te inscribas a través del SIU Guaraní a alguna de las fechas de final y vengas
+    presencialmente a la facultad tal y como hiciste para rendir los parciales. Recordá que las inscripciones a cada
+    mesa de
+    examen cierran 72 horas hábiles antes de la misma.</p>
+
+<ul>
+    <p>Las fechas para este cuatrimestre son:</p>
+    <li>Martes 13/12 a las 19:00hs</li>
+    <li>Martes 20/12 a las 19:00hs</li>
+    <li>Jueves 23/02 a las 19:00hs</li>
+    <li>Jueves 02/03 a las 19:00hs</li>
+    <li>Jueves 09/03 a las 19:00hs</li>
+</ul>
+...
+<p>Por disposición de las autoridades de la Facultad los finales serán presenciales, todo indica que en el Pabellón
+    2 de
+    Ciudad Universitaria. Las aulas están publicadas en el SIU.</p>
+
+
+{% endif %}
+{% endif %}
+
+<p>Como siempre, estamos a disposición por mail o en Discord para cualquier consulta.</p>
+<p>¡Saludos!</p>
+
+{% endblock %}

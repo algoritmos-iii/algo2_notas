@@ -56,6 +56,15 @@ class DataMapper:
 
         return None
 
+    # Summary
+
+    def summary_of_student(self, padron:str):
+        for summary in self.repository.summaries:
+            if summary.padron == padron:
+                return summary
+        
+        
+
     # Exercises
 
     def _valid_exercises_feedback(self):
@@ -132,3 +141,11 @@ class DataMapper:
             if student.padron == padron:
                 return student
         return None
+
+    # Summary
+    def all_summary_feedback_by_name(self, exam_name:str):
+        return [
+            exam
+            for exam in self.repository.exams
+            if exam.exam_name == exam_name and not exam.email_sent
+        ]

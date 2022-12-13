@@ -48,3 +48,29 @@ class ExamFeedback:
     details: str
     email_sent: bool
     email_sent_position: str
+
+
+@define
+class Exercise:
+    grade: str
+    name: str
+
+@define
+class Summary:
+    padron: str
+    ejercicios: list[Exercise]
+    prom_ej:str
+    fist_parcial:str
+    prom_ej_1p:str
+    extra_papers:str
+    second_parcial:str
+    second_parcial_papers: str
+    first_recu:str
+    first_recu_papers:str
+    second_recu:str
+    final_grade_secon_parcial:str
+    final_condition:str
+    grade_completed:str
+    extra_point:str
+    grade_final_completed:str
+    grade_promotion:str

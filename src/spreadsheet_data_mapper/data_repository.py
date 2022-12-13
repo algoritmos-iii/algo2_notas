@@ -6,12 +6,13 @@ from .data_processors import (
     process_papers,
     process_students,
     process_groups,
+    process_summary,
 )
-from .models import Group, Student, Paper, ExamFeedback, ExerciseFeedback
+from .models import Group, Student, Paper, ExamFeedback, ExerciseFeedback, Summary, Exercise
 
 
 class DataRepository:
-    __slots__ = ["_spreadsheet", "students", "groups", "papers", "exercises", "exams"]
+    __slots__ = ["_spreadsheet", "students", "groups", "papers", "exercises", "exams", "summaries"]
 
     def __init__(self, spreadsheet_key: str, spreadsheet_auth_dict: dict) -> None:
         client = gspread.auth.service_account_from_dict(spreadsheet_auth_dict)
@@ -23,6 +24,7 @@ class DataRepository:
         self.papers: List[Paper] = []
         self.exercises: List[ExerciseFeedback] = []
         self.exams: List[ExamFeedback] = []
+        self.summaries: List[Summary] = []
 
     def _spreadsheet_values_batch_get(
         self, ranges: List[str], params: dict = None
@@ -37,6 +39,7 @@ class DataRepository:
             papers_raw,
             ejercicios_raw,
             examenes_raw,
+            summary_raw,
         ) = self._spreadsheet_values_batch_get(
             [
                 "Listado!1:86",
@@ -44,9 +47,60 @@ class DataRepository:
                 "Puntos extra papers!1:14",
                 "Devoluciones",
                 "Devoluciones examenes",
+                "Alumnos - Notas!1:28",
             ],
             params={"majorDimension": "COLUMNS"},
         )
+
+        self.summaries = [
+            Summary(
+                padron=data["identifier"],
+                ejercicios=[
+                    Exercise(
+                        name="SAGA I",
+                        grade=data["SAGA I"],
+                    ),Exercise(
+                        name="Codigo Repetido",
+                        grade=data["Codigo Repetido"],
+                    ),Exercise(
+                        name="Números",
+                        grade=data["Números"],
+                    ),Exercise(
+                        name="Stack",
+                        grade=data["Stack"],
+                    ),Exercise(
+                        name="Mars Rover",
+                        grade=data["Mars Rover"],
+                    ),Exercise(
+                        name="Servicios Financieros 1",
+                        grade=data["Servicios Financieros 1"],
+                    ),Exercise(
+                        name="Servicios Financieros 2",
+                        grade=data["Servicios Financieros 2"],
+                    ),
+                ],
+                prom_ej=data["Promedio Ejercicios"],
+                fist_parcial=data["1er Parcial"],
+                prom_ej_1p=data["Ejercicios + 1er Parcial"],
+                extra_papers=data["Extra Papers"],
+                second_parcial=data["2do Parcial"],
+                second_parcial_papers=data["2do Parcial + Papers"],
+                first_recu=data["1er Recu"],
+                first_recu_papers=data["1er Recu + Papers"],
+                second_recu=data["2do Recu"],
+                final_grade_secon_parcial=data["Nota Final 2do Parcial"],
+                final_condition=data["Condición final"],
+                grade_completed=data["Nota Cursada"],
+                extra_point=data["Punto adicional"],
+                grade_final_completed=data["Nota Cursada Final"],
+                grade_promotion=data["Nota Promoción"],
+            )
+            for data in process_summary(summary_raw)
+        ]
+
+        # # print(process_summary(summary_raw))
+        # for data in process_summary(summary_raw):
+        #     print(data)
 
         self.students = [
             Student(
@@ -109,6 +163,7 @@ class DataRepository:
             for exam in process_feedbacks(examenes_raw)
         ]
 
+        
     def write_to_exercise_sheet(self, cell: str, value: str):
         self._spreadsheet.worksheet("Devoluciones").update_acell(cell, value)
 
