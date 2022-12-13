@@ -83,7 +83,7 @@ def create_summary_email(feedback: ExamFeedback):
         "promedio_ej_primer_parcial": summary.prom_ej_1p,
         "primer_parcial": summary.fist_parcial,
         "segundo_parcial": summary.second_parcial_papers,
-        "primer_recu": summary.first_recu,
+        "primer_recu": summary.first_recu_papers,
         "condicion_final": summary.final_condition,
         "punto_adicional": summary.extra_point,
         "nota_cursada": summary.grade_completed
