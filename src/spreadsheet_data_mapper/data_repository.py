@@ -39,8 +39,8 @@ class DataRepository:
             examenes_raw,
         ) = self._spreadsheet_values_batch_get(
             [
-                "Listado!1:86",
-                "Grupos!1:43",
+                "Listado!1:85",
+                "Grupos!1:44",
                 "Puntos extra papers!1:14",
                 "Devoluciones",
                 "Devoluciones examenes",
