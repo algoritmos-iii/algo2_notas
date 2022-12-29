@@ -5,12 +5,6 @@ Mail para {{nombre|title}}.
 
 Buenas!
 
-{% if condicion_final == "Recursa" %}
-Te esperamos el próximo martes 20 de diciembre a las 19:00hs en el zoom de la materia para rendir el recuperatorio
-del segundo parcial. El mismo consistirá de un ejercicio de características similares al segundo parcial.
-
-
-{% else %}
 Te pasamos un resumen de tu cuatrimestre en Algo3:
 
 Ejercicios
@@ -30,11 +24,21 @@ Parcial
 {% if primer_recu != "" %}
 1er Recu + Papers: {{ primer_recu }}
 {% endif %}
+{% if segundo_recu != "" %}
+2do Recu:{{ segundo_recu }}
+{% endif %}
 
 {% if punto_adicional != "" %}
 Nota cursada + Punto adicional: {{nota_cursada}} + {{punto_adicional}} = {{nota_cursada_final}}
 {% else %}
 Nota cursada: {{nota_cursada_final}}
+{% endif %}
+
+{% if condicion_final == "Recursa" %}
+Como ya estarás al tanto, tus resultados en el segundo parcial y sus recuperatorios no fueron suficientes para
+aprobar la cursada de la materia.
+Lamentamos mucho esta situación y esperamos verte de nuevo el próximo cuatrimestre para revisitar los conceptos de
+la materia, reforzando todo lo que haya faltado este cuatrimestre.
 {% endif %}
 
 {% if condicion_final == "Promociona" %}
@@ -68,8 +72,6 @@ examen cierran 72 horas hábiles antes de la misma.
 
 
 Las fechas para este cuatrimestre son:
-- Martes 13/12 a las 19:00hs
-- Martes 20/12 a las 19:00hs
 - Jueves 23/02 a las 19:00hs
 - Jueves 02/03 a las 19:00hs
 - Jueves 09/03 a las 19:00hs
@@ -79,11 +81,10 @@ Por disposición de las autoridades de la Facultad los finales serán presencial
 2 de
 Ciudad Universitaria. Las aulas están publicadas en el SIU.
 
-
-{% endif %}
 {% endif %}
 
 Como siempre, estamos a disposición por mail o en Discord para cualquier consulta.
 ¡Saludos!
+El equipo docente
 
 {% endblock %}

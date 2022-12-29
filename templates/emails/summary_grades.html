@@ -5,12 +5,6 @@
 
 <p>Buenas!</p>
 
-{% if condicion_final == "Recursa" %}
-<p>Te esperamos el próximo martes 20 de diciembre a las 19:00hs en el zoom de la materia para rendir el recuperatorio
-    del segundo parcial. El mismo consistirá de un ejercicio de características similares al segundo parcial.</p>
-<br>
-
-{% else %}
 <p>Te pasamos un resumen de tu cuatrimestre en Algo3:</p>
 
 <h2>Ejercicios</h2>
@@ -30,11 +24,23 @@
 {% if primer_recu != "" %}
 <li><b>1er Recu + Papers:</b> {{ primer_recu }}</li>
 {% endif %}
+{% if segundo_recu != "" %}
+<li><b>2do Recu:</b> {{ segundo_recu }}</li>
+{% endif %}
 <br>
+
 {% if punto_adicional != "" %}
 <p><b>Nota cursada + Punto adicional:</b> {{nota_cursada}} + {{punto_adicional}} = {{nota_cursada_final}}</p>
 {% else %}
 <p><b>Nota cursada:</b> {{nota_cursada_final}}</p>
+{% endif %}
+
+{% if condicion_final == "Recursa" %}
+<p>Como ya estarás al tanto, tus resultados en el segundo parcial y sus recuperatorios no fueron suficientes para
+    aprobar la cursada de la materia.
+    Lamentamos mucho esta situación y esperamos verte de nuevo el próximo cuatrimestre para revisitar los conceptos de
+    la materia, reforzando todo lo que haya faltado este cuatrimestre.</p>
+<br>
 {% endif %}
 
 {% if condicion_final == "Promociona" %}
@@ -68,8 +74,6 @@
 
 <ul>
     <p>Las fechas para este cuatrimestre son:</p>
-    <li>Martes 13/12 a las 19:00hs</li>
-    <li>Martes 20/12 a las 19:00hs</li>
     <li>Jueves 23/02 a las 19:00hs</li>
     <li>Jueves 02/03 a las 19:00hs</li>
     <li>Jueves 09/03 a las 19:00hs</li>
@@ -79,11 +83,10 @@
     2 de
     Ciudad Universitaria. Las aulas están publicadas en el SIU.</p>
 
-
-{% endif %}
 {% endif %}
 
 <p>Como siempre, estamos a disposición por mail o en Discord para cualquier consulta.</p>
 <p>¡Saludos!</p>
+<p>El equipo docente</p>
 
 {% endblock %}

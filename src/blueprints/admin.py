@@ -86,14 +86,15 @@ def create_summary_email(feedback: ExamFeedback):
         "primer_recu": summary.first_recu_papers,
         "condicion_final": summary.final_condition,
         "punto_adicional": summary.extra_point,
-        "nota_cursada": summary.grade_completed
+        "nota_cursada": summary.grade_completed,
+        "segundo_recu": summary.second_recu
     }
 
     return (
         Email()
         .set_recipients(email)
         .set_subject(
-            f"Resumen de notas - Padrón {feedback.student_padron}"
+            f"Resumen de cursada - Padrón {feedback.student_padron}"
         )
         .set_cc_to_lista_docente(True)
         .set_plaintext_content_from_template(
