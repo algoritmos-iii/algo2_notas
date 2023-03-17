@@ -1,11 +1,10 @@
-from typing import Optional
 from pymongo import MongoClient
 from .config import MongoConfig
 
 _mongo_config = MongoConfig()
 
 _client = MongoClient(_mongo_config.url)
-_db = _client["algo3_2c2022"]
+_db = _client.get_default_database()
 
 
 def get_student_by_padron(padron: int):
