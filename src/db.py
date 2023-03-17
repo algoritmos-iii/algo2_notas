@@ -6,7 +6,6 @@ _mongo_config = MongoConfig()
 _client = MongoClient(_mongo_config.url)
 _db = _client.get_default_database()
 
-
 def get_student_by_padron(padron: int):
     return _db["students"].find_one({"padron": padron})
 

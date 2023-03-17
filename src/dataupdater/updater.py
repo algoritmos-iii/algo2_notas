@@ -1,9 +1,9 @@
 from typing import List
 import gspread
-from pymongo import MongoClient
 import pymongo
-from src.config import MongoConfig, SpreadsheetConfig
+from src.config import SpreadsheetConfig
 from .spreadsheet_utils import spreadsheet_to_dict, s_to_float, s_to_int_or_none
+from ..db import _client, _db
 
 
 def _filter_raw(fields: List[str], amount: int):
@@ -15,8 +15,6 @@ def update_all():
         SpreadsheetConfig().credentials
     ).open_by_key(SpreadsheetConfig().spreadsheet_key)
 
-    mongo = MongoClient(MongoConfig().url)
-    db = mongo["algo3_2c2022"]
 
     students_raw, exercises_raw, exams_raw, papers_raw = spreadsheet.values_batch_get(
         ["Listado!B:E", "test-app!A:F", "test-app!K:S", "test-app!X:Y"],
@@ -63,9 +61,9 @@ def update_all():
     ]
 
     # Update db
-    with mongo.start_session() as session:
+    with _client.start_session() as session:
         if students:
-            db["students"].bulk_write(
+            _db["students"].bulk_write(
                 [
                     pymongo.UpdateOne(
                         filter={"padron": student["padron"]},
@@ -82,7 +80,7 @@ def update_all():
             print("No students")
 
         if exercises:
-            db["exercises"].bulk_write(
+            _db["exercises"].bulk_write(
                 [
                     pymongo.UpdateOne(
                         filter={
@@ -105,7 +103,7 @@ def update_all():
             print("No exercises")
 
         if exams:
-            db["exams"].bulk_write(
+            _db["exams"].bulk_write(
                 [
                     pymongo.UpdateOne(
                         filter={"padron": exam["padron"], "examen": exam["examen"]},
@@ -122,7 +120,7 @@ def update_all():
             print("No exams")
 
         if papers:
-            db["papers"].bulk_write(
+            _db["papers"].bulk_write(
                 [
                     pymongo.UpdateOne(
                         filter={"title": paper["title"]},
