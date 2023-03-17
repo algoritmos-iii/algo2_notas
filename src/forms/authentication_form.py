@@ -7,9 +7,9 @@ from wtforms import validators
 class AuthenticationForm(flask_wtf.FlaskForm):
     """Pide el padrón y la dirección de correo."""
 
-    padron = fields.StringField(
+    padron = fields.IntegerField(
         "Padrón",
-        validators=[validators.Regexp(r"\d+", message="Ingrese un padrón válido")],
+        # validators=[validators.Regexp(r"\d+", message="Ingrese un padrón válido")],
     )
 
     email = fields.EmailField(
@@ -24,7 +24,7 @@ class AuthenticationForm(flask_wtf.FlaskForm):
         return field.data.strip().lower()
 
     def normalized_padron(self) -> str:
-        return self._normalize_field(self.padron)
+        return self.padron.data
 
     def normalized_email(self) -> str:
         return self._normalize_field(self.email)

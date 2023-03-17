@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-gspread = "*"
 webargs = "*"
 flask = "*"
 flask-wtf = "*"
@@ -13,6 +12,17 @@ python-dotenv = "*"
 gunicorn = "*"
 markdown = "*"
 attrs = "*"
+pymongo = {extras = ["srv"], version = "*"}
+gspread = "*"
 
 [dev-packages]
 pylint = "*"
+black = "*"
+
+[pipenv]
+allow_prereleases = true
+
+[scripts]
+dev = "flask run"
+generate_key = "python generate_key.py"
+update = "python -m src.dataupdater"

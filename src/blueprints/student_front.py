@@ -1,12 +1,16 @@
 import flask
 import itsdangerous
-from config import AppConfig
-from spreadsheet_data_mapper.data_mapper import DataMapper
-from forms.authentication_form import AuthenticationForm
-from emails import smtp_connection, Email
+from ..config import AppConfig
+from ..forms.authentication_form import AuthenticationForm
+from ..emails import smtp_connection, Email
+from ..db import (
+    get_exam_by_padron_and_name,
+    get_student_by_padron,
+    get_exercise_by_group_and_name,
+    get_student_data
+)
 
 config = AppConfig()
-data_mapper = DataMapper()
 signer = itsdangerous.URLSafeSerializer(config.secret_key)
 
 student_front_blueprint = flask.Blueprint(
@@ -27,20 +31,9 @@ def create_login_email(url, email):
     )
 
 
-def user_is_valid(padron: str, email: str) -> bool:
-    candidate = data_mapper.student_by_padron(padron)
-    return candidate != None and candidate.email == email
-
-
-def get_student_data(padron: str):
-    student = data_mapper.student_by_padron(padron)
-    student_group = data_mapper.group_of_student(student.padron)
-    exercises = data_mapper.exercises_feedback_by_group_number(
-        student_group.group_number
-    )
-    exams = data_mapper.exams_feedback_by_student(student.padron)
-
-    return student, student_group, exercises, exams
+def _user_is_valid(padron: str, email: str) -> bool:
+    candidate = get_student_by_padron(padron)
+    return candidate != None and candidate["email"] == email
 
 
 @student_front_blueprint.route("/", methods=["GET", "POST"])
@@ -51,7 +44,7 @@ def index():
         student_padron = auth_form.normalized_padron()
         student_email = auth_form.normalized_email()
 
-        if user_is_valid(student_padron, student_email):
+        if _user_is_valid(student_padron, student_email):
             key = signer.dumps(student_padron)
             url = flask.request.url + flask.url_for(".notas", key=key)
 
@@ -72,11 +65,11 @@ def index():
 def notas():
     encoded_key = flask.request.args.get("key", None)
 
-    if encoded_key == None:
+    if encoded_key is None:
         return flask.redirect(flask.url_for(".index"))
 
     try:
-        key = signer.loads(encoded_key)
+        padron = signer.loads(encoded_key)
     except itsdangerous.BadData:
         return flask.render_template(
             "error.html",
@@ -84,14 +77,74 @@ def notas():
         )
 
     # Get data from padron
-    student, student_group, exercises, exams = get_student_data(padron=key)
+    student_data = get_student_data(padron)
 
     return flask.render_template(
         "grades.html",
-        student_name=student.full_name,
-        student_group=student_group.group_number,
-        student_email=student.email,
-        student_padron=student.padron,
-        exercises=exercises,
-        exams=exams,
+        student_name=student_data["nombre"],
+        student_group=student_data["grupo"],
+        student_email=student_data["email"],
+        student_padron=student_data["padron"],
+        exercises=student_data["exercises"],
+        exams=student_data["exams"],
+        papers=student_data["papers"],
+        encoded_key=encoded_key,
+    )
+
+
+@student_front_blueprint.get("/grades/exercises/<exercise>")
+def exercise_detail(exercise: str):
+    encoded_key = flask.request.args.get("key", None)
+
+    if encoded_key is None:
+        return flask.redirect(flask.url_for(".index"))
+
+    try:
+        padron = signer.loads(encoded_key)
+    except itsdangerous.BadData:
+        return flask.render_template(
+            "error.html",
+            msg="Ha ocurrido un error. Por favor, intentá iniciar sesion nuevamente.",
+        )
+
+    student = get_student_by_padron(padron)
+    exercise_data = get_exercise_by_group_and_name(student["grupo"], exercise)
+
+    return flask.render_template(
+        "emails/notas_ejercicio.html",
+        ejercicio=exercise_data["ejercicio"],
+        grupo=exercise_data["grupo"],
+        corrector=exercise_data["corrector"],
+        nota=exercise_data["nota"],
+        correcciones=exercise_data["detalle"],
+    )
+
+
+@student_front_blueprint.get("/grades/exams/<exam>")
+def exam_detail(exam: str):
+    encoded_key = flask.request.args.get("key", None)
+
+    if encoded_key is None:
+        return flask.redirect(flask.url_for(".index"))
+
+    try:
+        padron = signer.loads(encoded_key)
+    except itsdangerous.BadData:
+        return flask.render_template(
+            "error.html",
+            msg="Ha ocurrido un error. Por favor, intentá iniciar sesion nuevamente.",
+        )
+
+    student = get_student_by_padron(padron)
+    exam_data = get_exam_by_padron_and_name(padron, exam)
+
+    return flask.render_template(
+        "emails/notas_examen.html",
+        nombre=student["nombre"],
+        examen=exam_data["examen"],
+        corrector=exam_data["corrector"],
+        correcciones=exam_data["detalle"],
+        nota=exam_data["nota"],
+        puntos_extras=exam_data["puntos_extra"],
+        nota_final=exam_data["nota_final"],
     )

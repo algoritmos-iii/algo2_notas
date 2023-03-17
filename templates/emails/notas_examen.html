@@ -3,7 +3,7 @@
 {% block content %}
 <p>Mail para {{nombre|title}}.</p>
 <p>Corrector: {{corrector}}.</p>
-{% if (nota >= 4) and (nota < 10) and (puntos_extras > 0) %}
+{% if (nota_final > nota) %}
 <p>Hola, este mail es para darles la devolución del {{examen}}. Tu nota es <strong>{{nota|as_grade_str}}</strong>,
     pero gracias a los puntos extra que te ganaste en los cuestionarios, tu nota final es
     <strong>{{nota_final|as_grade_str}}</strong>.</p>

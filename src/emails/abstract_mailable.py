@@ -1,4 +1,3 @@
-from optparse import Option
 from typing import Dict, Optional
 from email.message import EmailMessage
 from email.utils import formatdate
@@ -81,6 +80,5 @@ class AbstractMailable:
 
         if self._is_field_set("html"):
             msg.add_alternative(self._headers["html"], subtype="html")
-
 
         return msg
