@@ -148,7 +148,7 @@ def send_exam_email(exam: str):
                     "localField": "padron",
                     "foreignField": "padron",
                     "as": "estudiante",
-                    "pipeline": [{"$project": {"_id": 0, "email": 1, "nombre": 1, "padron": 1}}],
+                    "pipeline": [{"$project": {"email": 1, "nombre": 1, "padron": 1}}],
                 }
             },
             {"$set": {"estudiante": {"$arrayElemAt": ["$estudiante", 0]}}},
