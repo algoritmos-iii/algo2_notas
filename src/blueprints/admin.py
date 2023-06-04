@@ -70,7 +70,7 @@ def create_exam_email(feedback):
         Email()
         .set_recipients(email)
         .set_subject(
-            f"Corrección de {feedback["examen"]} - Padrón {feedback["estudiante"]["padron"]}"
+            f"Corrección de {feedback['examen']} - Padrón {feedback['estudiante']['padron']}"
         )
         .set_cc_to_lista_docente(True)
         .set_plaintext_content_from_template(
