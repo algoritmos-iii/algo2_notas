@@ -85,11 +85,10 @@ def create_exam_email(feedback):
 
 
 # Streaming function
-def email_streaming_generator(feedbacks, collection):
+def email_streaming_generator(emails, collection):
     with smtp_connection() as connection:
 
-        for feedback in feedbacks:
-            email = create_exercise_email(feedback)
+        for email in emails:
             email_sent_error = ""
             try:
                 connection.send_message(email.generate_email_message())
@@ -128,7 +127,12 @@ def send_exercise_email(exercise: str):
         return f"Ejercicio {exercise} no encontrado o ya enviado"
 
     return flask.Response(
-        flask.stream_with_context(email_streaming_generator(feedbacks, "exercises"))
+        flask.stream_with_context(
+            email_streaming_generator(
+                (create_exercise_email(feedback) for feedback in feedbacks),
+                "exercises"
+            )
+        )
     )
 
 
@@ -144,7 +148,7 @@ def send_exam_email(exam: str):
                     "localField": "padron",
                     "foreignField": "padron",
                     "as": "estudiante",
-                    "pipeline": [{"$project": {"email": 1, "name": 1}}],
+                    "pipeline": [{"$project": {"_id": 0, "email": 1, "nombre": 1}}],
                 }
             },
             {"$set": {"estudiante": {"$arrayElemAt": ["$estudiante", 0]}}},
@@ -155,5 +159,10 @@ def send_exam_email(exam: str):
         return f"Examen {exam} no encontrado o ya enviado"
 
     return flask.Response(
-        flask.stream_with_context(email_streaming_generator(feedbacks, "exams"))
+        flask.stream_with_context(
+            email_streaming_generator(
+                (create_exam_email(feedback) for feedback in feedbacks),
+                "exams"
+            )
+        )
     )
