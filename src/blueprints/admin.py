@@ -70,7 +70,7 @@ def create_exam_email(feedback):
         Email()
         .set_recipients(email)
         .set_subject(
-            f"Corrección de {feedback.exam_name} - Padrón {feedback.student_padron}"
+            f"Corrección de {feedback["examen"]} - Padrón {feedback["estudiante"]["padron"]}"
         )
         .set_cc_to_lista_docente(True)
         .set_plaintext_content_from_template(
@@ -148,7 +148,7 @@ def send_exam_email(exam: str):
                     "localField": "padron",
                     "foreignField": "padron",
                     "as": "estudiante",
-                    "pipeline": [{"$project": {"_id": 0, "email": 1, "nombre": 1}}],
+                    "pipeline": [{"$project": {"_id": 0, "email": 1, "nombre": 1, "padron": 1}}],
                 }
             },
             {"$set": {"estudiante": {"$arrayElemAt": ["$estudiante", 0]}}},
