@@ -94,11 +94,11 @@ def email_streaming_generator(emails, collection):
                 connection.send_message(email.generate_email_message())
             except Exception as e:
                 email_sent_error = str(e)
-            else:
-                _db[collection].update_one(
-                    filter={"_id": feedback["_id"]},
-                    update={"$set": {"email_sent": True}},
-                )
+            # else:
+            #     _db[collection].update_one(
+            #         filter={"_id": feedback["_id"]},
+            #         update={"$set": {"email_sent": True}},
+            #     )
 
             yield f"{{address: {email._headers['to']}, subject: {email._headers['subject']}, email_sent: {not bool(email_sent_error)}}}\n"
     yield "Emails sent"
