@@ -4,16 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-webargs = "*"
-flask = "*"
-flask-wtf = "*"
-email-validator = "*"
 python-dotenv = "*"
-gunicorn = "*"
 markdown = "*"
 attrs = "*"
-pymongo = {extras = ["srv"], version = "*"}
 gspread = "*"
+jinja2 = "*"
 
 [dev-packages]
 pylint = "*"
@@ -23,6 +18,4 @@ black = "*"
 allow_prereleases = true
 
 [scripts]
-dev = "flask run"
-generate_key = "python generate_key.py"
-update = "python -m src.dataupdater"
+cli = "python src/main.py"
